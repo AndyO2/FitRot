@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git config:*)",
+      "WebSearch",
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(xcodebuild:*)",
+      "Bash(xargs:*)",
+      "Bash(xcrun swift:*)",
+      "Bash(grep:*)",
+      "WebFetch(domain:medium.com)",
+      "WebFetch(domain:pedroesli.com)",
+      "WebFetch(domain:oboe.com)"
+    ]
+  }
+}
