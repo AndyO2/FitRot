@@ -36,8 +36,16 @@ enum MovementType: String, CaseIterable, Identifiable {
     /// Whether camera-based detection is implemented for this movement
     var isImplemented: Bool {
         switch self {
-        case .pushups: true
-        case .squats, .situps: false
+        case .pushups, .squats: true
+        case .situps: false
+        }
+    }
+
+    func repLabel(for count: Int) -> String {
+        switch self {
+        case .pushups: count == 1 ? "pushup" : "pushups"
+        case .squats: count == 1 ? "squat" : "squats"
+        case .situps: count == 1 ? "situp" : "situps"
         }
     }
 

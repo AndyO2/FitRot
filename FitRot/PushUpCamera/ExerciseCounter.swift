@@ -2,26 +2,19 @@ import Foundation
 import Observation
 
 @Observable
-final class PushUpCounter {
+final class ExerciseCounter {
     private(set) var count: Int = 0
-    private(set) var phase: PushUpPhase = .idle
+    private(set) var phase: ExercisePhase = .idle
 
     let target: Int
 
     var isComplete: Bool { count >= target }
 
-    private let strategy: PushUpCountingStrategy
+    private let strategy: ExerciseCountingStrategy
 
-    init(strategyType: CountingStrategyType = .upperBodyCentroid, target: Int = 10) {
+    init(target: Int = 10, strategy: ExerciseCountingStrategy) {
         self.target = target
-        switch strategyType {
-        case .smoothedNoseY:
-            self.strategy = SmoothedNoseYStrategy(target: target)
-        case .elbowAngle:
-            self.strategy = ElbowAngleStrategy(target: target)
-        case .upperBodyCentroid:
-            self.strategy = UpperBodyCentroidStrategy(target: target)
-        }
+        self.strategy = strategy
     }
 
     func update(pose: DetectedPose?) {

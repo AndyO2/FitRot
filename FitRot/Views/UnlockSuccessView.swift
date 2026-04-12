@@ -54,11 +54,11 @@ struct UnlockSuccessView: View {
                 VStack(spacing: 16) {
                     Image(systemName: "iphone.gen3")
                         .font(.system(size: 64))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.primaryText)
 
                     Text("\(minutes) min")
                         .font(.system(size: 48, weight: .bold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.primaryText)
 
                     Text("Apps Unblocked")
                         .font(.title3)

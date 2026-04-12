@@ -16,10 +16,14 @@ struct FitRotApp: App {
     @State private var coinManager = CoinManager()
     @State private var navigationCoordinator = NavigationCoordinator()
     @State private var notificationManager = NotificationManager()
+    @State private var themeService = ThemeService()
     @Environment(\.scenePhase) private var scenePhase
     #endif
 
     init() {
+        #if os(iOS)
+        AnalyticsService.shared.configure(token: "4142907f333c6d2647bfa98d0c2f22d6")
+        #endif
         Superwall.configure(apiKey: "pk_ofSEaQSbRNB55wykUOfn7")
     }
 
@@ -28,15 +32,16 @@ struct FitRotApp: App {
             #if canImport(FamilyControls)
             RootView()
                 .tint(.brandAccent)
+                .preferredColorScheme(themeService.appearanceMode.colorScheme)
                 .environment(authManager)
                 .environment(lockService)
                 .environment(coinManager)
                 .environment(navigationCoordinator)
                 .environment(notificationManager)
+                .environment(themeService)
                 .onAppear {
                     lockService.restoreStateOnLaunch()
                     notificationManager.configure(with: navigationCoordinator)
-                    Task { await notificationManager.requestPermission() }
                 }
                 .onOpenURL { url in
                     navigationCoordinator.handleDeepLink(url)

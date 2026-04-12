@@ -55,19 +55,23 @@ struct EarnCoinsView: View {
     @Environment(NavigationCoordinator.self) private var nav
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 28) {
-                // Inline title
-                HStack(spacing: 10) {
-                    Image(systemName: "dumbbell.fill")
-                        .font(.system(size: 28, weight: .bold))
-                    Text("Workouts")
-                        .font(.system(size: 34, weight: .bold))
-                }
-                .foregroundStyle(.primaryText)
-                .padding(.top, 16)
+        VStack(spacing: 0) {
+            // Sticky header
+            HStack(spacing: 10) {
+                Image(systemName: "dumbbell.fill")
+                    .font(.system(size: 28, weight: .bold))
+                Text("Workouts")
+                    .font(.system(size: 34, weight: .bold))
+            }
+            .foregroundStyle(.primaryText)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal)
+            .padding(.top, 16)
+            .padding(.bottom, 8)
 
-                // Exercise cards
+            ScrollView {
+                VStack(alignment: .leading, spacing: 28) {
+                    // Exercise cards
                 VStack(spacing: 12) {
                     ForEach(MovementType.allCases) { movement in
                         ExerciseCardView(movement: movement) {
@@ -106,6 +110,7 @@ struct EarnCoinsView: View {
 //                }
             }
             .padding(.horizontal)
+            }
         }
         .background(.appBackground)
     }

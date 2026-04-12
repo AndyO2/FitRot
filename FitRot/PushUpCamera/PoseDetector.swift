@@ -22,8 +22,14 @@ struct DetectedPose: Sendable, Equatable {
     let rightWrist: DetectedJoint?
     let leftHip: DetectedJoint?
     let rightHip: DetectedJoint?
+    let leftKnee: DetectedJoint?
+    let rightKnee: DetectedJoint?
+    let leftAnkle: DetectedJoint?
+    let rightAnkle: DetectedJoint?
     let leftElbowAngle: Double?
     let rightElbowAngle: Double?
+    let leftKneeAngle: Double?
+    let rightKneeAngle: Double?
 
     /// Ratio of nose Y to average wrist Y (0...1 normalized screen coords).
     /// Small value = head high (up position), large value = head near wrists (down position).
@@ -31,6 +37,8 @@ struct DetectedPose: Sendable, Equatable {
 
     static func == (lhs: DetectedPose, rhs: DetectedPose) -> Bool {
         lhs.headWristYRatio == rhs.headWristYRatio
+            && lhs.leftElbowAngle == rhs.leftElbowAngle
+            && lhs.leftKneeAngle == rhs.leftKneeAngle
     }
 }
 
@@ -119,6 +127,10 @@ final class PoseDetector: ObservableObject {
         let rightWrist = joint(.rightWrist)
         let leftHip = joint(.leftHip)
         let rightHip = joint(.rightHip)
+        let leftKnee = joint(.leftKnee)
+        let rightKnee = joint(.rightKnee)
+        let leftAnkle = joint(.leftAnkle)
+        let rightAnkle = joint(.rightAnkle)
         let leftElbowAngle: Double? = {
             guard let s = leftShoulder, let e = leftElbow, let w = leftWrist else { return nil }
             return Self.angle(a: s.point, vertex: e.point, c: w.point)
@@ -127,6 +139,16 @@ final class PoseDetector: ObservableObject {
         let rightElbowAngle: Double? = {
             guard let s = rightShoulder, let e = rightElbow, let w = rightWrist else { return nil }
             return Self.angle(a: s.point, vertex: e.point, c: w.point)
+        }()
+
+        let leftKneeAngle: Double? = {
+            guard let h = leftHip, let k = leftKnee, let a = leftAnkle else { return nil }
+            return Self.angle(a: h.point, vertex: k.point, c: a.point)
+        }()
+
+        let rightKneeAngle: Double? = {
+            guard let h = rightHip, let k = rightKnee, let a = rightAnkle else { return nil }
+            return Self.angle(a: h.point, vertex: k.point, c: a.point)
         }()
 
         // Head-to-wrist Y ratio for push-up counting.
@@ -155,8 +177,14 @@ final class PoseDetector: ObservableObject {
             rightWrist: rightWrist,
             leftHip: leftHip,
             rightHip: rightHip,
+            leftKnee: leftKnee,
+            rightKnee: rightKnee,
+            leftAnkle: leftAnkle,
+            rightAnkle: rightAnkle,
             leftElbowAngle: leftElbowAngle,
             rightElbowAngle: rightElbowAngle,
+            leftKneeAngle: leftKneeAngle,
+            rightKneeAngle: rightKneeAngle,
             headWristYRatio: headWristYRatio
         )
     }

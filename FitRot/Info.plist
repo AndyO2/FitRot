@@ -15,7 +15,5 @@
 			</array>
 		</dict>
 	</array>
-	<key>NSCameraUsageDescription</key>
-	<string>FitRot uses the camera to detect your exercise form and count reps.</string>
 </dict>
 </plist>

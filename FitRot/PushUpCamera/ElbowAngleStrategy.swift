@@ -1,13 +1,13 @@
 import Foundation
 
-final class ElbowAngleStrategy: PushUpCountingStrategy {
+final class ElbowAngleStrategy: ExerciseCountingStrategy {
     private(set) var count: Int = 0
-    private(set) var phase: PushUpPhase = .idle
+    private(set) var phase: ExercisePhase = .idle
     let target: Int
 
     // Elbow angle thresholds (degrees):
-    // ~160-180 = arms extended (up position)
-    // ~70-100 = arms bent (down position)
+    // ~160-180° = arms extended (up position)
+    // ~70-100° = arms bent (down position)
     private let downAngleThreshold: Double = 135.0
     private let upAngleThreshold: Double = 150.0
 
@@ -49,7 +49,7 @@ final class ElbowAngleStrategy: PushUpCountingStrategy {
             if smoothedAngle > upAngleThreshold {
                 let now = Date()
                 if let last = lastCountTime, now.timeIntervalSince(last) < minimumRepInterval {
-                    // Too soon after last count -- skip
+                    // Too soon after last count — skip
                 } else {
                     count += 1
                     lastCountTime = now

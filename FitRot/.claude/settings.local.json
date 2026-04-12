@@ -11,7 +11,10 @@
       "Bash(grep:*)",
       "WebFetch(domain:medium.com)",
       "WebFetch(domain:pedroesli.com)",
-      "WebFetch(domain:oboe.com)"
+      "WebFetch(domain:oboe.com)",
+      "WebFetch(domain:letvar.medium.com)",
+      "WebFetch(domain:crunchybagel.com)",
+      "WebFetch(domain:levelup.gitconnected.com)"
     ]
   }
 }

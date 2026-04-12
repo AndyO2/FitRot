@@ -78,7 +78,7 @@ struct UnlockView: View {
                 VStack(spacing: 12) {
                     Text("\(Int(selectedMinutes)) min")
                         .font(.system(size: 56, weight: .bold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.primaryText)
                         .contentTransition(.numericText())
 
                     Slider(value: $selectedMinutes, in: 1...30, step: 1)
@@ -206,7 +206,7 @@ private struct UnlockOptionCard: View {
                 } else {
                     Image(systemName: icon)
                         .font(.system(size: 24))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.primaryText)
                         .frame(width: 28, height: 28)
                 }
 

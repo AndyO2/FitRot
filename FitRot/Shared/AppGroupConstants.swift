@@ -32,4 +32,13 @@ enum AppGroupConstants {
 
     // DND warning
     static let dndWarningShownKey = "dndWarningShown"
+
+    // Appearance preference
+    static let appearanceModeKey = "appearanceMode"
+
+    // DeviceActivityReport dynamic height
+    static let reportContentHeightKey = "reportContentHeight"
+
+    // Onboarding
+    static let hasCompletedOnboardingKey = "hasCompletedOnboarding"
 }

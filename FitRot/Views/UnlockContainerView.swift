@@ -27,6 +27,7 @@ struct UnlockContainerView: View {
                 UnlockView(
                     onWorkoutSelected: { minutes in
                         nav.selectedUnlockMinutes = minutes
+                        nav.workoutMode = .unlockScreenTime
                         nav.showUnlock = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
                             nav.showWorkout = true

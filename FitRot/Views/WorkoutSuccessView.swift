@@ -4,6 +4,7 @@ import SwiftUI
 
 struct WorkoutSuccessView: View {
     let minutes: Int
+    var earnedCoins: Int? = nil
     var onDone: () -> Void
 
     var body: some View {
@@ -15,17 +16,23 @@ struct WorkoutSuccessView: View {
                 Spacer()
 
                 VStack(spacing: 16) {
-                    Image(systemName: "checkmark.circle.fill")
+                    Image(systemName: earnedCoins != nil ? "dollarsign.circle.fill" : "checkmark.circle.fill")
                         .font(.system(size: 64))
-                        .foregroundStyle(.green)
+                        .foregroundStyle(earnedCoins != nil ? .yellow : .green)
 
                     Text("Good Job!")
                         .font(.system(size: 34, weight: .bold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.primaryText)
 
-                    Text("Apps unlocked for \(minutes) \(minutes == 1 ? "minute" : "minutes")")
-                        .font(.body)
-                        .foregroundStyle(.secondaryText)
+                    if let coins = earnedCoins {
+                        Text("Earned \(coins) \(coins == 1 ? "coin" : "coins")!")
+                            .font(.body)
+                            .foregroundStyle(.secondaryText)
+                    } else {
+                        Text("Apps unlocked for \(minutes) \(minutes == 1 ? "minute" : "minutes")")
+                            .font(.body)
+                            .foregroundStyle(.secondaryText)
+                    }
                 }
 
                 Spacer()

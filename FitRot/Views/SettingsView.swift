@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import StoreKit
 
 #if canImport(FamilyControls)
 import FamilyControls
@@ -13,13 +14,49 @@ import FamilyControls
 struct SettingsView: View {
     @Environment(ScreenTimeAuthManager.self) private var authManager
     @Environment(AppLockService.self) private var lockService
-    @Environment(CoinManager.self) private var coinManager
+    @Environment(ThemeService.self) private var themeService
+    @Environment(\.requestReview) private var requestReview
     @State private var showDevCamera = false
 
+    @AppStorage(AppGroupConstants.hasCompletedOnboardingKey, store: AppGroupConstants.sharedDefaults)
+    private var hasCompletedOnboarding = false
+
     var body: some View {
+        @Bindable var themeService = themeService
         NavigationStack {
             List {
-                Section("Screen Time") {
+                Section("Appearance") {
+                    Toggle(isOn: $themeService.isDarkMode) {
+                        Label("Dark Mode", systemImage: "moon.fill")
+                    }
+                }
+
+                Section("General") {
+                    Link(destination: URL(string: "mailto:andy.okamoto@icloud.com")!) {
+                        Label("Support", systemImage: "questionmark.circle")
+                    }
+                    .foregroundStyle(.primaryText)
+
+                    Button {
+                        requestReview()
+                    } label: {
+                        Label("Leave a Review", systemImage: "star")
+                    }
+                    .foregroundStyle(.primaryText)
+
+                    Link(destination: URL(string: "https://emerald-farmer-d10.notion.site/FitRot-Privacy-Policy-33ea2a1fd302808da603f71808127d16")!) {
+                        Label("Privacy Policy", systemImage: "lock")
+                    }
+                    .foregroundStyle(.primaryText)
+
+                    Link(destination: URL(string: "https://emerald-farmer-d10.notion.site/FitRot-Terms-of-Service-33ea2a1fd30280c68a4cd620132e15d8")!) {
+                        Label("Terms of Service", systemImage: "doc.text")
+                    }
+                    .foregroundStyle(.primaryText)
+                }
+
+                #if DEBUG
+                Section("Developer") {
                     HStack {
                         Text("Authorization")
                         Spacer()
@@ -30,9 +67,7 @@ struct SettingsView: View {
                     if case .denied = authManager.status {
                         Link("Open Settings", destination: URL(string: UIApplication.openSettingsURLString)!)
                     }
-                }
 
-                Section("App Blocking") {
                     HStack {
                         Text("Status")
                         Spacer()
@@ -52,37 +87,24 @@ struct SettingsView: View {
                             lockService.disableBlocking()
                         }
                     }
-                }
 
-                Section("FitRot Coins") {
-                    HStack {
-                        Text("Balance")
-                        Spacer()
-                        HStack(spacing: 4) {
-                            Image(systemName: "bitcoinsign.circle.fill")
-                                .foregroundStyle(.yellow)
-                            Text("\(coinManager.balance)")
-                        }
-                        .foregroundStyle(.secondary)
-                    }
-                }
-
-                Section("About") {
-                    HStack {
-                        Text("Version")
-                        Spacer()
-                        Text(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0")
-                            .foregroundStyle(.secondary)
-                    }
-                }
-
-                #if DEBUG
-                Section("Developer") {
                     Button("Open Push-Up Camera") {
                         showDevCamera = true
                     }
+
+                    Button("Restart Onboarding") {
+                        hasCompletedOnboarding = false
+                    }
                 }
                 #endif
+
+                Text("Version \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0")")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
             }
             .fullScreenCover(isPresented: $showDevCamera) {
                 WorkoutView()

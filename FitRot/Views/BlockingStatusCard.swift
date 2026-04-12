@@ -30,7 +30,7 @@ struct BlockingStatusCard: View {
                 Text(statusTitle)
                     .font(.subheadline)
                     .fontWeight(.semibold)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primaryText)
 
                 Text(statusSubtitle)
                     .font(.caption)

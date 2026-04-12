@@ -11,28 +11,25 @@ import SwiftUI
 
 struct WorkoutView: View {
     @Environment(AppLockService.self) private var lockService
+    @Environment(CoinManager.self) private var coinManager
     @Environment(\.dismiss) private var dismiss
 
     var movementType: MovementType = .pushups
     var unlockMinutes: Int = 15
+    var mode: NavigationCoordinator.WorkoutMode = .unlockScreenTime
 
-    @State private var pushUpCounter: PushUpCounter
+    @State private var currentCount: Int = 0
     @State private var showCancelConfirmation = false
     @State private var showSuccess = false
     @State private var earnedMinutes = 0
+    @State private var earnedCoins = 0
     @State private var buttonScale: CGFloat = 1.0
 
-    init(movementType: MovementType = .pushups, unlockMinutes: Int = 15) {
-        self.movementType = movementType
-        self.unlockMinutes = unlockMinutes
-        _pushUpCounter = State(initialValue: PushUpCounter(strategyType: .elbowAngle, target: unlockMinutes))
-    }
-
-    private var count: Int { pushUpCounter.count }
+    private var count: Int { currentCount }
 
     var body: some View {
         if showSuccess {
-            WorkoutSuccessView(minutes: earnedMinutes) {
+            WorkoutSuccessView(minutes: earnedMinutes, earnedCoins: mode == .earnCoins ? earnedCoins : nil) {
                 dismiss()
             }
         } else {
@@ -46,7 +43,7 @@ struct WorkoutView: View {
             HStack {
                 Image(systemName: movementType.icon)
                     .font(.system(size: 22, weight: .semibold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primaryText)
 
                 Spacer()
 
@@ -57,7 +54,7 @@ struct WorkoutView: View {
                         .frame(width: 28, height: 28)
                     Text("Fitrot")
                         .font(.system(size: 18, weight: .bold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.primaryText)
                 }
 
                 Spacer()
@@ -78,8 +75,13 @@ struct WorkoutView: View {
             .padding(.bottom, 12)
 
             // MARK: - Camera
-            PushUpCameraView(pushUpCounter: pushUpCounter)
-                .padding(.horizontal, 12)
+            ExerciseCameraView(
+                config: movementType.cameraConfig,
+                target: unlockMinutes,
+                onCountChanged: { currentCount = $0 },
+                onComplete: { _ in finishWorkout() }
+            )
+            .padding(.horizontal, 12)
 
             Spacer()
 
@@ -103,7 +105,7 @@ struct WorkoutView: View {
             }
         } message: {
             if count > 0 {
-                Text("You've done \(count) \(count == 1 ? "pushup" : "pushups"). Quitting will lose your progress.")
+                Text("You've done \(count) \(movementType.repLabel(for: count)). Quitting will lose your progress.")
             } else {
                 Text("You'll lose your progress and apps will stay blocked.")
             }
@@ -120,7 +122,7 @@ struct WorkoutView: View {
                 } label: {
                     Text("Cancel")
                         .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.brandAccent)
                         .frame(maxWidth: .infinity)
                         .frame(height: 50)
                         .background(
@@ -135,7 +137,7 @@ struct WorkoutView: View {
                 } label: {
                     HStack(spacing: 6) {
                         Text("Redeem")
-                        Text("\(count) \(count == 1 ? "pushup" : "pushups")")
+                        Text("\(count) \(movementType.repLabel(for: count))")
                             .contentTransition(.numericText())
                     }
                     .font(.system(size: 17, weight: .semibold))
@@ -155,8 +157,14 @@ struct WorkoutView: View {
     }
 
     private func finishWorkout() {
-        earnedMinutes = count
-        try? lockService.unlockFromWorkout(minutes: earnedMinutes)
+        earnedMinutes = currentCount
+        switch mode {
+        case .earnCoins:
+            earnedCoins = Int(Double(count) * movementType.coinsPerRep)
+            coinManager.earn(earnedCoins)
+        case .unlockScreenTime:
+            try? lockService.unlockFromWorkout(minutes: earnedMinutes)
+        }
         withAnimation {
             showSuccess = true
         }
@@ -166,6 +174,7 @@ struct WorkoutView: View {
 #Preview {
     WorkoutView()
         .environment(AppLockService())
+        .environment(CoinManager())
 }
 
 #endif

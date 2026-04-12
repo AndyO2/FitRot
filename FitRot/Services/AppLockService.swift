@@ -133,14 +133,14 @@ final class AppLockService {
         let schedule = DeviceActivitySchedule(
             intervalStart: startComponents,
             intervalEnd: endComponents,
-            repeats: false  // ensures system sees interval as active; extension stops after first fire
+            repeats: true
         )
 
         center.stopMonitoring([Self.unlockActivityName])
         do {
             try center.startMonitoring(Self.unlockActivityName, during: schedule)
         } catch {
-            print("[FitRot] DeviceActivity monitor not set for short schedule: \(error.localizedDescription)")
+            print("[FitRot] DeviceActivity monitor error: \(error.localizedDescription)")
         }
         scheduleReblockTimer(at: unlockEnd)
     }

@@ -27,7 +27,7 @@ struct MainTabView: View {
             }
         }
         .fullScreenCover(isPresented: $nav.showWorkout) {
-            WorkoutView(movementType: nav.selectedMovement, unlockMinutes: nav.selectedUnlockMinutes)
+            WorkoutView(movementType: nav.selectedMovement, unlockMinutes: nav.selectedUnlockMinutes, mode: nav.workoutMode)
         }
         .fullScreenCover(isPresented: $nav.showUnlock) {
             UnlockContainerView()

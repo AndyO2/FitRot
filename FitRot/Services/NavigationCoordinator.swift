@@ -11,10 +11,16 @@ import SwiftUI
 
 @Observable
 final class NavigationCoordinator {
+    enum WorkoutMode {
+        case earnCoins
+        case unlockScreenTime
+    }
+
     var showWorkout = false
     var showUnlock = false
     var selectedMovement: MovementType = .pushups
     var selectedUnlockMinutes: Int = 15
+    var workoutMode: WorkoutMode = .unlockScreenTime
 
     private let defaults = AppGroupConstants.sharedDefaults
 
@@ -54,6 +60,7 @@ final class NavigationCoordinator {
 
     func startWorkout(for movement: MovementType) {
         selectedMovement = movement
+        workoutMode = .earnCoins
         showWorkout = true
     }
 
