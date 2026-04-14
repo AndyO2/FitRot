@@ -299,17 +299,23 @@ enum OnboardingData {
             subtitle: String(localized: "Reminders make it 65% more likely to stick to FitRot after a week.")
         ),
 //        TODO: Try out favorite exercise from below! (pushups + squats) selection only
+        //        .info(
+        //            id: "try_exercise",
+        //            text: String(localized: "Try out your favourite Exercise from below!"),
+        //            subtitle: String(localized: "You can also skip this"),
+        //            buttonText: String(localized: "Try Later")
+        //        ),
         .videoDemo(
-            id: "setup_demo",
+            id: "setup",
             text: String(localized: "Setup"),
             subtitle: String(localized: "Place your phone on the floor facing you in a well-lit area."),
-            videoName: "setup_demo"
+            videoName: "setup"
         ),
         .videoDemo(
-            id: "setup_demo",
+            id: "pushup",
             text: String(localized: "Push-ups"),
             subtitle: String(localized: "Put your entire body in frame and exercise like in the video!"),
-            videoName: "pushup_demo"
+            videoName: "pushup"
         ),
         .info(id: "tips_for_better_detection", text: String(localized: "Tips for better detection")),
 //        TODO: live demonstration with camera (CTA: try later)
@@ -322,12 +328,6 @@ enum OnboardingData {
                 String(localized: "3-5 times per week"),
                 String(localized: "Every day"),
             ]
-        ),
-        .info(
-            id: "try_exercise",
-            text: String(localized: "Try out your favourite Exercise from below!"),
-            subtitle: String(localized: "You can also skip this"),
-            buttonText: String(localized: "Try Later")
         ),
         .info(id: "finish_setup_typing", text: "Let's finish setting up FitRot to help you succeed.", buttonText: "Set Up"),
         .info(id: "screen_time_permission", text: "Connect FitRot to Screen Time, Securely.", subtitle: "To analyze your Screen Time on this iPhone, FitRot will need your permission"),

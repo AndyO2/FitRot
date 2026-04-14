@@ -82,11 +82,21 @@ struct VideoDemoView: View {
         }
         .onAppear { setupPlayer() }
         .onDisappear { tearDownPlayer() }
+        .onChange(of: videoName) { _, _ in
+            tearDownPlayer()
+            setupPlayer()
+        }
     }
 
     private func setupPlayer() {
-        guard let url = Bundle.main.url(forResource: videoName, withExtension: "mp4") else { return }
-        let item = AVPlayerItem(url: url)
+        guard let url = Bundle.main.url(forResource: videoName, withExtension: "mov") else { return }
+        let asset = AVURLAsset(url: url)
+        let item = AVPlayerItem(asset: asset)
+        let composition = AVMutableVideoComposition(propertiesOf: asset)
+        composition.colorPrimaries = AVVideoColorPrimaries_ITU_R_709_2
+        composition.colorYCbCrMatrix = AVVideoYCbCrMatrix_ITU_R_709_2
+        composition.colorTransferFunction = AVVideoTransferFunction_ITU_R_709_2
+        item.videoComposition = composition
         let queuePlayer = AVQueuePlayer(playerItem: item)
         queuePlayer.isMuted = true
         let playerLooper = AVPlayerLooper(player: queuePlayer, templateItem: item)
