@@ -10,16 +10,152 @@
 		61D9401A2F8EDDBA005D033A /* SuperwallKit in Frameworks */ = {isa = PBXBuildFile; productRef = 61D940192F8EDDBA005D033A /* SuperwallKit */; };
 		61D9401D2F8EDDCE005D033A /* Mixpanel in Frameworks */ = {isa = PBXBuildFile; productRef = 61D9401C2F8EDDCE005D033A /* Mixpanel */; };
 		61D940202F8EDDE4005D033A /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 61D9401F2F8EDDE4005D033A /* Lottie */; };
+		61D940322F8EF29F005D033A /* DeviceActivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61D940312F8EF29F005D033A /* DeviceActivity.framework */; };
+		61D9403A2F8EF29F005D033A /* FitRotDeviceActivity.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 61D9402F2F8EF29F005D033A /* FitRotDeviceActivity.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		61D940462F8EF2C7005D033A /* ManagedSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61D940452F8EF2C7005D033A /* ManagedSettings.framework */; };
+		61D940482F8EF2C7005D033A /* ManagedSettingsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61D940472F8EF2C7005D033A /* ManagedSettingsUI.framework */; };
+		61D940502F8EF2C7005D033A /* FitRotShieldConfiguration.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 61D940442F8EF2C7005D033A /* FitRotShieldConfiguration.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		61D9405C2F8EF2F0005D033A /* ManagedSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61D940452F8EF2C7005D033A /* ManagedSettings.framework */; };
+		61D940642F8EF2F0005D033A /* ShieldActionExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 61D9405B2F8EF2F0005D033A /* ShieldActionExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		61D940792F8EF307005D033A /* FitRotReport.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = 61D9406D2F8EF307005D033A /* FitRotReport.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		61D940382F8EF29F005D033A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 615FAE932F8436460020164D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 61D9402E2F8EF29F005D033A;
+			remoteInfo = FitRotDeviceActivity;
+		};
+		61D9404E2F8EF2C7005D033A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 615FAE932F8436460020164D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 61D940432F8EF2C7005D033A;
+			remoteInfo = FitRotShieldConfiguration;
+		};
+		61D940622F8EF2F0005D033A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 615FAE932F8436460020164D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 61D9405A2F8EF2F0005D033A;
+			remoteInfo = ShieldActionExtension;
+		};
+		61D940772F8EF307005D033A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 615FAE932F8436460020164D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 61D9406C2F8EF307005D033A;
+			remoteInfo = FitRotReport;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		61D9403F2F8EF29F005D033A /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				61D940502F8EF2C7005D033A /* FitRotShieldConfiguration.appex in Embed Foundation Extensions */,
+				61D9403A2F8EF29F005D033A /* FitRotDeviceActivity.appex in Embed Foundation Extensions */,
+				61D940642F8EF2F0005D033A /* ShieldActionExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61D9407E2F8EF307005D033A /* Embed ExtensionKit Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(EXTENSIONS_FOLDER_PATH)";
+			dstSubfolderSpec = 16;
+			files = (
+				61D940792F8EF307005D033A /* FitRotReport.appex in Embed ExtensionKit Extensions */,
+			);
+			name = "Embed ExtensionKit Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		615FAE9B2F8436460020164D /* FitRot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FitRot.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		61D9402F2F8EF29F005D033A /* FitRotDeviceActivity.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FitRotDeviceActivity.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		61D940312F8EF29F005D033A /* DeviceActivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DeviceActivity.framework; path = System/Library/Frameworks/DeviceActivity.framework; sourceTree = SDKROOT; };
+		61D940442F8EF2C7005D033A /* FitRotShieldConfiguration.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FitRotShieldConfiguration.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		61D940452F8EF2C7005D033A /* ManagedSettings.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ManagedSettings.framework; path = System/Library/Frameworks/ManagedSettings.framework; sourceTree = SDKROOT; };
+		61D940472F8EF2C7005D033A /* ManagedSettingsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ManagedSettingsUI.framework; path = Library/Frameworks/ManagedSettingsUI.framework; sourceTree = DEVELOPER_DIR; };
+		61D9405B2F8EF2F0005D033A /* ShieldActionExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShieldActionExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		61D9406D2F8EF307005D033A /* FitRotReport.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; includeInIndex = 0; path = FitRotReport.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		61D9403B2F8EF29F005D033A /* Exceptions for "FitRotDeviceActivity" folder in "FitRotDeviceActivity" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 61D9402E2F8EF29F005D033A /* FitRotDeviceActivity */;
+		};
+		61D940512F8EF2C7005D033A /* Exceptions for "FitRotShieldConfiguration" folder in "FitRotShieldConfiguration" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 61D940432F8EF2C7005D033A /* FitRotShieldConfiguration */;
+		};
+		61D940652F8EF2F0005D033A /* Exceptions for "ShieldActionExtension" folder in "ShieldActionExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 61D9405A2F8EF2F0005D033A /* ShieldActionExtension */;
+		};
+		61D9407A2F8EF307005D033A /* Exceptions for "FitRotReport" folder in "FitRotReport" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 61D9406C2F8EF307005D033A /* FitRotReport */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		615FAE9D2F8436460020164D /* FitRot */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = FitRot;
+			sourceTree = "<group>";
+		};
+		61D940332F8EF29F005D033A /* FitRotDeviceActivity */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				61D9403B2F8EF29F005D033A /* Exceptions for "FitRotDeviceActivity" folder in "FitRotDeviceActivity" target */,
+			);
+			path = FitRotDeviceActivity;
+			sourceTree = "<group>";
+		};
+		61D940492F8EF2C7005D033A /* FitRotShieldConfiguration */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				61D940512F8EF2C7005D033A /* Exceptions for "FitRotShieldConfiguration" folder in "FitRotShieldConfiguration" target */,
+			);
+			path = FitRotShieldConfiguration;
+			sourceTree = "<group>";
+		};
+		61D9405D2F8EF2F0005D033A /* ShieldActionExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				61D940652F8EF2F0005D033A /* Exceptions for "ShieldActionExtension" folder in "ShieldActionExtension" target */,
+			);
+			path = ShieldActionExtension;
+			sourceTree = "<group>";
+		};
+		61D9406E2F8EF307005D033A /* FitRotReport */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				61D9407A2F8EF307005D033A /* Exceptions for "FitRotReport" folder in "FitRotReport" target */,
+			);
+			path = FitRotReport;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -35,6 +171,38 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		61D9402C2F8EF29F005D033A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				61D940322F8EF29F005D033A /* DeviceActivity.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61D940412F8EF2C7005D033A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				61D940462F8EF2C7005D033A /* ManagedSettings.framework in Frameworks */,
+				61D940482F8EF2C7005D033A /* ManagedSettingsUI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61D940582F8EF2F0005D033A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				61D9405C2F8EF2F0005D033A /* ManagedSettings.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61D9406A2F8EF307005D033A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -42,6 +210,11 @@
 			isa = PBXGroup;
 			children = (
 				615FAE9D2F8436460020164D /* FitRot */,
+				61D940332F8EF29F005D033A /* FitRotDeviceActivity */,
+				61D940492F8EF2C7005D033A /* FitRotShieldConfiguration */,
+				61D9405D2F8EF2F0005D033A /* ShieldActionExtension */,
+				61D9406E2F8EF307005D033A /* FitRotReport */,
+				61D940302F8EF29F005D033A /* Frameworks */,
 				615FAE9C2F8436460020164D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -50,8 +223,22 @@
 			isa = PBXGroup;
 			children = (
 				615FAE9B2F8436460020164D /* FitRot.app */,
+				61D9402F2F8EF29F005D033A /* FitRotDeviceActivity.appex */,
+				61D940442F8EF2C7005D033A /* FitRotShieldConfiguration.appex */,
+				61D9405B2F8EF2F0005D033A /* ShieldActionExtension.appex */,
+				61D9406D2F8EF307005D033A /* FitRotReport.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		61D940302F8EF29F005D033A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				61D940312F8EF29F005D033A /* DeviceActivity.framework */,
+				61D940452F8EF2C7005D033A /* ManagedSettings.framework */,
+				61D940472F8EF2C7005D033A /* ManagedSettingsUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -64,10 +251,16 @@
 				615FAE972F8436460020164D /* Sources */,
 				615FAE982F8436460020164D /* Frameworks */,
 				615FAE992F8436460020164D /* Resources */,
+				61D9403F2F8EF29F005D033A /* Embed Foundation Extensions */,
+				61D9407E2F8EF307005D033A /* Embed ExtensionKit Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				61D940392F8EF29F005D033A /* PBXTargetDependency */,
+				61D9404F2F8EF2C7005D033A /* PBXTargetDependency */,
+				61D940632F8EF2F0005D033A /* PBXTargetDependency */,
+				61D940782F8EF307005D033A /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				615FAE9D2F8436460020164D /* FitRot */,
@@ -82,6 +275,94 @@
 			productReference = 615FAE9B2F8436460020164D /* FitRot.app */;
 			productType = "com.apple.product-type.application";
 		};
+		61D9402E2F8EF29F005D033A /* FitRotDeviceActivity */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 61D9403C2F8EF29F005D033A /* Build configuration list for PBXNativeTarget "FitRotDeviceActivity" */;
+			buildPhases = (
+				61D9402B2F8EF29F005D033A /* Sources */,
+				61D9402C2F8EF29F005D033A /* Frameworks */,
+				61D9402D2F8EF29F005D033A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				61D940332F8EF29F005D033A /* FitRotDeviceActivity */,
+			);
+			name = FitRotDeviceActivity;
+			packageProductDependencies = (
+			);
+			productName = FitRotDeviceActivity;
+			productReference = 61D9402F2F8EF29F005D033A /* FitRotDeviceActivity.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		61D940432F8EF2C7005D033A /* FitRotShieldConfiguration */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 61D940522F8EF2C7005D033A /* Build configuration list for PBXNativeTarget "FitRotShieldConfiguration" */;
+			buildPhases = (
+				61D940402F8EF2C7005D033A /* Sources */,
+				61D940412F8EF2C7005D033A /* Frameworks */,
+				61D940422F8EF2C7005D033A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				61D940492F8EF2C7005D033A /* FitRotShieldConfiguration */,
+			);
+			name = FitRotShieldConfiguration;
+			packageProductDependencies = (
+			);
+			productName = FitRotShieldConfiguration;
+			productReference = 61D940442F8EF2C7005D033A /* FitRotShieldConfiguration.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		61D9405A2F8EF2F0005D033A /* ShieldActionExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 61D940662F8EF2F0005D033A /* Build configuration list for PBXNativeTarget "ShieldActionExtension" */;
+			buildPhases = (
+				61D940572F8EF2F0005D033A /* Sources */,
+				61D940582F8EF2F0005D033A /* Frameworks */,
+				61D940592F8EF2F0005D033A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				61D9405D2F8EF2F0005D033A /* ShieldActionExtension */,
+			);
+			name = ShieldActionExtension;
+			packageProductDependencies = (
+			);
+			productName = ShieldActionExtension;
+			productReference = 61D9405B2F8EF2F0005D033A /* ShieldActionExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		61D9406C2F8EF307005D033A /* FitRotReport */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 61D9407B2F8EF307005D033A /* Build configuration list for PBXNativeTarget "FitRotReport" */;
+			buildPhases = (
+				61D940692F8EF307005D033A /* Sources */,
+				61D9406A2F8EF307005D033A /* Frameworks */,
+				61D9406B2F8EF307005D033A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				61D9406E2F8EF307005D033A /* FitRotReport */,
+			);
+			name = FitRotReport;
+			packageProductDependencies = (
+			);
+			productName = FitRotReport;
+			productReference = 61D9406D2F8EF307005D033A /* FitRotReport.appex */;
+			productType = "com.apple.product-type.extensionkit-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -89,11 +370,23 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2630;
+				LastSwiftUpdateCheck = 2640;
 				LastUpgradeCheck = 2630;
 				TargetAttributes = {
 					615FAE9A2F8436460020164D = {
 						CreatedOnToolsVersion = 26.3;
+					};
+					61D9402E2F8EF29F005D033A = {
+						CreatedOnToolsVersion = 26.4;
+					};
+					61D940432F8EF2C7005D033A = {
+						CreatedOnToolsVersion = 26.4;
+					};
+					61D9405A2F8EF2F0005D033A = {
+						CreatedOnToolsVersion = 26.4;
+					};
+					61D9406C2F8EF307005D033A = {
+						CreatedOnToolsVersion = 26.4;
 					};
 				};
 			};
@@ -117,12 +410,44 @@
 			projectRoot = "";
 			targets = (
 				615FAE9A2F8436460020164D /* FitRot */,
+				61D9402E2F8EF29F005D033A /* FitRotDeviceActivity */,
+				61D940432F8EF2C7005D033A /* FitRotShieldConfiguration */,
+				61D9405A2F8EF2F0005D033A /* ShieldActionExtension */,
+				61D9406C2F8EF307005D033A /* FitRotReport */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		615FAE992F8436460020164D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61D9402D2F8EF29F005D033A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61D940422F8EF2C7005D033A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61D940592F8EF2F0005D033A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61D9406B2F8EF307005D033A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -139,7 +464,58 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		61D9402B2F8EF29F005D033A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61D940402F8EF2C7005D033A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61D940572F8EF2F0005D033A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		61D940692F8EF307005D033A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		61D940392F8EF29F005D033A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 61D9402E2F8EF29F005D033A /* FitRotDeviceActivity */;
+			targetProxy = 61D940382F8EF29F005D033A /* PBXContainerItemProxy */;
+		};
+		61D9404F2F8EF2C7005D033A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 61D940432F8EF2C7005D033A /* FitRotShieldConfiguration */;
+			targetProxy = 61D9404E2F8EF2C7005D033A /* PBXContainerItemProxy */;
+		};
+		61D940632F8EF2F0005D033A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 61D9405A2F8EF2F0005D033A /* ShieldActionExtension */;
+			targetProxy = 61D940622F8EF2F0005D033A /* PBXContainerItemProxy */;
+		};
+		61D940782F8EF307005D033A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 61D9406C2F8EF307005D033A /* FitRotReport */;
+			targetProxy = 61D940772F8EF307005D033A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		615FAEA42F8436480020164D /* Debug */ = {
@@ -346,6 +722,258 @@
 			};
 			name = Release;
 		};
+		61D9403D2F8EF29F005D033A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = FitRotDeviceActivity/FitRotDeviceActivity.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AH7UGRBNUY;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FitRotDeviceActivity/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FitRotDeviceActivity;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.WinToday.FitRot.FitRotDeviceActivity;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		61D9403E2F8EF29F005D033A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = FitRotDeviceActivity/FitRotDeviceActivity.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AH7UGRBNUY;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FitRotDeviceActivity/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FitRotDeviceActivity;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.WinToday.FitRot.FitRotDeviceActivity;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		61D940532F8EF2C7005D033A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = FitRotShieldConfiguration/FitRotShieldConfiguration.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AH7UGRBNUY;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FitRotShieldConfiguration/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FitRotShieldConfiguration;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.WinToday.FitRot.FitRotShieldConfiguration;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		61D940542F8EF2C7005D033A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = FitRotShieldConfiguration/FitRotShieldConfiguration.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AH7UGRBNUY;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FitRotShieldConfiguration/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FitRotShieldConfiguration;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.WinToday.FitRot.FitRotShieldConfiguration;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		61D940672F8EF2F0005D033A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = ShieldActionExtension/ShieldActionExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AH7UGRBNUY;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShieldActionExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ShieldActionExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.WinToday.FitRot.ShieldActionExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		61D940682F8EF2F0005D033A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = ShieldActionExtension/ShieldActionExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AH7UGRBNUY;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShieldActionExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ShieldActionExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.WinToday.FitRot.ShieldActionExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		61D9407C2F8EF307005D033A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = FitRotReport/FitRotReport.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AH7UGRBNUY;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FitRotReport/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FitRotReport;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.WinToday.FitRot.FitRotReport;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		61D9407D2F8EF307005D033A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = FitRotReport/FitRotReport.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AH7UGRBNUY;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FitRotReport/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FitRotReport;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.WinToday.FitRot.FitRotReport;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -363,6 +991,42 @@
 			buildConfigurations = (
 				615FAEA72F8436480020164D /* Debug */,
 				615FAEA82F8436480020164D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		61D9403C2F8EF29F005D033A /* Build configuration list for PBXNativeTarget "FitRotDeviceActivity" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				61D9403D2F8EF29F005D033A /* Debug */,
+				61D9403E2F8EF29F005D033A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		61D940522F8EF2C7005D033A /* Build configuration list for PBXNativeTarget "FitRotShieldConfiguration" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				61D940532F8EF2C7005D033A /* Debug */,
+				61D940542F8EF2C7005D033A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		61D940662F8EF2F0005D033A /* Build configuration list for PBXNativeTarget "ShieldActionExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				61D940672F8EF2F0005D033A /* Debug */,
+				61D940682F8EF2F0005D033A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		61D9407B2F8EF307005D033A /* Build configuration list for PBXNativeTarget "FitRotReport" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				61D9407C2F8EF307005D033A /* Debug */,
+				61D9407D2F8EF307005D033A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
