@@ -27,6 +27,8 @@ struct ScreenTimePermissionView: View {
             }
             .padding(.horizontal, 20)
             .padding(.top, 12)
+            
+            Spacer()
 
             // Title
             Text("Connect FitRot to Screen Time, Securely.")
@@ -65,7 +67,7 @@ struct ScreenTimePermissionView: View {
                 HStack(spacing: 0) {
                     Text("Continue")
                         .font(.system(size: 17))
-                        .foregroundStyle(Color(.systemGray))
+                        .foregroundStyle(Color(.blue))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
 
@@ -74,7 +76,7 @@ struct ScreenTimePermissionView: View {
 
                     Text("Don't Allow")
                         .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(.blue)
+                        .foregroundStyle(Color(.systemGray))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
                 }
@@ -98,7 +100,7 @@ struct ScreenTimePermissionView: View {
             HStack(spacing: 0) {
                 Image(systemName: "arrow.up")
                     .font(.system(size: 28, weight: .medium))
-                    .foregroundStyle(.blue.opacity(0.6))
+                    .foregroundStyle(.blue)
                     .frame(maxWidth: .infinity)  // centers in left half
 
                 Spacer()
@@ -120,4 +122,13 @@ struct ScreenTimePermissionView: View {
         .background(Color(.systemGroupedBackground))
     }
 }
+
+//#Preview {
+//    ScreenTimePermissionView(
+//        onComplete: { },
+//        onBack: {  }
+//    )
+//}
 #endif
+
+

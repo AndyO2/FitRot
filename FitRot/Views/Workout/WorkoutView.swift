@@ -68,7 +68,7 @@ struct WorkoutView: View {
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(.white)
                         .frame(width: 32, height: 32)
-                        .background(Color.buttonBackground)
+                        .background(Color.black)
                         .clipShape(Circle())
                 }
             }
