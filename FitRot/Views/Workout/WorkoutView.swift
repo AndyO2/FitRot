@@ -5,6 +5,7 @@
 //  Created by Andy Okamoto on 4/7/26.
 //
 
+import AVFoundation
 import SwiftUI
 
 #if canImport(FamilyControls)
@@ -25,6 +26,7 @@ struct WorkoutView: View {
     @State private var earnedMinutes = 0
     @State private var earnedCoins = 0
     @State private var buttonScale: CGFloat = 1.0
+    @State private var coinPlayer: AVAudioPlayer?
 
     private var count: Int { currentCount }
 
@@ -92,6 +94,8 @@ struct WorkoutView: View {
                 .padding(.horizontal, 20)
                 .padding(.bottom, 16)
                 .onChange(of: count) {
+                    coinPlayer?.currentTime = 0
+                    coinPlayer?.play()
                     buttonScale = 1.12
                     withAnimation(.spring(duration: 0.3, bounce: 0.5)) {
                         buttonScale = 1.0
@@ -103,6 +107,12 @@ struct WorkoutView: View {
             WorkoutHelpView(movementType: movementType)
         }
         .interactiveDismissDisabled()
+        .onAppear {
+            if let url = Bundle.main.url(forResource: "coin", withExtension: "wav") {
+                coinPlayer = try? AVAudioPlayer(contentsOf: url)
+                coinPlayer?.prepareToPlay()
+            }
+        }
     }
 
     @ViewBuilder

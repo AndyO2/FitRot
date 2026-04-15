@@ -2,20 +2,24 @@
 //  FitRotReport.swift
 //  FitRotReport
 //
-//  Created by Andy Okamoto on 4/14/26.
-//
 
 import DeviceActivity
 import ExtensionKit
 import SwiftUI
 
+#if os(iOS)
 @main
 struct FitRotReport: DeviceActivityReportExtension {
     var body: some DeviceActivityReportScene {
-        // Create a report for each DeviceActivityReport.Context that your app supports.
-        TotalActivityReport { totalActivity in
-            TotalActivityView(totalActivity: totalActivity)
+        ScreenTimeDashboardReport { configuration in
+            ScreenTimeDashboardView(configuration: configuration)
         }
-        // Add more reports here...
+        PickupsReport { configuration in
+            PickupsView(configuration: configuration)
+        }
+        MostUsedAppsReport { configuration in
+            MostUsedAppsView(configuration: configuration)
+        }
     }
 }
+#endif

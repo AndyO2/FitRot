@@ -2,33 +2,72 @@
 //  ScreenTimeDashboardCard.swift
 //  FitRot
 //
-//  Created by Andy Okamoto on 4/9/26.
-//
 
-import Charts
 import SwiftUI
 
 #if canImport(FamilyControls)
+import DeviceActivity
+import FamilyControls
+
+extension DeviceActivityReport.Context {
+    static let screenTimeDashboard = Self("Screen Time Dashboard")
+}
 
 struct ScreenTimeDashboardCard: View {
-    @State private var selectedRange: RangeOption = .weekly
-    private let data = ScreenTimeDashboardData.placeholder
+    @State private var weekOffset: Int = 0
+    @State private var contentHeight: CGFloat = 540
+    @State private var lastUpdated: Date? = nil
 
-    enum RangeOption: String, CaseIterable {
-        case daily = "Daily"
-        case weekly = "Weekly"
+    private var currentWeekStart: Date {
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: .now)
+        let weekday = cal.component(.weekday, from: today)
+        let offsetToStart = (weekday - cal.firstWeekday + 7) % 7
+        let thisWeekStart = cal.date(byAdding: .day, value: -offsetToStart, to: today) ?? today
+        return cal.date(byAdding: .day, value: 7 * weekOffset, to: thisWeekStart) ?? thisWeekStart
+    }
+
+    private var currentWeekEnd: Date {
+        let cal = Calendar.current
+        let end = cal.date(byAdding: .day, value: 7, to: currentWeekStart) ?? currentWeekStart
+        return min(end, Date())
+    }
+
+    private var priorWeekStart: Date {
+        Calendar.current.date(byAdding: .day, value: -7, to: currentWeekStart) ?? currentWeekStart
+    }
+
+    private var filter: DeviceActivityFilter {
+        DeviceActivityFilter(
+            segment: .daily(during: DateInterval(start: priorWeekStart, end: currentWeekEnd))
+        )
+    }
+
+    private var weekLabel: String {
+        let cal = Calendar.current
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM d"
+        let displayEnd = cal.date(byAdding: .day, value: 6, to: currentWeekStart) ?? currentWeekEnd
+        return "\(formatter.string(from: currentWeekStart)) – \(formatter.string(from: displayEnd))"
+    }
+
+    private var formattedLastUpdated: String {
+        guard let lastUpdated else { return "—" }
+        let cal = Calendar.current
+        let formatter = DateFormatter()
+        if cal.isDateInToday(lastUpdated) {
+            formatter.dateFormat = "'Today,' HH:mm"
+        } else {
+            formatter.dateFormat = "MMM d, HH:mm"
+        }
+        return formatter.string(from: lastUpdated)
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            DashboardSegmentedPicker(selection: $selectedRange)
-            DashboardAverageHeader(
-                averageDuration: data.averageDuration,
-                changePercentage: data.changePercentage
-            )
-            DashboardBarChart(days: data.days)
-            DashboardCategoryGrid(categories: data.topCategories)
-            DashboardFooter(lastUpdated: data.lastUpdated)
+            weekNavHeader
+            DeviceActivityReport(.screenTimeDashboard, filter: filter)
+                .frame(height: contentHeight)
         }
         .padding()
         .background(Color.cardSurface, in: RoundedRectangle(cornerRadius: 16))
@@ -36,212 +75,93 @@ struct ScreenTimeDashboardCard: View {
             RoundedRectangle(cornerRadius: 16)
                 .stroke(Color.cardBorder, lineWidth: 1)
         )
-    }
-}
-
-// MARK: - Segmented Picker
-
-private struct DashboardSegmentedPicker: View {
-    @Binding var selection: ScreenTimeDashboardCard.RangeOption
-
-    var body: some View {
-        Picker("Range", selection: $selection) {
-            ForEach(ScreenTimeDashboardCard.RangeOption.allCases, id: \.self) { option in
-                Text(option.rawValue).tag(option)
-            }
+        .onAppear {
+            writeBoundary()
+            hydrateFromAppGroup()
         }
-        .pickerStyle(.segmented)
-    }
-}
-
-// MARK: - Average Header
-
-private struct DashboardAverageHeader: View {
-    let averageDuration: TimeInterval
-    let changePercentage: Double
-
-    private var changeColor: Color {
-        changePercentage < 0 ? .green : .red
-    }
-
-    private var changeIcon: String {
-        changePercentage < 0 ? "arrow.down.right" : "arrow.up.right"
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text("Daily Average")
-                .font(.caption)
-                .foregroundStyle(.secondaryText)
-
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Text(formattedDuration(averageDuration))
-                    .font(.system(size: 28, weight: .bold))
-                    .foregroundStyle(.primaryText)
-
-                HStack(spacing: 2) {
-                    Image(systemName: changeIcon)
-                        .font(.caption2)
-                    Text(String(format: "%.2f%%", abs(changePercentage)))
-                        .font(.caption)
-                        .fontWeight(.medium)
-                }
-                .foregroundStyle(changeColor)
-                .padding(.horizontal, 6)
-                .padding(.vertical, 3)
-                .background(
-                    changeColor.opacity(0.15),
-                    in: Capsule()
-                )
-            }
+        .onChange(of: weekOffset) {
+            writeBoundary()
+        }
+        .task(id: weekOffset) {
+            await pollAppGroup()
         }
     }
 
-    private func formattedDuration(_ duration: TimeInterval) -> String {
-        let hours = Int(duration) / 3600
-        let minutes = (Int(duration) % 3600) / 60
-        return "\(hours)h \(minutes)m"
-    }
-}
-
-// MARK: - Bar Chart
-
-private struct DashboardBarChart: View {
-    let days: [ScreenTimeDayUsage]
-
-    private var chartContent: some ChartContent {
-        ForEach(days) { day in
-            ForEach(day.categories) { category in
-                BarMark(
-                    x: .value("Day", day.date, unit: .day),
-                    y: .value("Hours", category.duration / 3600)
-                )
-                .foregroundStyle(by: .value("Category", category.name))
-                .cornerRadius(3)
+    private var weekNavHeader: some View {
+        HStack(spacing: 0) {
+            Button {
+                weekOffset -= 1
+            } label: {
+                Image(systemName: "chevron.left")
+                    .font(.title3.weight(.semibold))
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
             }
-        }
-    }
-
-    private var xAxisContent: some AxisContent {
-        AxisMarks(values: .stride(by: .day)) { _ in
-            AxisValueLabel(format: .dateTime.weekday(.narrow))
-                .foregroundStyle(.secondaryText)
-        }
-    }
-
-    private var yAxisContent: some AxisContent {
-        AxisMarks { value in
-            AxisGridLine()
-                .foregroundStyle(Color.cardBorder)
-            AxisValueLabel {
-                if let hours = value.as(Double.self) {
-                    Text("\(Int(hours))h")
-                        .foregroundStyle(.secondaryText)
-                }
-            }
-        }
-    }
-
-    var body: some View {
-        Chart { chartContent }
-            .chartForegroundStyleScale(categoryColorMapping)
-            .chartXAxis { xAxisContent }
-            .chartYAxis { yAxisContent }
-            .chartLegend(.hidden)
-            .frame(height: 180)
-    }
-
-    private var categoryColorMapping: KeyValuePairs<String, Color> {
-        [
-            "Social": CategoryColorHelper.color(for: "Social"),
-            "Entertainment": CategoryColorHelper.color(for: "Entertainment"),
-            "Productivity": CategoryColorHelper.color(for: "Productivity"),
-            "Finance": CategoryColorHelper.color(for: "Finance"),
-        ]
-    }
-}
-
-// MARK: - Category Grid
-
-private struct DashboardCategoryGrid: View {
-    let categories: [ScreenTimeCategoryUsage]
-
-    private let columns = [
-        GridItem(.flexible(), spacing: 12),
-        GridItem(.flexible(), spacing: 12),
-    ]
-
-    var body: some View {
-        LazyVGrid(columns: columns, spacing: 12) {
-            ForEach(categories.prefix(4)) { category in
-                categoryRow(category)
-            }
-        }
-    }
-
-    @ViewBuilder
-    private func categoryRow(_ category: ScreenTimeCategoryUsage) -> some View {
-        let color = CategoryColorHelper.color(for: category.name)
-        HStack(spacing: 8) {
-            Image(systemName: CategoryColorHelper.icon(for: category.name))
-                .font(.caption)
-                .foregroundStyle(color)
-                .frame(width: 24, height: 24)
-                .background(
-                    color.opacity(0.15),
-                    in: RoundedRectangle(cornerRadius: 6)
-                )
-
-            VStack(alignment: .leading, spacing: 1) {
-                Text(category.name)
-                    .font(.caption)
-                    .foregroundStyle(.secondaryText)
-                Text(formattedDuration(category.duration / 7))
-                    .font(.caption)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.primaryText)
-            }
+            .buttonStyle(.plain)
+            .foregroundStyle(.primaryText)
 
             Spacer(minLength: 0)
+
+            Text(weekLabel)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.primaryText)
+
+            Spacer(minLength: 0)
+
+            Button {
+                if weekOffset < 0 { weekOffset += 1 }
+            } label: {
+                Image(systemName: "chevron.right")
+                    .font(.title3.weight(.semibold))
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(weekOffset < 0 ? Color.primaryText : Color.secondaryText.opacity(0.4))
+            .disabled(weekOffset >= 0)
         }
     }
 
-    private func formattedDuration(_ duration: TimeInterval) -> String {
-        let hours = Int(duration) / 3600
-        let minutes = (Int(duration) % 3600) / 60
-        if hours > 0 {
-            return "\(hours)h \(minutes)m"
-        }
-        return "\(minutes)m"
+    private func writeBoundary() {
+        let defaults = AppGroupConstants.sharedDefaults
+        defaults.set(currentWeekStart.timeIntervalSinceReferenceDate, forKey: AppGroupConstants.dashboardCurrentWeekStartKey)
     }
-}
 
-// MARK: - Footer
-
-private struct DashboardFooter: View {
-    let lastUpdated: Date
-
-    var body: some View {
-        HStack {
-            Text("Latest update")
-                .font(.caption2)
-                .foregroundStyle(.secondaryText)
-            Spacer()
-            Text(formattedUpdateTime)
-                .font(.caption2)
-                .foregroundStyle(.secondaryText)
+    private func hydrateFromAppGroup() {
+        let defaults = AppGroupConstants.sharedDefaults
+        let cachedHeight = defaults.double(forKey: AppGroupConstants.dashboardHeightKey)
+        if cachedHeight > 0 {
+            contentHeight = cachedHeight
+        }
+        let cachedTimestamp = defaults.double(forKey: AppGroupConstants.dashboardLastUpdatedKey)
+        if cachedTimestamp > 0 {
+            lastUpdated = Date(timeIntervalSinceReferenceDate: cachedTimestamp)
         }
     }
 
-    private var formattedUpdateTime: String {
-        let formatter = DateFormatter()
-        let calendar = Calendar.current
-        if calendar.isDateInToday(lastUpdated) {
-            formatter.dateFormat = "'Today,' HH:mm"
-        } else {
-            formatter.dateFormat = "MMM d, HH:mm"
+    private func pollAppGroup() async {
+        var sawHeight = false
+        var sawTimestamp = false
+        for tick in 0..<20 {
+            try? await Task.sleep(for: .milliseconds(500))
+            let defaults = AppGroupConstants.sharedDefaults
+            let h = defaults.double(forKey: AppGroupConstants.dashboardHeightKey)
+            if h > 0 {
+                if abs(h - contentHeight) > 1 {
+                    withAnimation(.easeInOut(duration: 0.25)) { contentHeight = h }
+                }
+                sawHeight = true
+            }
+            let t = defaults.double(forKey: AppGroupConstants.dashboardLastUpdatedKey)
+            if t > 0 {
+                let date = Date(timeIntervalSinceReferenceDate: t)
+                if lastUpdated != date {
+                    lastUpdated = date
+                }
+                sawTimestamp = true
+            }
+            if sawHeight && sawTimestamp && tick >= 3 { break }
         }
-        return formatter.string(from: lastUpdated)
     }
 }
 

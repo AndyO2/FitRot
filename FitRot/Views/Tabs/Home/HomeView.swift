@@ -25,6 +25,7 @@ struct HomeView: View {
 
                 ScrollView {
                     VStack(spacing: 20) {
+
                         Button {
                         isPickerPresented = true
                     } label: {
@@ -36,6 +37,9 @@ struct HomeView: View {
                     ScreenTimeDashboardCard()
                         .padding(.horizontal)
 
+                    PickupsCard()
+                        .padding(.horizontal)
+
                     MostUsedAppsCard()
                         .padding(.horizontal)
 
@@ -44,6 +48,7 @@ struct HomeView: View {
                 }
                 .padding(.top)
                 }
+                .scrollIndicators(.hidden)
             }
             .background(Color("AppBackground"))
             .familyActivityPicker(isPresented: $isPickerPresented, selection: $lockService.selection)

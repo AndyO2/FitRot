@@ -44,8 +44,18 @@ enum AppGroupConstants {
     // App icon preference
     static let appIconKey = "appIcon"
 
-    // DeviceActivityReport dynamic height
-    static let reportContentHeightKey = "reportContentHeight"
+    // Screen Time dashboard (FitRotReport extension ↔ main app)
+    static let dashboardCurrentWeekStartKey = "dashboardCurrentWeekStart" // Double, timeIntervalSinceReferenceDate
+    static let dashboardHeightKey = "dashboardHeight"                     // Double
+    static let dashboardLastUpdatedKey = "dashboardLastUpdated"           // Double, timeIntervalSinceReferenceDate
+
+    // Pickups card (FitRotReport extension ↔ main app)
+    static let pickupsHeightKey = "pickupsHeight"                         // Double
+    static let pickupsLastUpdatedKey = "pickupsLastUpdated"               // Double, timeIntervalSinceReferenceDate
+
+    // Most Used Apps card (FitRotReport extension ↔ main app)
+    static let mostUsedAppsHeightKey = "mostUsedAppsHeight"               // Double
+    static let mostUsedAppsLastUpdatedKey = "mostUsedAppsLastUpdated"     // Double, timeIntervalSinceReferenceDate
 
     // Onboarding
     static let hasCompletedOnboardingKey = "hasCompletedOnboarding"

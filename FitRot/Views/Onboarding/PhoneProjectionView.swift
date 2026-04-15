@@ -197,7 +197,7 @@ extension PhoneProjectionView {
                 startPoint: .top,
                 endPoint: .bottom
             )),
-            explanation: "of your life free from distractions, and help you\nachieve your dreams.",
+            explanation: "of your life free from distractions, and help you achieve your dreams.",
             footnote: "According to your profile combined with FitRot program"
         )
     }

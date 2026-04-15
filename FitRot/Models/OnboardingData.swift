@@ -333,7 +333,7 @@ enum OnboardingData {
         .info(id: "screen_time_permission", text: "Connect FitRot to Screen Time, Securely.", subtitle: "To analyze your Screen Time on this iPhone, FitRot will need your permission"),
         .info(id: "select_apps", text: "Select your most distracting apps", subtitle: "You can always change this later in the App's settings.", buttonText: "Continue"),
         .notification(id: "notifications", text: "Reach your goals with notifications", subtitle: "We use this to allow you to unblock your apps when you want to use them."),
-        .info(id: "rating", text: String(localized: "12,380 Mornings Conquered")),
+        .info(id: "rating", text: String(localized: "12,380 Screens Silenced")),
         .info(id: "referral_code", text: String(localized: "Have a referral code?"), subtitle: String(localized: "Enter a friend's code to unlock a reward. You can skip this step if you don't have one.")),
 //        TODO: Join FitRot (continue with apple/email/skip) maybe just apple + google
         .setup(id: "setup_progress", text: String(localized: "We're setting everything\nup for you")),

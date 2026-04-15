@@ -28,24 +28,24 @@ struct RatingView: View {
                 }
 
                 // MARK: - Subtitle
-                Text("Rated 4.9/5 by the early riser community")
+                Text("Rated 4.9/5 by people taking their time back")
                     .font(.system(size: 17, weight: .medium))
                     .multilineTextAlignment(.center)
 
                 // MARK: - Review Cards
                 ReviewCard(
-                    title: "Ended Alarm Abuse",
-                    reviewText:"I used to set 10+ alarms every morning and still couldn't get up. PushClock changed everything — now I only need one alarm and I'm actually out of bed on time."
+                    title: "Finally Off Instagram",
+                    reviewText: "I used to open Instagram the second I unlocked my phone and lose an hour. FitRot made me actually notice I was reaching for it — and earning my unlock with push-ups kills the urge fast."
                 )
 
                 ReviewCard(
-                    title: "Great app",
-                    reviewText:"Simple concept but it really works. The push-ups wake me up way better than any alarm sound ever did. Haven't hit snooze in weeks."
+                    title: "Actually works",
+                    reviewText: "Simple concept but it really works. Having to do 10 squats before I can doomscroll is exactly the friction I needed. My screen time is down hours a day."
                 )
 
                 ReviewCard(
-                    title: "Morning Game Changer",
-                    reviewText: "I went from dreading mornings to actually looking forward to them. 10 push-ups is the perfect amount to get your blood flowing. Best alarm app I've ever used."
+                    title: "Screen Time Game Changer",
+                    reviewText: "I went from 6 hours of screen time to under 2. Trading push-ups for unlock minutes turns every distraction into a tiny workout. Best focus app I've ever used."
                 )
             }
             .padding(.horizontal, 20)

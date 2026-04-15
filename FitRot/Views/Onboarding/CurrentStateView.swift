@@ -5,7 +5,7 @@ struct CurrentStateView: View {
     let topApps: [String]
     let topFeelings: [String]
 
-    @State private var visible: [Bool] = Array(repeating: false, count: 6)
+    @State private var visible: [Bool] = Array(repeating: false, count: 3)
 
     var body: some View {
         VStack(spacing: 0) {
@@ -18,8 +18,6 @@ struct CurrentStateView: View {
                     .foregroundStyle(Color.red)
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: .infinity)
-                    .opacity(visible[0] ? 1 : 0)
-                    .offset(y: visible[0] ? 0 : 12)
 
                 HStack(spacing: 24) {
                     ForEach(Array(displayApps.enumerated()), id: \.offset) { _, app in
@@ -27,8 +25,6 @@ struct CurrentStateView: View {
                     }
                 }
                 .padding(.top, 24)
-                .opacity(visible[1] ? 1 : 0)
-                .offset(y: visible[1] ? 0 : 12)
 
                 HStack(spacing: 12) {
                     ForEach(Array(displayFeelings.enumerated()), id: \.offset) { _, feeling in
@@ -36,8 +32,6 @@ struct CurrentStateView: View {
                     }
                 }
                 .padding(.top, 20)
-                .opacity(visible[2] ? 1 : 0)
-                .offset(y: visible[2] ? 0 : 12)
             }
             .frame(maxWidth: .infinity)
             .padding(20)
@@ -46,6 +40,8 @@ struct CurrentStateView: View {
                 RoundedRectangle(cornerRadius: 20)
                     .stroke(Color.cardBorder, lineWidth: 1)
             )
+            .opacity(visible[0] ? 1 : 0)
+            .offset(y: visible[0] ? 0 : 12)
 
             // MARK: - Divider
             Divider()
@@ -70,16 +66,12 @@ struct CurrentStateView: View {
                         .foregroundStyle(.primary)
                 }
                 .frame(maxWidth: .infinity)
-                .opacity(visible[3] ? 1 : 0)
-                .offset(y: visible[3] ? 0 : 12)
 
                 HStack(spacing: 12) {
                     FeelingPill(text: "Calm 😌", strokeColor: Color.green.opacity(0.4))
                     FeelingPill(text: "At peace 💚", strokeColor: Color.green.opacity(0.4))
                 }
                 .padding(.top, 20)
-                .opacity(visible[4] ? 1 : 0)
-                .offset(y: visible[4] ? 0 : 12)
             }
             .frame(maxWidth: .infinity)
             .padding(20)
@@ -88,13 +80,15 @@ struct CurrentStateView: View {
                 RoundedRectangle(cornerRadius: 20)
                     .stroke(Color.cardBorder, lineWidth: 1)
             )
+            .opacity(visible[1] ? 1 : 0)
+            .offset(y: visible[1] ? 0 : 12)
 
             Spacer()
 
             // MARK: - Section C: Research card
             ResearchCard()
-                .opacity(visible[5] ? 1 : 0)
-                .offset(y: visible[5] ? 0 : 12)
+                .opacity(visible[2] ? 1 : 0)
+                .offset(y: visible[2] ? 0 : 12)
                 .padding(.bottom, 8)
         }
         .onAppear {
