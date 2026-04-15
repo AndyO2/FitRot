@@ -19,7 +19,7 @@ struct WorkoutView: View {
     var mode: NavigationCoordinator.WorkoutMode = .unlockScreenTime
 
     @State private var currentCount: Int = 0
-    @State private var showCancelConfirmation = false
+    @State private var showHelp = false
     @State private var showSuccess = false
     @State private var earnedMinutes = 0
     @State private var earnedCoins = 0
@@ -52,7 +52,8 @@ struct WorkoutView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 28, height: 28)
-                    Text("Fitrot")
+                        .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+                    Text("FITROT")
                         .font(.system(size: 18, weight: .bold))
                         .foregroundStyle(.primaryText)
                 }
@@ -60,9 +61,9 @@ struct WorkoutView: View {
                 Spacer()
 
                 Button {
-                    showCancelConfirmation = true
+                    showHelp = true
                 } label: {
-                    Image(systemName: "xmark")
+                    Image(systemName: "questionmark")
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(.white)
                         .frame(width: 32, height: 32)
@@ -81,7 +82,6 @@ struct WorkoutView: View {
                 onCountChanged: { currentCount = $0 },
                 onComplete: { _ in finishWorkout() }
             )
-            .padding(.horizontal, 12)
 
             Spacer()
 
@@ -98,61 +98,41 @@ struct WorkoutView: View {
                 }
         }
         .background(Color.appBackground.ignoresSafeArea())
-        .alert("Quit Workout?", isPresented: $showCancelConfirmation) {
-            Button("Keep Going", role: .cancel) {}
-            Button("Quit", role: .destructive) {
-                dismiss()
-            }
-        } message: {
-            if count > 0 {
-                Text("You've done \(count) \(movementType.repLabel(for: count)). Quitting will lose your progress.")
-            } else {
-                Text("You'll lose your progress and apps will stay blocked.")
-            }
+        .sheet(isPresented: $showHelp) {
+            WorkoutHelpView(movementType: movementType)
         }
         .interactiveDismissDisabled()
     }
 
     @ViewBuilder
     private var bottomButton: some View {
-        Group {
-            if count == 0 {
-                Button {
-                    showCancelConfirmation = true
-                } label: {
-                    Text("Cancel")
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(.brandAccent)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 50)
-                        .background(
-                            RoundedRectangle(cornerRadius: 14)
-                                .stroke(Color.brandAccent, lineWidth: 2)
-                        )
-                }
-                .transition(.opacity)
+        Button {
+            if count > 0 {
+                finishWorkout()
             } else {
-                Button {
-                    finishWorkout()
-                } label: {
+                dismiss()
+            }
+        } label: {
+            Group {
+                if count > 0 {
                     HStack(spacing: 6) {
                         Text("Redeem")
                         Text("\(count) \(movementType.repLabel(for: count))")
                             .contentTransition(.numericText())
                     }
-                    .font(.system(size: 17, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 50)
-                    .background(
-                        RoundedRectangle(cornerRadius: 14)
-                            .fill(Color.brandAccent)
-                    )
+                } else {
+                    Text("Cancel")
                 }
-                .transition(.opacity)
             }
+            .font(.system(size: 17, weight: .semibold))
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity)
+            .frame(height: 50)
+            .background(
+                RoundedRectangle(cornerRadius: 14)
+                    .fill(Color.brandAccent)
+            )
         }
-        .animation(.spring(duration: 0.3), value: count == 0)
         .animation(.default, value: count)
     }
 

@@ -42,6 +42,15 @@ enum MovementType: String, CaseIterable, Identifiable {
         }
     }
 
+    var demoVideoName: String {
+        switch self {
+        case .pushups: "pushup"
+        case .squats: "squat"
+        case .lunges: "lunges"
+        case .situps: "pushup"
+        }
+    }
+
     /// Minutes of app unlock time earned per rep
     var minutesPerRep: Int { 1 }
 

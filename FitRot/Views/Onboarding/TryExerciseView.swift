@@ -191,7 +191,6 @@ private struct ExerciseTrialView: View {
                 onCountChanged: { currentCount = $0 },
                 onComplete: { _ in onComplete() }
             )
-            .padding(.horizontal, 12)
 
             Spacer()
         }

@@ -48,6 +48,7 @@ struct VideoDemoView: View {
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, 20)
+                .padding(.top, 8)
 
             // Subtitle
             if let subtitle {
@@ -58,6 +59,7 @@ struct VideoDemoView: View {
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal, 20)
                     .padding(.top, 8)
+                    .padding(.bottom, 8)
             }
 
             Spacer()

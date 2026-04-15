@@ -19,7 +19,7 @@ enum AppIconOption: String, CaseIterable, Identifiable {
     var displayName: String {
         switch self {
         case .logoWhite: "White"
-        case .logo: "Classic"
+        case .logo: "Black"
         }
     }
 
