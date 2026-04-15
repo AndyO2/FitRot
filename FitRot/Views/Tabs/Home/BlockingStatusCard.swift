@@ -70,18 +70,16 @@ struct BlockingStatusCard: View {
     }
 
     private var statusColor: Color {
-        if lockService.isBlockingEnabled && !lockService.isUnlocked {
-            return .green
-        }
-        return .red
+        guard lockService.isBlockingEnabled else { return .red }
+        return lockService.isUnlocked ? .green : .blue
     }
 
     private var statusTitle: String {
         if lockService.isBlockingEnabled {
             if lockService.isUnlocked {
-                return "Blocking Inactive"
+                return "Apps Unlocked"
             }
-            return "Blocking Active"
+            return "Apps Blocked"
         }
         return "Blocking Disabled"
     }

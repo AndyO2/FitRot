@@ -12,6 +12,7 @@ import SwiftUI
 struct WorkoutView: View {
     @Environment(AppLockService.self) private var lockService
     @Environment(CoinManager.self) private var coinManager
+    @Environment(StreakManager.self) private var streakManager
     @Environment(\.dismiss) private var dismiss
 
     var movementType: MovementType = .pushups
@@ -145,6 +146,7 @@ struct WorkoutView: View {
         case .unlockScreenTime:
             try? lockService.unlockFromWorkout(minutes: earnedMinutes)
         }
+        streakManager.recordWorkout()
         withAnimation {
             showSuccess = true
         }
@@ -155,6 +157,7 @@ struct WorkoutView: View {
     WorkoutView()
         .environment(AppLockService())
         .environment(CoinManager())
+        .environment(StreakManager())
 }
 
 #endif

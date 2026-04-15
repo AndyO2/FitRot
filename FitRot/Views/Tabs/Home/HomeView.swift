@@ -14,12 +14,13 @@ import FamilyControls
 struct HomeView: View {
     @Environment(AppLockService.self) private var lockService
     @State private var isPickerPresented = false
+    @State private var showStreakCalendar = false
 
     var body: some View {
         @Bindable var lockService = lockService
         NavigationStack {
             VStack(spacing: 0) {
-                HomeHeaderView()
+                HomeHeaderView(showStreakCalendar: $showStreakCalendar)
                     .padding(.bottom, 8)
 
                 ScrollView {
@@ -48,6 +49,12 @@ struct HomeView: View {
             .familyActivityPicker(isPresented: $isPickerPresented, selection: $lockService.selection)
             .onChange(of: lockService.selection) {
                 lockService.commitSelection()
+            }
+            .overlay {
+                if showStreakCalendar {
+                    StreakCalendarView(isPresented: $showStreakCalendar)
+                        .transition(.opacity)
+                }
             }
         }
     }

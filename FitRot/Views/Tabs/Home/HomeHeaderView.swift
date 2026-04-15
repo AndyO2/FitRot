@@ -11,6 +11,8 @@ import SwiftUI
 
 struct HomeHeaderView: View {
     @Environment(CoinManager.self) private var coinManager
+    @Environment(StreakManager.self) private var streakManager
+    @Binding var showStreakCalendar: Bool
 
     var body: some View {
         HStack {
@@ -22,24 +24,31 @@ struct HomeHeaderView: View {
                     .frame(width: 40, height: 40)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
 
-                Text("Fitrot")
+                Text("FITROT")
                     .font(.system(size: 34, weight: .bold))
             }
 
             Spacer()
 
             // Streak pill
-            HStack(spacing: 6) {
-                Image(systemName: "flame.fill")
-                    .font(.title3)
-                    .foregroundStyle(.orange)
-                Text("0")
-                    .font(.callout)
-                    .fontWeight(.semibold)
+            Button {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    showStreakCalendar = true
+                }
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "flame.fill")
+                        .font(.title3)
+                        .foregroundStyle(.orange)
+                    Text("\(streakManager.displayStreak)")
+                        .font(.callout)
+                        .fontWeight(.semibold)
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
+                .background(.ultraThinMaterial, in: Capsule())
             }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 8)
-            .background(.ultraThinMaterial, in: Capsule())
+            .buttonStyle(.plain)
 
             // Coins pill
             HStack(spacing: 6) {

@@ -26,11 +26,24 @@ struct SettingsView: View {
         @Bindable var themeService = themeService
         @Bindable var iconService = iconService
         NavigationStack {
-            List {
-                Section("Appearance") {
+            VStack(spacing: 0) {
+                HStack(spacing: 10) {
+                    Image(systemName: "gear")
+                        .font(.system(size: 28, weight: .bold))
+                    Text("Settings")
+                        .font(.system(size: 34, weight: .bold))
+                }
+                .foregroundStyle(.primaryText)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 8)
+
+                List {
+                    Section("Appearance") {
                     Toggle(isOn: $themeService.isDarkMode) {
                         Label("Dark Mode", systemImage: "moon.fill")
                     }
+                    .listRowBackground(Color.cardSurface)
                 }
 
                 Section("App Icon") {
@@ -44,7 +57,7 @@ struct SettingsView: View {
                             }
                         }
                     }
-                    .listRowBackground(Color.clear)
+                    .listRowBackground(Color.cardSurface)
                     .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
                 }
@@ -54,6 +67,7 @@ struct SettingsView: View {
                         Label("Support", systemImage: "questionmark.circle")
                     }
                     .foregroundStyle(.primaryText)
+                    .listRowBackground(Color.cardSurface)
 
                     Button {
                         requestReview()
@@ -61,16 +75,19 @@ struct SettingsView: View {
                         Label("Leave a Review", systemImage: "star")
                     }
                     .foregroundStyle(.primaryText)
+                    .listRowBackground(Color.cardSurface)
 
                     Link(destination: URL(string: "https://emerald-farmer-d10.notion.site/FitRot-Privacy-Policy-33ea2a1fd302808da603f71808127d16")!) {
                         Label("Privacy Policy", systemImage: "lock")
                     }
                     .foregroundStyle(.primaryText)
+                    .listRowBackground(Color.cardSurface)
 
                     Link(destination: URL(string: "https://emerald-farmer-d10.notion.site/FitRot-Terms-of-Service-33ea2a1fd30280c68a4cd620132e15d8")!) {
                         Label("Terms of Service", systemImage: "doc.text")
                     }
                     .foregroundStyle(.primaryText)
+                    .listRowBackground(Color.cardSurface)
                 }
 
                 #if DEBUG
@@ -81,9 +98,11 @@ struct SettingsView: View {
                         Text(authStatusText)
                             .foregroundStyle(.secondary)
                     }
+                    .listRowBackground(Color.cardSurface)
 
                     if case .denied = authManager.status {
                         Link("Open Settings", destination: URL(string: UIApplication.openSettingsURLString)!)
+                            .listRowBackground(Color.cardSurface)
                     }
 
                     HStack {
@@ -92,6 +111,7 @@ struct SettingsView: View {
                         Text(lockService.isBlockingEnabled ? "Enabled" : "Disabled")
                             .foregroundStyle(lockService.isBlockingEnabled ? .assetGains : .secondaryText)
                     }
+                    .listRowBackground(Color.cardSurface)
 
                     if lockService.isBlockingEnabled {
                         HStack {
@@ -100,19 +120,23 @@ struct SettingsView: View {
                             Text(lockService.isUnlocked ? "Unlocked" : "Blocked")
                                 .foregroundStyle(lockService.isUnlocked ? .assetGains : .red)
                         }
+                        .listRowBackground(Color.cardSurface)
 
                         Button("Disable Blocking", role: .destructive) {
                             lockService.disableBlocking()
                         }
+                        .listRowBackground(Color.cardSurface)
                     }
 
                     Button("Open Push-Up Camera") {
                         showDevCamera = true
                     }
+                    .listRowBackground(Color.cardSurface)
 
                     Button("Restart Onboarding") {
                         hasCompletedOnboarding = false
                     }
+                    .listRowBackground(Color.cardSurface)
                 }
                 #endif
 
@@ -124,10 +148,12 @@ struct SettingsView: View {
                     .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
             }
-            .fullScreenCover(isPresented: $showDevCamera) {
-                WorkoutView()
+                .scrollContentBackground(.hidden)
+                .fullScreenCover(isPresented: $showDevCamera) {
+                    WorkoutView()
+                }
             }
-            .navigationTitle("Settings")
+            .background(Color("AppBackground"))
         }
     }
 

@@ -22,6 +22,11 @@ enum AppGroupConstants {
     static let coinBalanceInitializedKey = "coinBalanceInitialized"
     static let defaultCoinBalance = 15
 
+    // Streak system
+    static let streakCountKey = "streakCount"
+    static let streakLastWorkoutDayKey = "streakLastWorkoutDay" // Double (timeIntervalSinceReferenceDate of startOfDay)
+    static let streakWorkoutDaysKey = "streakWorkoutDays" // [Double] of startOfDay timeIntervalSinceReferenceDate values
+
     // Unlock window
     static let unlockActiveKey = "unlockActive"
     static let unlockEndTimeKey = "unlockEndTime" // Double (timeIntervalSinceReferenceDate)
