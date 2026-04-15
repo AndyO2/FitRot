@@ -1,51 +1,8 @@
 #if os(iOS)
 import SwiftUI
 
-struct ExerciseCameraConfig {
-    let guidanceText: String
-    let guidanceDetail: String
-    let trackingHint: String
-    let analyticsPrefix: String
-    let debugButtonLabel: String
-    let makeStrategy: (Int) -> ExerciseCountingStrategy
-}
-
-extension MovementType {
-    var cameraConfig: ExerciseCameraConfig {
-        switch self {
-        case .pushups:
-            ExerciseCameraConfig(
-                guidanceText: "Position yourself in push-up form\nfacing the camera",
-                guidanceDetail: "Make sure your elbows are visible",
-                trackingHint: "Keep your elbows in the frame",
-                analyticsPrefix: "pushup",
-                debugButtonLabel: "Do Pushup",
-                makeStrategy: { ElbowAngleStrategy(target: $0) }
-            )
-        case .squats:
-            ExerciseCameraConfig(
-                guidanceText: "Stand facing the camera\nwith your full body visible",
-                guidanceDetail: "Make sure your knees are visible",
-                trackingHint: "Keep your knees in the frame",
-                analyticsPrefix: "squat",
-                debugButtonLabel: "Do Squat",
-                makeStrategy: { SquatAngleStrategy(target: $0) }
-            )
-        case .situps:
-            ExerciseCameraConfig(
-                guidanceText: "Position yourself for sit-ups\nfacing the camera",
-                guidanceDetail: "Make sure your torso is visible",
-                trackingHint: "Keep your torso in the frame",
-                analyticsPrefix: "situp",
-                debugButtonLabel: "Do Situp",
-                makeStrategy: { ElbowAngleStrategy(target: $0) } // placeholder
-            )
-        }
-    }
-}
-
 struct ExerciseCameraView: View {
-    var config: ExerciseCameraConfig
+    var movementType: MovementType
     var target: Int
     var onCountChanged: ((Int) -> Void)?
     var onComplete: ((Int) -> Void)?
@@ -55,12 +12,12 @@ struct ExerciseCameraView: View {
     @State private var exerciseCounter: ExerciseCounter
     @State private var countingStartTime: Date?
 
-    init(config: ExerciseCameraConfig, target: Int = 10, onCountChanged: ((Int) -> Void)? = nil, onComplete: ((Int) -> Void)? = nil) {
-        self.config = config
+    init(movementType: MovementType, target: Int = 10, onCountChanged: ((Int) -> Void)? = nil, onComplete: ((Int) -> Void)? = nil) {
+        self.movementType = movementType
         self.target = target
         self.onCountChanged = onCountChanged
         self.onComplete = onComplete
-        self._exerciseCounter = State(initialValue: ExerciseCounter(target: target, strategy: config.makeStrategy(target)))
+        self._exerciseCounter = State(initialValue: ExerciseCounter(target: target, strategy: movementType.makeCountingStrategy(target: target)))
     }
 
     var body: some View {
@@ -76,7 +33,7 @@ struct ExerciseCameraView: View {
             // Guidance overlays on the camera
             VStack {
                 if poseDetector.currentPose != nil && !exerciseCounter.isComplete {
-                    Text(config.trackingHint)
+                    Text(movementType.trackingHint)
                         .font(.caption)
                         .foregroundStyle(.white)
                         .padding(.horizontal, 12)
@@ -89,7 +46,7 @@ struct ExerciseCameraView: View {
 
                 if !exerciseCounter.isComplete {
                     if poseDetector.currentPose == nil {
-                        GuidanceText(mainText: config.guidanceText, detailText: config.guidanceDetail)
+                        GuidanceText(mainText: movementType.guidanceText, detailText: movementType.guidanceDetail)
                     }
                 }
 
@@ -99,7 +56,7 @@ struct ExerciseCameraView: View {
             #if DEBUG
             VStack {
                 Spacer()
-                Button(config.debugButtonLabel) {
+                Button(movementType.debugButtonLabel) {
                     exerciseCounter.incrementForTesting()
                 }
                 .font(.system(size: 16, weight: .semibold, design: .rounded))
@@ -113,12 +70,12 @@ struct ExerciseCameraView: View {
         }
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .onAppear {
-            exerciseCounter = ExerciseCounter(target: target, strategy: config.makeStrategy(target))
+            exerciseCounter = ExerciseCounter(target: target, strategy: movementType.makeCountingStrategy(target: target))
             cameraManager.onFrameCaptured = { [weak poseDetector] buffer in
                 poseDetector?.processFrame(buffer)
             }
             cameraManager.requestAuthorization()
-            AnalyticsService.shared.track("\(config.analyticsPrefix)_session_started", properties: [
+            AnalyticsService.shared.track("\(movementType.analyticsPrefix)_session_started", properties: [
                 "target_reps": target,
             ])
         }
@@ -126,7 +83,7 @@ struct ExerciseCameraView: View {
             cameraManager.onFrameCaptured = nil
             cameraManager.stopSession()
             if !exerciseCounter.isComplete {
-                AnalyticsService.shared.track("\(config.analyticsPrefix)_session_abandoned", properties: [
+                AnalyticsService.shared.track("\(movementType.analyticsPrefix)_session_abandoned", properties: [
                     "reps_completed": exerciseCounter.count,
                     "target_reps": exerciseCounter.target,
                     "time_elapsed": countingStartTime.map { Date().timeIntervalSince($0) } ?? 0,
@@ -152,48 +109,6 @@ struct ExerciseCameraView: View {
                 }
             }
         }
-    }
-}
-
-private struct CounterBadge: View {
-    let count: Int
-    let target: Int
-
-    @State private var animationScale: CGFloat = 1.0
-
-    var body: some View {
-        Text("\(count)/\(target)")
-            .font(.system(size: 36, weight: .bold, design: .rounded))
-            .foregroundStyle(.white)
-            .contentTransition(.numericText())
-            .animation(.default, value: count)
-            .frame(width: 110, height: 110)
-            .background(
-                Circle()
-                    .fill(Color.blue)
-                    .shadow(color: .black.opacity(0.3), radius: 10, y: 5)
-            )
-            .scaleEffect(animationScale)
-            .onChange(of: count) {
-                animationScale = 1.25
-                withAnimation(.spring(duration: 0.3, bounce: 0.5)) {
-                    animationScale = 1.0
-                }
-            }
-    }
-}
-
-private struct CompletionBadge: View {
-    var body: some View {
-        Image(systemName: "checkmark")
-            .font(.system(size: 48, weight: .bold))
-            .foregroundStyle(.white)
-            .frame(width: 110, height: 110)
-            .background(
-                Circle()
-                    .fill(Color.green)
-                    .shadow(color: .black.opacity(0.3), radius: 10, y: 5)
-            )
     }
 }
 

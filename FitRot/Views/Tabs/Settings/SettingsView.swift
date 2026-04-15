@@ -15,6 +15,7 @@ struct SettingsView: View {
     @Environment(ScreenTimeAuthManager.self) private var authManager
     @Environment(AppLockService.self) private var lockService
     @Environment(ThemeService.self) private var themeService
+    @Environment(AppIconService.self) private var iconService
     @Environment(\.requestReview) private var requestReview
     @State private var showDevCamera = false
 
@@ -23,12 +24,29 @@ struct SettingsView: View {
 
     var body: some View {
         @Bindable var themeService = themeService
+        @Bindable var iconService = iconService
         NavigationStack {
             List {
                 Section("Appearance") {
                     Toggle(isOn: $themeService.isDarkMode) {
                         Label("Dark Mode", systemImage: "moon.fill")
                     }
+                }
+
+                Section("App Icon") {
+                    HStack(spacing: 16) {
+                        ForEach(AppIconOption.allCases) { option in
+                            AppIconTile(
+                                option: option,
+                                isSelected: iconService.selected == option
+                            ) {
+                                iconService.selected = option
+                            }
+                        }
+                    }
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
                 }
 
                 Section("General") {
@@ -120,6 +138,34 @@ struct SettingsView: View {
         case .notDetermined: "Not Determined"
         case .error: "Error"
         }
+    }
+}
+
+private struct AppIconTile: View {
+    let option: AppIconOption
+    let isSelected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: 8) {
+                Image(option.previewImageName)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 80, height: 80)
+                    .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 18, style: .continuous)
+                            .strokeBorder(isSelected ? Color.brandAccent : Color.secondary.opacity(0.2), lineWidth: isSelected ? 3 : 1)
+                    )
+                Text(option.displayName)
+                    .font(.subheadline.weight(isSelected ? .semibold : .regular))
+                    .foregroundStyle(isSelected ? Color.primaryText : Color.secondaryText)
+            }
+            .frame(maxWidth: .infinity)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 }
 #endif

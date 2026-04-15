@@ -11,11 +11,14 @@ struct SelectAppsOnboardingView: View {
     var onBack: () -> Void
 
     #if canImport(FamilyControls)
+    @Environment(AppLockService.self) private var lockService
     @State private var isPickerPresented = false
-    @State private var selection = FamilyActivitySelection()
     #endif
 
     var body: some View {
+        #if canImport(FamilyControls)
+        @Bindable var lockService = lockService
+        #endif
         VStack(spacing: 0) {
             // Top bar (back + progress)
             HStack(spacing: 12) {
@@ -99,9 +102,9 @@ struct SelectAppsOnboardingView: View {
         }
         .background(Color(.systemGroupedBackground))
         #if canImport(FamilyControls)
-        .familyActivityPicker(isPresented: $isPickerPresented, selection: $selection)
-        .onChange(of: selection) {
-            SelectionPersistence.save(selection)
+        .familyActivityPicker(isPresented: $isPickerPresented, selection: $lockService.selection)
+        .onChange(of: lockService.selection) {
+            lockService.commitSelection()
             onComplete()
         }
         #endif

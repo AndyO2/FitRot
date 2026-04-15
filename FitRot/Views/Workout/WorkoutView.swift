@@ -76,7 +76,7 @@ struct WorkoutView: View {
 
             // MARK: - Camera
             ExerciseCameraView(
-                config: movementType.cameraConfig,
+                movementType: movementType,
                 target: unlockMinutes,
                 onCountChanged: { currentCount = $0 },
                 onComplete: { _ in finishWorkout() }

@@ -9,6 +9,8 @@ struct NotificationOnboardingView: View {
     var onComplete: () -> Void
     var onBack: () -> Void
 
+    @State private var isRequestingPermission = false
+
     var body: some View {
         VStack(spacing: 0) {
             // Top bar (back + progress)
@@ -50,10 +52,15 @@ struct NotificationOnboardingView: View {
 
             Spacer()
 
-            NotificationPermissionCard {
-                requestNotificationPermission()
-                onComplete()
+            NotificationPermissionCard(isRequestingPermission: isRequestingPermission) {
+                guard !isRequestingPermission else { return }
+                isRequestingPermission = true
+                Task { @MainActor in
+                    await requestNotificationPermission()
+                    onComplete()
+                }
             } onDeny: {
+                guard !isRequestingPermission else { return }
                 AnalyticsService.shared.track("notification_permission_result", properties: [
                     "granted": "false",
                 ])
@@ -80,17 +87,14 @@ struct NotificationOnboardingView: View {
         .background(Color(.systemGroupedBackground))
     }
 
-    private func requestNotificationPermission() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, _ in
-            DispatchQueue.main.async {
-                AnalyticsService.shared.track("notification_permission_result", properties: [
-                    "granted": granted ? "true" : "false",
-                ])
-                AnalyticsService.shared.setUserProperties([
-                    "notification_permission": granted ? "granted" : "denied",
-                ])
-            }
-        }
+    private func requestNotificationPermission() async {
+        let granted = (try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])) ?? false
+        AnalyticsService.shared.track("notification_permission_result", properties: [
+            "granted": granted ? "true" : "false",
+        ])
+        AnalyticsService.shared.setUserProperties([
+            "notification_permission": granted ? "granted" : "denied",
+        ])
     }
 }
 
@@ -117,6 +121,7 @@ private struct NotificationProgressBar: View {
 }
 
 private struct NotificationPermissionCard: View {
+    let isRequestingPermission: Bool
     let onAllow: () -> Void
     let onDeny: () -> Void
 
@@ -155,6 +160,7 @@ private struct NotificationPermissionCard: View {
                 .foregroundStyle(Color(.label))
                 .background(Color(.systemGray4))
             }
+            .disabled(isRequestingPermission)
         }
         .background(Color(.secondarySystemGroupedBackground))
         .clipShape(RoundedRectangle(cornerRadius: 14))

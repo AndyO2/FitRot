@@ -118,11 +118,6 @@ struct ScreenTimePermissionView: View {
                 .padding(.bottom, 24)
         }
         .background(Color(.systemGroupedBackground))
-        .task {
-            try? await Task.sleep(for: .milliseconds(200))
-            await authManager.requestAuthorization()
-            onComplete()
-        }
     }
 }
 #endif

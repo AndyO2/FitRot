@@ -14,10 +14,9 @@ import FamilyControls
 struct HomeView: View {
     @Environment(AppLockService.self) private var lockService
     @State private var isPickerPresented = false
-    @State private var selection = FamilyActivitySelection(includeEntireCategory: true)
-    @State private var isRestoringSelection = false
 
     var body: some View {
+        @Bindable var lockService = lockService
         NavigationStack {
             VStack(spacing: 0) {
                 HomeHeaderView()
@@ -28,7 +27,7 @@ struct HomeView: View {
                         Button {
                         isPickerPresented = true
                     } label: {
-                        BlockingStatusCard(selection: selection)
+                        BlockingStatusCard()
                     }
                     .buttonStyle(.plain)
                     .padding(.horizontal)
@@ -46,19 +45,9 @@ struct HomeView: View {
                 }
             }
             .background(Color("AppBackground"))
-            .familyActivityPicker(isPresented: $isPickerPresented, selection: $selection)
-            .onChange(of: selection) {
-                if isRestoringSelection {
-                    isRestoringSelection = false
-                    return
-                }
-                lockService.enableBlocking(selection: selection)
-            }
-            .onAppear {
-                if let saved = SelectionPersistence.load() {
-                    isRestoringSelection = true
-                    selection = saved
-                }
+            .familyActivityPicker(isPresented: $isPickerPresented, selection: $lockService.selection)
+            .onChange(of: lockService.selection) {
+                lockService.commitSelection()
             }
         }
     }

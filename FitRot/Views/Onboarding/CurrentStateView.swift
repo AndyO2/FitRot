@@ -12,64 +12,82 @@ struct CurrentStateView: View {
             Spacer()
 
             // MARK: - Section A: Current State
-            Text("Current State")
-                .font(.system(size: 28, weight: .bold))
-                .foregroundStyle(Color.red)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity)
-                .opacity(visible[0] ? 1 : 0)
-                .offset(y: visible[0] ? 0 : 12)
+            VStack(spacing: 0) {
+                Text("Current State")
+                    .font(.system(size: 28, weight: .bold))
+                    .foregroundStyle(Color.red)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+                    .opacity(visible[0] ? 1 : 0)
+                    .offset(y: visible[0] ? 0 : 12)
 
-            HStack(spacing: 24) {
-                ForEach(Array(displayApps.enumerated()), id: \.offset) { _, app in
-                    AppIconBadge(info: appInfo(for: app))
+                HStack(spacing: 24) {
+                    ForEach(Array(displayApps.enumerated()), id: \.offset) { _, app in
+                        AppIconBadge(info: appInfo(for: app))
+                    }
                 }
-            }
-            .padding(.top, 24)
-            .opacity(visible[1] ? 1 : 0)
-            .offset(y: visible[1] ? 0 : 12)
+                .padding(.top, 24)
+                .opacity(visible[1] ? 1 : 0)
+                .offset(y: visible[1] ? 0 : 12)
 
-            HStack(spacing: 12) {
-                ForEach(Array(displayFeelings.enumerated()), id: \.offset) { _, feeling in
-                    FeelingPill(text: feeling, strokeColor: Color.red.opacity(0.4))
+                HStack(spacing: 12) {
+                    ForEach(Array(displayFeelings.enumerated()), id: \.offset) { _, feeling in
+                        FeelingPill(text: feeling, strokeColor: Color.red.opacity(0.4))
+                    }
                 }
+                .padding(.top, 20)
+                .opacity(visible[2] ? 1 : 0)
+                .offset(y: visible[2] ? 0 : 12)
             }
-            .padding(.top, 20)
-            .opacity(visible[2] ? 1 : 0)
-            .offset(y: visible[2] ? 0 : 12)
+            .frame(maxWidth: .infinity)
+            .padding(20)
+            .background(Color.white, in: RoundedRectangle(cornerRadius: 20))
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(Color.cardBorder, lineWidth: 1)
+            )
 
             // MARK: - Divider
             Divider()
                 .background(Color(.separator))
-                .padding(.vertical, 50)
+                .padding(.vertical, 28)
 
             // MARK: - Section B: With FitRot
-            HStack(spacing: 10) {
-                Text("With")
-                    .font(.system(size: 28, weight: .bold))
-                    .foregroundStyle(.secondary)
+            VStack(spacing: 0) {
+                HStack(spacing: 10) {
+                    Text("With")
+                        .font(.system(size: 28, weight: .bold))
+                        .foregroundStyle(.secondary)
 
-                Image("logo")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 32, height: 32)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    Image("logo")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 32, height: 32)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
 
-                Text("FitRot")
-                    .font(.system(size: 28, weight: .bold))
-                    .foregroundStyle(.primary)
+                    Text("FitRot")
+                        .font(.system(size: 28, weight: .bold))
+                        .foregroundStyle(.primary)
+                }
+                .frame(maxWidth: .infinity)
+                .opacity(visible[3] ? 1 : 0)
+                .offset(y: visible[3] ? 0 : 12)
+
+                HStack(spacing: 12) {
+                    FeelingPill(text: "Calm 😌", strokeColor: Color.green.opacity(0.4))
+                    FeelingPill(text: "At peace 💚", strokeColor: Color.green.opacity(0.4))
+                }
+                .padding(.top, 20)
+                .opacity(visible[4] ? 1 : 0)
+                .offset(y: visible[4] ? 0 : 12)
             }
             .frame(maxWidth: .infinity)
-            .opacity(visible[3] ? 1 : 0)
-            .offset(y: visible[3] ? 0 : 12)
-
-            HStack(spacing: 12) {
-                FeelingPill(text: "Calm 😌", strokeColor: Color.green.opacity(0.4))
-                FeelingPill(text: "At peace 💚", strokeColor: Color.green.opacity(0.4))
-            }
-            .padding(.top, 20)
-            .opacity(visible[4] ? 1 : 0)
-            .offset(y: visible[4] ? 0 : 12)
+            .padding(20)
+            .background(Color.white, in: RoundedRectangle(cornerRadius: 20))
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(Color.cardBorder, lineWidth: 1)
+            )
 
             Spacer()
 

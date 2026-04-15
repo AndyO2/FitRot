@@ -36,6 +36,9 @@ enum AppGroupConstants {
     // Appearance preference
     static let appearanceModeKey = "appearanceMode"
 
+    // App icon preference
+    static let appIconKey = "appIcon"
+
     // DeviceActivityReport dynamic height
     static let reportContentHeightKey = "reportContentHeight"
 

@@ -26,6 +26,7 @@ final class AppLockService {
     private(set) var isBlockingEnabled: Bool = false
     private(set) var isUnlocked: Bool = false
     private(set) var unlockEndTime: Date? = nil
+    var selection: FamilyActivitySelection
 
     var remainingSeconds: TimeInterval {
         guard let end = unlockEndTime else { return 0 }
@@ -37,6 +38,7 @@ final class AppLockService {
         self.isUnlocked = defaults.bool(forKey: AppGroupConstants.unlockActiveKey)
         let ti = defaults.double(forKey: AppGroupConstants.unlockEndTimeKey)
         self.unlockEndTime = ti > 0 ? Date(timeIntervalSinceReferenceDate: ti) : nil
+        self.selection = SelectionPersistence.load() ?? FamilyActivitySelection()
     }
 
     private func scheduleReblockTimer(at date: Date) {
@@ -49,7 +51,11 @@ final class AppLockService {
 
     // MARK: - Enable / Disable Blocking
 
-    func enableBlocking(selection: FamilyActivitySelection) {
+    func commitSelection() {
+        guard AuthorizationCenter.shared.authorizationStatus == .approved else {
+            print("[FitRot] commitSelection skipped — Family Controls not approved")
+            return
+        }
         SelectionPersistence.save(selection)
         isBlockingEnabled = true
         defaults.set(true, forKey: AppGroupConstants.blockingEnabledKey)
@@ -68,6 +74,7 @@ final class AppLockService {
         defaults.set(false, forKey: AppGroupConstants.unlockActiveKey)
         defaults.removeObject(forKey: AppGroupConstants.unlockEndTimeKey)
         SelectionPersistence.clear()
+        selection = FamilyActivitySelection()
     }
 
     // MARK: - Unlock Window
@@ -149,7 +156,6 @@ final class AppLockService {
 
     func reblock() {
         reblockTimer?.invalidate()
-        guard let selection = SelectionPersistence.load() else { return }
         applyShields(from: selection)
         isUnlocked = false
         unlockEndTime = nil
@@ -180,7 +186,6 @@ final class AppLockService {
             }
         } else {
             // Just blocked — ensure shields applied
-            guard let selection = SelectionPersistence.load() else { return }
             applyShields(from: selection)
         }
     }

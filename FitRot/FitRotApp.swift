@@ -17,6 +17,7 @@ struct FitRotApp: App {
     @State private var navigationCoordinator = NavigationCoordinator()
     @State private var notificationManager = NotificationManager()
     @State private var themeService = ThemeService()
+    @State private var appIconService = AppIconService()
     @Environment(\.scenePhase) private var scenePhase
     #endif
 
@@ -39,6 +40,7 @@ struct FitRotApp: App {
                 .environment(navigationCoordinator)
                 .environment(notificationManager)
                 .environment(themeService)
+                .environment(appIconService)
                 .onAppear {
                     lockService.restoreStateOnLaunch()
                     notificationManager.configure(with: navigationCoordinator)

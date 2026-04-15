@@ -29,10 +29,10 @@ Note: `DeviceActivityMonitorExtension.swift` currently hardcodes the group ID an
 
 ## Architecture: the lock/unlock state machine
 
-`AppLockService` (`FitRot/Services/AppLockService.swift`) is the coordinator. Three observable properties define the state: `isBlockingEnabled`, `isUnlocked`, `unlockEndTime`. They are always mirrored into App Group defaults so extensions can read them.
+`AppLockService` (`FitRot/Services/AppLockService.swift`) is the coordinator. Four observable properties define the state: `isBlockingEnabled`, `isUnlocked`, `unlockEndTime`, and `selection` (the canonical `FamilyActivitySelection` for this process, loaded from `SelectionPersistence` in `init` and mirrored to it on every commit). They are always mirrored into App Group defaults so extensions can read them. SwiftUI views bind the `familyActivityPicker` directly to `$lockService.selection` rather than holding their own copy.
 
 Typical unlock flow:
-1. User picks apps → `enableBlocking(selection:)` persists the selection and applies `ManagedSettingsStore` shields.
+1. User picks apps in the picker (bound to `$lockService.selection`) → view's `onChange` calls `commitSelection()`, which guards on Family Controls authorization, persists the selection via `SelectionPersistence`, and applies `ManagedSettingsStore` shields.
 2. User spends coins (`unlock`) or completes a workout (`unlockFromWorkout`) → `scheduleUnlock(minutes:)` clears shields, starts a `DeviceActivitySchedule` bounded by "now" and "now + minutes" (capped at 23:59 today), and sets an in-process `Timer` as a redundant re-block trigger.
 3. When the window ends, whichever fires first — the in-process timer (`reblock()`) or the `DeviceActivityMonitor` extension's `intervalDidEnd` — re-applies shields from the persisted selection. Both paths must stay in sync; if you change re-block behavior, change it in both places.
 4. `restoreStateOnLaunch()` re-hydrates from defaults on every foreground transition, because extensions may have mutated state while the app was suspended. It's wired to `.onAppear` and `scenePhase == .active` in `FitRotApp`.
@@ -44,10 +44,11 @@ The shield → workout handoff uses two extra keys (`unlockRequestPendingKey`, `
 The camera counter uses the **Strategy pattern** so different movements can plug in their own algorithms:
 
 - `PoseDetector` (Vision `VNDetectHumanBodyPoseRequest`) emits `DetectedPose` structs with joint positions and pre-computed angles.
-- `ExerciseCountingStrategy` protocol — each movement (e.g. `ElbowAngleStrategy` for push-ups, `SquatAngleStrategy` for squats) owns its own phase machine (`idle` → `down` → `up`), smoothing buffer, and debounce logic.
+- `ExerciseCountingStrategy` protocol — the default implementation is `AngleThresholdStrategy`, a generic phase-machine (`idle` → `down` → `up`) with 5-sample smoothing and a per-movement debounce interval. Each `MovementType` configures it with its own down/up angle thresholds and an `angleExtractor` closure that picks the right joints.
 - `ExerciseCounter` (`@Observable`) wraps a strategy and exposes `count`/`phase`/`isComplete` to SwiftUI.
+- `ExerciseCameraView` takes a `MovementType` directly; per-movement copy (`guidanceText`, `trackingHint`, `analyticsPrefix`, `debugButtonLabel`) and the strategy factory all live on `MovementType`.
 
-When adding a new movement, implement a new `ExerciseCountingStrategy`, add a case to `MovementType`, and wire it into the view layer via `MovementType.cameraConfig`. `ExerciseCounter.incrementForTesting()` exists under `#if DEBUG` for UI testing without a working camera.
+When adding a new movement, add a case to `MovementType` and return the appropriate `AngleThresholdStrategy` (or a new `ExerciseCountingStrategy` implementation) from `MovementType.makeCountingStrategy(target:)`. `ExerciseCounter.incrementForTesting()` exists under `#if DEBUG` for UI testing without a working camera.
 
 ## Architecture: observation & DI
 

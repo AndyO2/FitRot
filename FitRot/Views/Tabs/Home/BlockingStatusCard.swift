@@ -11,7 +11,6 @@ import SwiftUI
 import FamilyControls
 
 struct BlockingStatusCard: View {
-    var selection: FamilyActivitySelection = FamilyActivitySelection()
     @Environment(AppLockService.self) private var lockService
     @State private var remainingSeconds: TimeInterval = 0
     @State private var countdownTimer: Timer?
@@ -80,9 +79,9 @@ struct BlockingStatusCard: View {
     private var statusTitle: String {
         if lockService.isBlockingEnabled {
             if lockService.isUnlocked {
-                return "Unlocked"
+                return "Apps Unlocked"
             }
-            return "Blocking Active"
+            return "Apps Blocked"
         }
         return "Blocking Disabled"
     }
@@ -94,8 +93,8 @@ struct BlockingStatusCard: View {
                 let secs = Int(remainingSeconds) % 60
                 return String(format: "%02d:%02d remaining", mins, secs)
             }
-            let appCount = selection.applicationTokens.count
-            let catCount = selection.categoryTokens.count
+            let appCount = lockService.selection.applicationTokens.count
+            let catCount = lockService.selection.categoryTokens.count
             let appPart = appCount > 0 ? "\(appCount) app\(appCount == 1 ? "" : "s")" : nil
             let catPart = catCount > 0 ? "\(catCount) categor\(catCount == 1 ? "y" : "ies")" : nil
             let description = [appPart, catPart].compactMap { $0 }.joined(separator: " + ")

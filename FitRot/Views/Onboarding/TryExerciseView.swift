@@ -186,7 +186,7 @@ private struct ExerciseTrialView: View {
 
             // MARK: - Camera
             ExerciseCameraView(
-                config: movement.cameraConfig,
+                movementType: movement,
                 target: target,
                 onCountChanged: { currentCount = $0 },
                 onComplete: { _ in onComplete() }
