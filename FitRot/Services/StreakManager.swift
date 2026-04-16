@@ -50,7 +50,9 @@ final class StreakManager {
     }
 
     /// Records a completed workout for today. Same-day repeats are ignored.
-    func recordWorkout() {
+    /// Returns `true` if this was the first workout of the day, `false` otherwise.
+    @discardableResult
+    func recordWorkout() -> Bool {
         let today = Calendar.current.startOfDay(for: Date())
         let todayTs = today.timeIntervalSinceReferenceDate
 
@@ -60,7 +62,7 @@ final class StreakManager {
             let last = Date(timeIntervalSinceReferenceDate: lastWorkoutDayTimestamp)
             let days = Calendar.current.dateComponents([.day], from: last, to: today).day ?? 0
             if days == 0 {
-                return
+                return false
             } else if days == 1 {
                 currentStreak += 1
             } else {
@@ -69,6 +71,7 @@ final class StreakManager {
         }
         lastWorkoutDayTimestamp = todayTs
         workoutDays.insert(today)
+        return true
     }
 
     func hasWorkout(on date: Date) -> Bool {

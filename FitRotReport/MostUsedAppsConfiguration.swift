@@ -17,7 +17,7 @@ struct MostUsedAppsConfiguration {
 }
 
 struct AppUsage: Identifiable {
-    let id: String
+    var id: ApplicationToken { token }
     let token: ApplicationToken
     let duration: TimeInterval
 }

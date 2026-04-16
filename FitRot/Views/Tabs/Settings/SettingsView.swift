@@ -19,6 +19,7 @@ struct SettingsView: View {
     @Environment(AppIconService.self) private var iconService
     @Environment(\.requestReview) private var requestReview
     @State private var showDevCamera = false
+    @State private var showDevStreakCommitment = false
 
     @AppStorage(AppGroupConstants.hasCompletedOnboardingKey, store: AppGroupConstants.sharedDefaults)
     private var hasCompletedOnboarding = false
@@ -171,6 +172,11 @@ struct SettingsView: View {
                     }
                     .listRowBackground(Color.cardSurface)
 
+                    Button("Show Streak Commitment") {
+                        showDevStreakCommitment = true
+                    }
+                    .listRowBackground(Color.cardSurface)
+
                     Button("Restart Onboarding") {
                         hasCompletedOnboarding = false
                     }
@@ -190,6 +196,9 @@ struct SettingsView: View {
                 .scrollIndicators(.hidden)
                 .fullScreenCover(isPresented: $showDevCamera) {
                     WorkoutView()
+                }
+                .fullScreenCover(isPresented: $showDevStreakCommitment) {
+                    StreakCommitmentView(onCommit: { showDevStreakCommitment = false })
                 }
             }
             .background(Color("AppBackground"))

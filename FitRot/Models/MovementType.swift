@@ -12,6 +12,7 @@ enum MovementType: String, CaseIterable, Identifiable {
     case squats
     case lunges
     case situps
+    case planks
 
     var id: String { rawValue }
 
@@ -21,6 +22,7 @@ enum MovementType: String, CaseIterable, Identifiable {
         case .squats: "Squats"
         case .lunges: "Lunges"
         case .situps: "Sit-Ups"
+        case .planks: "Planks"
         }
     }
 
@@ -30,6 +32,7 @@ enum MovementType: String, CaseIterable, Identifiable {
         case .squats: "figure.cooldown"
         case .lunges: "figure.strengthtraining.functional"
         case .situps: "figure.core.training"
+        case .planks: "figure.core.training"
         }
     }
 
@@ -39,6 +42,7 @@ enum MovementType: String, CaseIterable, Identifiable {
         case .squats: "squat"
         case .lunges: "lunge"
         case .situps: "situp"
+        case .planks: "plank"
         }
     }
 
@@ -48,6 +52,7 @@ enum MovementType: String, CaseIterable, Identifiable {
         case .squats: "squat"
         case .lunges: "lunges"
         case .situps: "pushup"
+        case .planks: "pushup"
         }
     }
 
@@ -57,8 +62,18 @@ enum MovementType: String, CaseIterable, Identifiable {
     /// Whether camera-based detection is implemented for this movement
     var isImplemented: Bool {
         switch self {
-        case .pushups, .squats: true
+        case .pushups, .squats, .planks: true
         case .lunges, .situps: false
+        }
+    }
+
+    /// Movements measured by duration held rather than repetitions. These
+    /// need a steady tick to advance their count even when the detected pose
+    /// doesn't change between frames.
+    var isTimeBased: Bool {
+        switch self {
+        case .planks: true
+        case .pushups, .squats, .lunges, .situps: false
         }
     }
 
@@ -68,6 +83,7 @@ enum MovementType: String, CaseIterable, Identifiable {
         case .squats: count == 1 ? "squat" : "squats"
         case .lunges: count == 1 ? "lunge" : "lunges"
         case .situps: count == 1 ? "situp" : "situps"
+        case .planks: count == 1 ? "second" : "seconds"
         }
     }
 
@@ -90,6 +106,7 @@ enum MovementType: String, CaseIterable, Identifiable {
         case .squats: "Stand facing the camera\nwith your full body visible"
         case .lunges: "Stand facing the camera\nwith your full body visible"
         case .situps: "Position yourself for sit-ups\nfacing the camera"
+        case .planks: "Get into plank position\nfacing the camera"
         }
     }
 
@@ -99,6 +116,7 @@ enum MovementType: String, CaseIterable, Identifiable {
         case .squats: "Make sure your knees are visible"
         case .lunges: "Make sure your knees are visible"
         case .situps: "Make sure your torso is visible"
+        case .planks: "Make sure your shoulders and hips are visible"
         }
     }
 
@@ -108,6 +126,7 @@ enum MovementType: String, CaseIterable, Identifiable {
         case .squats: "Keep your knees in the frame"
         case .lunges: "Keep your knees in the frame"
         case .situps: "Keep your torso in the frame"
+        case .planks: "Hold a straight line from shoulders to hips"
         }
     }
 
@@ -117,6 +136,7 @@ enum MovementType: String, CaseIterable, Identifiable {
         case .squats: "squat"
         case .lunges: "lunge"
         case .situps: "situp"
+        case .planks: "plank"
         }
     }
 
@@ -126,10 +146,11 @@ enum MovementType: String, CaseIterable, Identifiable {
         case .squats: "Do Squat"
         case .lunges: "Do Lunge"
         case .situps: "Do Situp"
+        case .planks: "Add Second"
         }
     }
 
-    func makeCountingStrategy(target: Int) -> ExerciseCountingStrategy {
+    func makeCountingStrategy(target: Int?) -> ExerciseCountingStrategy {
         switch self {
         case .pushups, .situps:
             AngleThresholdStrategy(
@@ -153,6 +174,8 @@ enum MovementType: String, CaseIterable, Identifiable {
                     return angles.isEmpty ? nil : angles.reduce(0, +) / Double(angles.count)
                 }
             )
+        case .planks:
+            PlankHoldStrategy(target: target)
         }
     }
 }

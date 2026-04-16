@@ -23,6 +23,8 @@ struct WorkoutView: View {
     @State private var currentCount: Int = 0
     @State private var showHelp = false
     @State private var showSuccess = false
+    @State private var showStreakCommitment = false
+    @State private var pendingStreakCommitment = false
     @State private var earnedMinutes = 0
     @State private var earnedCoins = 0
     @State private var buttonScale: CGFloat = 1.0
@@ -31,9 +33,19 @@ struct WorkoutView: View {
     private var count: Int { currentCount }
 
     var body: some View {
-        if showSuccess {
+        if showStreakCommitment {
+            StreakCommitmentView(onCommit: { dismiss() })
+        } else if showSuccess {
             WorkoutSuccessView(minutes: earnedMinutes, earnedCoins: mode == .earnCoins ? earnedCoins : nil) {
-                dismiss()
+                if pendingStreakCommitment {
+                    pendingStreakCommitment = false
+                    withAnimation {
+                        showSuccess = false
+                        showStreakCommitment = true
+                    }
+                } else {
+                    dismiss()
+                }
             }
         } else {
             workoutContent
@@ -68,9 +80,9 @@ struct WorkoutView: View {
                 } label: {
                     Image(systemName: "questionmark")
                         .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Color.appBackground)
                         .frame(width: 32, height: 32)
-                        .background(Color.black)
+                        .background(Color.primaryText)
                         .clipShape(Circle())
                 }
             }
@@ -81,7 +93,7 @@ struct WorkoutView: View {
             // MARK: - Camera
             ExerciseCameraView(
                 movementType: movementType,
-                target: unlockMinutes,
+                target: mode == .earnCoins ? nil : unlockMinutes,
                 onCountChanged: { currentCount = $0 },
                 onComplete: { _ in finishWorkout() }
             )
@@ -156,7 +168,8 @@ struct WorkoutView: View {
         case .unlockScreenTime:
             try? lockService.unlockFromWorkout(minutes: earnedMinutes)
         }
-        streakManager.recordWorkout()
+        let isFirstWorkoutToday = streakManager.recordWorkout()
+        pendingStreakCommitment = isFirstWorkoutToday
         withAnimation {
             showSuccess = true
         }

@@ -6,13 +6,16 @@ final class ExerciseCounter {
     private(set) var count: Int = 0
     private(set) var phase: ExercisePhase = .idle
 
-    let target: Int
+    let target: Int?
 
-    var isComplete: Bool { count >= target }
+    var isComplete: Bool {
+        guard let target else { return false }
+        return count >= target
+    }
 
     private let strategy: ExerciseCountingStrategy
 
-    init(target: Int = 10, strategy: ExerciseCountingStrategy) {
+    init(target: Int?, strategy: ExerciseCountingStrategy) {
         self.target = target
         self.strategy = strategy
     }

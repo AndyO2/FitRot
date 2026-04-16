@@ -3,7 +3,7 @@ import SwiftUI
 
 struct ExerciseCameraView: View {
     var movementType: MovementType
-    var target: Int
+    var target: Int?
     var onCountChanged: ((Int) -> Void)?
     var onComplete: ((Int) -> Void)?
 
@@ -12,7 +12,7 @@ struct ExerciseCameraView: View {
     @State private var exerciseCounter: ExerciseCounter
     @State private var countingStartTime: Date?
 
-    init(movementType: MovementType, target: Int = 10, onCountChanged: ((Int) -> Void)? = nil, onComplete: ((Int) -> Void)? = nil) {
+    init(movementType: MovementType, target: Int? = nil, onCountChanged: ((Int) -> Void)? = nil, onComplete: ((Int) -> Void)? = nil) {
         self.movementType = movementType
         self.target = target
         self.onCountChanged = onCountChanged
@@ -76,7 +76,7 @@ struct ExerciseCameraView: View {
             }
             cameraManager.requestAuthorization()
             AnalyticsService.shared.track("\(movementType.analyticsPrefix)_session_started", properties: [
-                "target_reps": target,
+                "target_reps": target ?? -1,
             ])
         }
         .onDisappear {
@@ -85,7 +85,7 @@ struct ExerciseCameraView: View {
             if !exerciseCounter.isComplete {
                 AnalyticsService.shared.track("\(movementType.analyticsPrefix)_session_abandoned", properties: [
                     "reps_completed": exerciseCounter.count,
-                    "target_reps": exerciseCounter.target,
+                    "target_reps": exerciseCounter.target ?? -1,
                     "time_elapsed": countingStartTime.map { Date().timeIntervalSince($0) } ?? 0,
                 ])
             }
@@ -93,6 +93,14 @@ struct ExerciseCameraView: View {
         .onChange(of: poseDetector.currentPose) { _, newPose in
             guard !exerciseCounter.isComplete else { return }
             exerciseCounter.update(pose: newPose)
+        }
+        .task {
+            guard movementType.isTimeBased else { return }
+            while !Task.isCancelled {
+                try? await Task.sleep(nanoseconds: 250_000_000)
+                guard !Task.isCancelled, !exerciseCounter.isComplete else { continue }
+                exerciseCounter.update(pose: poseDetector.currentPose)
+            }
         }
         .onChange(of: exerciseCounter.count) { oldCount, newCount in
             if oldCount == 0 && newCount > 0 {

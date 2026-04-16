@@ -3,7 +3,7 @@ import Foundation
 final class AngleThresholdStrategy: ExerciseCountingStrategy {
     private(set) var count: Int = 0
     private(set) var phase: ExercisePhase = .idle
-    let target: Int
+    let target: Int?
 
     private let downAngleThreshold: Double
     private let upAngleThreshold: Double
@@ -15,7 +15,7 @@ final class AngleThresholdStrategy: ExerciseCountingStrategy {
     private var lastCountTime: Date?
 
     init(
-        target: Int,
+        target: Int?,
         downThreshold: Double,
         upThreshold: Double,
         minimumRepInterval: TimeInterval,

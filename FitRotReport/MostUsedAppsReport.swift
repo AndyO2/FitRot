@@ -50,8 +50,8 @@ struct MostUsedAppsReport: DeviceActivityReportScene {
             .sorted { $0.value > $1.value }
             .prefix(maxApps)
 
-        let apps = sorted.enumerated().map { index, pair in
-            AppUsage(id: "app-\(index)", token: pair.key, duration: pair.value)
+        let apps = sorted.map { pair in
+            AppUsage(token: pair.key, duration: pair.value)
         }
 
         defaults?.set(Date().timeIntervalSinceReferenceDate, forKey: mostUsedAppsLastUpdatedKey)

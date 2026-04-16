@@ -28,7 +28,7 @@ struct EarnCoinsView: View {
 
                 ScrollView {
                     VStack(spacing: 16) {
-                        ForEach(MovementType.allCases) { movement in
+                        ForEach(MovementType.allCases.filter { $0 != .situps }) { movement in
                             ExerciseCardView(movement: movement) {
                                 nav.startWorkout(for: movement)
                             }
