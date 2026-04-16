@@ -3,9 +3,13 @@ import SwiftUI
 #if canImport(FamilyControls)
 
 struct WorkoutSuccessView: View {
+    @Environment(CoinManager.self) private var coinManager
+
     let minutes: Int
     var earnedCoins: Int? = nil
     var onDone: () -> Void
+
+    @State private var displayedBalance: Int = 0
 
     var body: some View {
         ZStack {
@@ -16,18 +20,36 @@ struct WorkoutSuccessView: View {
                 Spacer()
 
                 VStack(spacing: 16) {
-                    Image(systemName: earnedCoins != nil ? "dollarsign.circle.fill" : "checkmark.circle.fill")
-                        .font(.system(size: 64))
-                        .foregroundStyle(earnedCoins != nil ? .yellow : .green)
+                    if let coins = earnedCoins {
+                        HStack(spacing: 12) {
+                            Text("+\(coins)")
+                                .font(.system(size: 48, weight: .bold))
+                                .foregroundStyle(.primaryText)
+                            Image("FitScroll-Coin")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 72, height: 72)
+                        }
+                    } else {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 64))
+                            .foregroundStyle(.green)
+                    }
 
                     Text("Good Job!")
                         .font(.system(size: 34, weight: .bold))
                         .foregroundStyle(.primaryText)
 
-                    if let coins = earnedCoins {
-                        Text("Earned \(coins) \(coins == 1 ? "coin" : "coins")!")
-                            .font(.body)
-                            .foregroundStyle(.secondaryText)
+                    if earnedCoins != nil {
+                        HStack(spacing: 0) {
+                            Text("You now have ")
+                            Text("\(displayedBalance)")
+                                .contentTransition(.numericText())
+                            Text(" FitRot \(displayedBalance == 1 ? "coin" : "coins")!")
+                        }
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.secondaryText)
                     } else {
                         Text("Apps unlocked for \(minutes) \(minutes == 1 ? "minute" : "minutes")")
                             .font(.body)
@@ -58,6 +80,25 @@ struct WorkoutSuccessView: View {
                 }
                 .padding(.horizontal, 20)
                 .padding(.bottom, 16)
+            }
+        }
+        .onAppear {
+            guard let coins = earnedCoins else { return }
+            displayedBalance = max(0, coinManager.balance - coins)
+            startCountUpAnimation(target: coinManager.balance, delta: coins)
+        }
+    }
+
+    private func startCountUpAnimation(target: Int, delta: Int) {
+        guard displayedBalance < target else { return }
+        let interval = max(0.03, 0.6 / Double(max(delta, 1)))
+        Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { timer in
+            if displayedBalance < target {
+                withAnimation {
+                    displayedBalance += 1
+                }
+            } else {
+                timer.invalidate()
             }
         }
     }

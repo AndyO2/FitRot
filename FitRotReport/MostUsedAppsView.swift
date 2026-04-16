@@ -18,11 +18,6 @@ struct MostUsedAppsView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
-            Text("MOST USED APPS")
-                .font(.caption.weight(.semibold))
-                .tracking(0.8)
-                .foregroundStyle(.secondary)
-
             if configuration.hasData {
                 VStack(spacing: 14) {
                     ForEach(Array(configuration.apps.enumerated()), id: \.element.id) { index, app in
@@ -64,7 +59,7 @@ private struct AppRow: View {
 
             Text(formattedDuration(duration))
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.primary)
                 .monospacedDigit()
         }
     }

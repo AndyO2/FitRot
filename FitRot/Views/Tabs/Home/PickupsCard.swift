@@ -41,24 +41,11 @@ struct PickupsCard: View {
         )
     }
 
-    private var formattedLastUpdated: String {
-        guard let lastUpdated else { return "—" }
-        let cal = Calendar.current
-        let formatter = DateFormatter()
-        if cal.isDateInToday(lastUpdated) {
-            formatter.dateFormat = "'Today,' HH:mm"
-        } else {
-            formatter.dateFormat = "MMM d, HH:mm"
-        }
-        return formatter.string(from: lastUpdated)
-    }
-
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             header
             DeviceActivityReport(.pickups, filter: filter)
                 .frame(height: contentHeight)
-            footer
         }
         .padding()
         .background(Color.cardSurface, in: RoundedRectangle(cornerRadius: 16))
@@ -76,24 +63,13 @@ struct PickupsCard: View {
 
     private var header: some View {
         HStack {
-            Text("Pickups")
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(.primaryText)
+            Text("PICKUPS")
+                .font(.caption.weight(.semibold))
+                .tracking(0.8)
+                .foregroundStyle(.secondary)
             Spacer()
             Text("This week")
                 .font(.caption)
-                .foregroundStyle(.secondaryText)
-        }
-    }
-
-    private var footer: some View {
-        HStack {
-            Text("Latest update")
-                .font(.caption2)
-                .foregroundStyle(.secondaryText)
-            Spacer()
-            Text(formattedLastUpdated)
-                .font(.caption2)
                 .foregroundStyle(.secondaryText)
         }
     }

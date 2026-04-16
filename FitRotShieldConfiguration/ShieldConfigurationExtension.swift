@@ -10,11 +10,51 @@ import ManagedSettings
 import ManagedSettingsUI
 import UIKit
 
-class ShieldConfigurationExtension: ShieldConfigurationDataSource {
-    private let groupID = "group.com.WinToday.FitRot"
-    private let awaitingFlagKey = "shieldAwaitingNotification"
-    private let awaitingTimestampKey = "shieldAwaitingNotificationTimestamp"
+private enum ShieldState: String {
+    case `default`
+    case awaiting
+    case dndHelp
+}
 
+// Duplicated verbatim in ShieldActionExtension/ShieldActionExtension.swift.
+// Keep both copies in sync — extension targets don't share source files.
+private enum ShieldStateStore {
+    static let groupID = "group.com.WinToday.FitRot"
+    static let fileName = "shield_state.plist"
+    static let ttl: TimeInterval = 5 * 60
+
+    private static var fileURL: URL? {
+        FileManager.default
+            .containerURL(forSecurityApplicationGroupIdentifier: groupID)?
+            .appendingPathComponent(fileName)
+    }
+
+    static func read() -> ShieldState {
+        guard let url = fileURL,
+              let data = try? Data(contentsOf: url),
+              let plist = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any],
+              let raw = plist["state"] as? String,
+              let state = ShieldState(rawValue: raw)
+        else { return .default }
+
+        let ts = plist["timestamp"] as? TimeInterval ?? 0
+        let age = Date().timeIntervalSinceReferenceDate - ts
+        if state != .default && age > ttl { return .default }
+        return state
+    }
+
+    static func write(_ state: ShieldState) {
+        guard let url = fileURL else { return }
+        let plist: [String: Any] = [
+            "state": state.rawValue,
+            "timestamp": Date().timeIntervalSinceReferenceDate
+        ]
+        guard let data = try? PropertyListSerialization.data(fromPropertyList: plist, format: .binary, options: 0) else { return }
+        try? data.write(to: url, options: .atomic)
+    }
+}
+
+class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     override func configuration(shielding application: Application) -> ShieldConfiguration {
         currentConfiguration(blockedName: application.localizedDisplayName ?? "This app")
     }
@@ -32,19 +72,17 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     }
 
     private func currentConfiguration(blockedName: String) -> ShieldConfiguration {
-        isAwaitingNotification ? makeAwaitingConfiguration() : makeDefaultConfiguration(blockedName: blockedName)
+        switch ShieldStateStore.read() {
+        case .default:
+            return makeDefaultConfig(blockedName: blockedName)
+        case .awaiting:
+            return makeAwaitingConfig()
+        case .dndHelp:
+            return makeDNDHelpConfig()
+        }
     }
 
-    private var isAwaitingNotification: Bool {
-        guard let defaults = UserDefaults(suiteName: groupID),
-              defaults.bool(forKey: awaitingFlagKey) else { return false }
-        let ts = defaults.double(forKey: awaitingTimestampKey)
-        guard ts > 0 else { return false }
-        let age = Date().timeIntervalSinceReferenceDate - ts
-        return age < 5 * 60
-    }
-
-    private func makeDefaultConfiguration(blockedName: String) -> ShieldConfiguration {
+    private func makeDefaultConfig(blockedName: String) -> ShieldConfiguration {
         ShieldConfiguration(
             backgroundBlurStyle: nil,
             backgroundColor: .black,
@@ -53,10 +91,7 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
                 text: "\(blockedName) blocked by FitRot",
                 color: .white
             ),
-            subtitle: ShieldConfiguration.Label(
-                text: " ",
-                color: .white
-            ),
+            subtitle: nil,
             primaryButtonLabel: ShieldConfiguration.Label(
                 text: "Close",
                 color: .white
@@ -69,21 +104,47 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
         )
     }
 
-    private func makeAwaitingConfiguration() -> ShieldConfiguration {
+    private func makeAwaitingConfig() -> ShieldConfiguration {
         ShieldConfiguration(
             backgroundBlurStyle: nil,
             backgroundColor: .black,
-            icon: UIImage(named: "logo-transparent"),
+            icon: UIImage(named: "logo"),
             title: ShieldConfiguration.Label(
                 text: "⬆ Tap the notification ⬆",
                 color: .white
             ),
             subtitle: nil,
-            primaryButtonLabel: ShieldConfiguration.Label(
+            primaryButtonLabel: nil,
+            primaryButtonBackgroundColor: nil,
+            secondaryButtonLabel: ShieldConfiguration.Label(
                 text: "Didn't get a notification?",
                 color: .white
+            )
+        )
+    }
+
+    private func makeDNDHelpConfig() -> ShieldConfiguration {
+        let symbolConfig = UIImage.SymbolConfiguration(pointSize: 64, weight: .regular)
+        let moonIcon = UIImage(systemName: "moon.fill", withConfiguration: symbolConfig)?
+            .withTintColor(.white, renderingMode: .alwaysOriginal)
+
+        return ShieldConfiguration(
+            backgroundBlurStyle: nil,
+            backgroundColor: .black,
+            icon: moonIcon,
+            title: ShieldConfiguration.Label(
+                text: "Do Not Disturb mode is active",
+                color: .white
             ),
-            primaryButtonBackgroundColor: nil,
+            subtitle: ShieldConfiguration.Label(
+                text: "You can allow FitRot in Settings > Focus.\n\nAlternatively, open FitRot yourself.",
+                color: .white
+            ),
+            primaryButtonLabel: ShieldConfiguration.Label(
+                text: "Retry",
+                color: .white
+            ),
+            primaryButtonBackgroundColor: .systemBlue,
             secondaryButtonLabel: nil
         )
     }

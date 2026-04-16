@@ -82,7 +82,7 @@ struct UnlockView: View {
                         .contentTransition(.numericText())
 
                     Slider(value: $selectedMinutes, in: 1...30, step: 1)
-                        .tint(.highlight)
+                        .tint(.blue)
                         .padding(.horizontal, 32)
                 }
                 .padding(.bottom, 32)
@@ -141,7 +141,7 @@ struct UnlockView: View {
                         .padding(.vertical, 16)
                         .background(
                             RoundedRectangle(cornerRadius: 16)
-                                .fill(ctaDisabled ? Color.highlight.opacity(0.4) : Color.highlight)
+                                .fill(ctaDisabled ? Color.blue.opacity(0.4) : Color.blue)
                         )
                 }
                 .disabled(ctaDisabled)
@@ -223,7 +223,7 @@ private struct UnlockOptionCard: View {
 
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                     .font(.system(size: 24))
-                    .foregroundStyle(isSelected ? .highlight : .secondaryText)
+                    .foregroundStyle(isSelected ? .blue : .secondaryText)
             }
             .padding(16)
             .background(
@@ -232,7 +232,7 @@ private struct UnlockOptionCard: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 16)
-                    .stroke(isSelected ? Color.highlight : Color.cardBorder, lineWidth: isSelected ? 2 : 1)
+                    .stroke(isSelected ? Color.blue : Color.cardBorder, lineWidth: isSelected ? 2 : 1)
             )
             .opacity(isDisabled ? 0.4 : 1)
         }

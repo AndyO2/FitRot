@@ -37,20 +37,26 @@ struct MostUsedAppsCard: View {
     }
 
     var body: some View {
-        DeviceActivityReport(.mostUsedApps, filter: filter)
-            .frame(height: contentHeight)
-            .padding(20)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24))
-            .overlay(
-                RoundedRectangle(cornerRadius: 24)
-                    .stroke(Color.white.opacity(0.6), lineWidth: 1)
-            )
-            .onAppear {
-                hydrateFromAppGroup()
-            }
-            .task {
-                await pollAppGroup()
-            }
+        VStack(alignment: .leading, spacing: 16) {
+            Text("MOST USED APPS")
+                .font(.caption.weight(.semibold))
+                .tracking(0.8)
+                .foregroundStyle(.secondary)
+            DeviceActivityReport(.mostUsedApps, filter: filter)
+                .frame(height: contentHeight)
+        }
+        .padding(20)
+        .background(Color.cardSurface, in: RoundedRectangle(cornerRadius: 16))
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.cardBorder, lineWidth: 1)
+        )
+        .onAppear {
+            hydrateFromAppGroup()
+        }
+        .task {
+            await pollAppGroup()
+        }
     }
 
     private func hydrateFromAppGroup() {

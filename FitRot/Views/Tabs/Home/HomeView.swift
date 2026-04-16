@@ -43,8 +43,8 @@ struct HomeView: View {
                     MostUsedAppsCard()
                         .padding(.horizontal)
 
-                    DebugExtensionCard()
-                        .padding(.horizontal)
+//                    DebugExtensionCard()
+//                        .padding(.horizontal)
                 }
                 .padding(.top)
                 }

@@ -11,34 +11,74 @@ import UserNotifications
 #if os(iOS)
 import ManagedSettings
 
-private let groupID = "group.com.WinToday.FitRot"
-private let awaitingFlagKey = "shieldAwaitingNotification"
-private let awaitingTimestampKey = "shieldAwaitingNotificationTimestamp"
+private enum ShieldState: String {
+    case `default`
+    case awaiting
+    case dndHelp
+}
+
+// Duplicated verbatim in FitRotShieldConfiguration/ShieldConfigurationExtension.swift.
+// Keep both copies in sync — extension targets don't share source files.
+private enum ShieldStateStore {
+    static let groupID = "group.com.WinToday.FitRot"
+    static let fileName = "shield_state.plist"
+    static let ttl: TimeInterval = 5 * 60
+
+    private static var fileURL: URL? {
+        FileManager.default
+            .containerURL(forSecurityApplicationGroupIdentifier: groupID)?
+            .appendingPathComponent(fileName)
+    }
+
+    static func read() -> ShieldState {
+        guard let url = fileURL,
+              let data = try? Data(contentsOf: url),
+              let plist = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any],
+              let raw = plist["state"] as? String,
+              let state = ShieldState(rawValue: raw)
+        else { return .default }
+
+        let ts = plist["timestamp"] as? TimeInterval ?? 0
+        let age = Date().timeIntervalSinceReferenceDate - ts
+        if state != .default && age > ttl { return .default }
+        return state
+    }
+
+    static func write(_ state: ShieldState) {
+        guard let url = fileURL else { return }
+        let plist: [String: Any] = [
+            "state": state.rawValue,
+            "timestamp": Date().timeIntervalSinceReferenceDate
+        ]
+        guard let data = try? PropertyListSerialization.data(fromPropertyList: plist, format: .binary, options: 0) else { return }
+        try? data.write(to: url, options: .atomic)
+    }
+}
 
 class ShieldActionExtension: ShieldActionDelegate {
-    private let store = ManagedSettingsStore()
-
     override func handle(action: ShieldAction, for application: ApplicationToken, completionHandler: @escaping (ShieldActionResponse) -> Void) {
-        let defaults = UserDefaults(suiteName: groupID)
-        let awaiting = defaults?.bool(forKey: awaitingFlagKey) ?? false
+        let state = ShieldStateStore.read()
 
-        switch (action, awaiting) {
-        case (.primaryButtonPressed, false):
+        switch (state, action) {
+        case (.default, .primaryButtonPressed):
+            ShieldStateStore.write(.default)
             completionHandler(.close)
 
-        case (.secondaryButtonPressed, false):
-            defaults?.set(true, forKey: awaitingFlagKey)
-            defaults?.set(Date().timeIntervalSinceReferenceDate, forKey: awaitingTimestampKey)
+        case (.default, .secondaryButtonPressed):
+            ShieldStateStore.write(.awaiting)
             postOpenAppNotification()
-            forceShieldRefresh()
-            completionHandler(.none)
+            completionHandler(.defer)
 
-        case (.primaryButtonPressed, true):
-            postOpenAppNotification()
-            completionHandler(.none)
+        case (.awaiting, .secondaryButtonPressed):
+            ShieldStateStore.write(.dndHelp)
+            completionHandler(.defer)
+
+        case (.dndHelp, .primaryButtonPressed):
+            ShieldStateStore.write(.default)
+            completionHandler(.defer)
 
         default:
-            completionHandler(.none)
+            completionHandler(.defer)
         }
     }
 
@@ -60,14 +100,6 @@ class ShieldActionExtension: ShieldActionDelegate {
             trigger: UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
         )
         UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
-    }
-
-    // Re-assigning shield.applications invalidates the cached ShieldConfiguration
-    // and forces iOS to re-query ShieldConfigurationDataSource, which swaps the visual.
-    private func forceShieldRefresh() {
-        let apps = store.shield.applications
-        store.shield.applications = nil
-        store.shield.applications = apps
     }
 }
 

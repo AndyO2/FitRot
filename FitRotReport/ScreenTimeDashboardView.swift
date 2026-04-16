@@ -50,6 +50,9 @@ struct ScreenTimeDashboardView: View {
                     days: configuration.days,
                     weekStart: configuration.currentWeekStart
                 )
+                Text("BREAKDOWN BY CATEGORY")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
                 CategoryGrid(categories: configuration.categories)
             } else {
                 EmptyDataPlaceholder()
