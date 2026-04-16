@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		611445762F91800300426588 /* AppsFlyerLib-Static in Frameworks */ = {isa = PBXBuildFile; productRef = 611445752F91800300426588 /* AppsFlyerLib-Static */; };
 		61D9401A2F8EDDBA005D033A /* SuperwallKit in Frameworks */ = {isa = PBXBuildFile; productRef = 61D940192F8EDDBA005D033A /* SuperwallKit */; };
 		61D9401D2F8EDDCE005D033A /* Mixpanel in Frameworks */ = {isa = PBXBuildFile; productRef = 61D9401C2F8EDDCE005D033A /* Mixpanel */; };
 		61D940202F8EDDE4005D033A /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 61D9401F2F8EDDE4005D033A /* Lottie */; };
@@ -166,6 +167,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				61D9401D2F8EDDCE005D033A /* Mixpanel in Frameworks */,
+				611445762F91800300426588 /* AppsFlyerLib-Static in Frameworks */,
 				61D9401A2F8EDDBA005D033A /* SuperwallKit in Frameworks */,
 				61D940202F8EDDE4005D033A /* Lottie in Frameworks */,
 			);
@@ -270,6 +272,7 @@
 				61D940192F8EDDBA005D033A /* SuperwallKit */,
 				61D9401C2F8EDDCE005D033A /* Mixpanel */,
 				61D9401F2F8EDDE4005D033A /* Lottie */,
+				611445752F91800300426588 /* AppsFlyerLib-Static */,
 			);
 			productName = FitRot;
 			productReference = 615FAE9B2F8436460020164D /* FitRot.app */;
@@ -403,6 +406,7 @@
 				61D940182F8EDDBA005D033A /* XCRemoteSwiftPackageReference "Superwall-iOS" */,
 				61D9401B2F8EDDCE005D033A /* XCRemoteSwiftPackageReference "mixpanel-swift" */,
 				61D9401E2F8EDDE4005D033A /* XCRemoteSwiftPackageReference "lottie-ios" */,
+				611445742F91800300426588 /* XCRemoteSwiftPackageReference "AppsFlyerFramework-Static" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 615FAE9C2F8436460020164D /* Products */;
@@ -1076,6 +1080,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		611445742F91800300426588 /* XCRemoteSwiftPackageReference "AppsFlyerFramework-Static" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AppsFlyerSDK/AppsFlyerFramework-Static";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.17.9;
+			};
+		};
 		61D940182F8EDDBA005D033A /* XCRemoteSwiftPackageReference "Superwall-iOS" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/superwall/Superwall-iOS";
@@ -1103,6 +1115,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		611445752F91800300426588 /* AppsFlyerLib-Static */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 611445742F91800300426588 /* XCRemoteSwiftPackageReference "AppsFlyerFramework-Static" */;
+			productName = "AppsFlyerLib-Static";
+		};
 		61D940192F8EDDBA005D033A /* SuperwallKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 61D940182F8EDDBA005D033A /* XCRemoteSwiftPackageReference "Superwall-iOS" */;

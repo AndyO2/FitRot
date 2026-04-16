@@ -25,7 +25,7 @@ struct HomeHeaderView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 10))
 
                 Text("FITROT")
-                    .font(.system(size: 34, weight: .bold))
+                    .font(.system(size: 30, weight: .bold))
             }
 
             Spacer()
@@ -55,7 +55,7 @@ struct HomeHeaderView: View {
                 Image("FitScroll-Coin")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 22, height: 22)
+                    .frame(width: 25, height: 25)
                 Text("\(coinManager.balance)")
                     .font(.callout)
                     .fontWeight(.semibold)

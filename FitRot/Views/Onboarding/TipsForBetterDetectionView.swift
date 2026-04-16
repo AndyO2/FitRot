@@ -27,7 +27,7 @@ struct TipsForBetterDetectionView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .padding()
-                .background(Color.white, in: RoundedRectangle(cornerRadius: 16))
+                .background(Color("CardSurface"), in: RoundedRectangle(cornerRadius: 16))
                 .overlay(
                     RoundedRectangle(cornerRadius: 16)
                         .stroke(Color.cardBorder, lineWidth: 1)

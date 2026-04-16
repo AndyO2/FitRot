@@ -36,6 +36,16 @@ enum MovementType: String, CaseIterable, Identifiable {
         }
     }
 
+    var iconAsset: String {
+        switch self {
+        case .pushups: "icon-pushup"
+        case .squats: "icon-squat"
+        case .lunges: "icon-lunge"
+        case .situps: "icon-situp"
+        case .planks: "icon-plank"
+        }
+    }
+
     var imageName: String {
         switch self {
         case .pushups: "pushup"

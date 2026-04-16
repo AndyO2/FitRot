@@ -56,9 +56,10 @@ struct WorkoutView: View {
         VStack(spacing: 0) {
             // MARK: - Top bar
             HStack {
-                Image(systemName: movementType.icon)
-                    .font(.system(size: 22, weight: .semibold))
-                    .foregroundStyle(.primaryText)
+                Image(movementType.iconAsset)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 35, height: 35)
 
                 Spacer()
 
