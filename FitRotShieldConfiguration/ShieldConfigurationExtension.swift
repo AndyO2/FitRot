@@ -108,7 +108,7 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
         ShieldConfiguration(
             backgroundBlurStyle: nil,
             backgroundColor: .black,
-            icon: UIImage(named: "logo"),
+            icon: UIImage(named: "logo-transparent"),
             title: ShieldConfiguration.Label(
                 text: "⬆ Tap the notification ⬆",
                 color: .white

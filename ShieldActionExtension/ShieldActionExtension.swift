@@ -66,6 +66,7 @@ class ShieldActionExtension: ShieldActionDelegate {
 
         case (.default, .secondaryButtonPressed):
             ShieldStateStore.write(.awaiting)
+            markUnlockRequestPending()
             postOpenAppNotification()
             completionHandler(.defer)
 
@@ -88,6 +89,12 @@ class ShieldActionExtension: ShieldActionDelegate {
 
     override func handle(action: ShieldAction, for category: ActivityCategoryToken, completionHandler: @escaping (ShieldActionResponse) -> Void) {
         completionHandler(.close)
+    }
+
+    private func markUnlockRequestPending() {
+        let defaults = UserDefaults(suiteName: "group.com.WinToday.FitRot")
+        defaults?.set(true, forKey: "unlockRequestPending")
+        defaults?.set(Date().timeIntervalSinceReferenceDate, forKey: "unlockRequestTimestamp")
     }
 
     private func postOpenAppNotification() {
