@@ -13,11 +13,22 @@ import UserNotifications
 @Observable
 final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
     private weak var navigationCoordinator: NavigationCoordinator?
+    var authorizationStatus: UNAuthorizationStatus = .notDetermined
+
+    func refreshAuthorizationStatus() async {
+        let settings = await UNUserNotificationCenter.current().notificationSettings()
+        authorizationStatus = settings.authorizationStatus
+    }
 
     func configure(with coordinator: NavigationCoordinator) {
         self.navigationCoordinator = coordinator
         UNUserNotificationCenter.current().delegate = self
         setupCategories()
+        Task { await refreshAuthorizationStatus() }
+    }
+
+    var isNotificationEnabled: Bool {
+        authorizationStatus == .authorized
     }
 
     func requestPermission() async {

@@ -14,6 +14,7 @@ import FamilyControls
 struct SettingsView: View {
     @Environment(ScreenTimeAuthManager.self) private var authManager
     @Environment(AppLockService.self) private var lockService
+    @Environment(NotificationManager.self) private var notificationManager
     @Environment(ThemeService.self) private var themeService
     @Environment(AppIconService.self) private var iconService
     @Environment(\.requestReview) private var requestReview
@@ -60,6 +61,32 @@ struct SettingsView: View {
                     .listRowBackground(Color.cardSurface)
                     .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                }
+
+                Section("Notifications") {
+                    HStack {
+                        Label(
+                            notificationManager.isNotificationEnabled ? "Enabled" : "Disabled",
+                            systemImage: notificationManager.isNotificationEnabled ? "bell.fill" : "bell.slash.fill"
+                        )
+                        Spacer()
+                        Circle()
+                            .fill(notificationManager.isNotificationEnabled ? Color.assetGains : .red)
+                            .frame(width: 10, height: 10)
+                    }
+                    .listRowBackground(Color.cardSurface)
+
+                    if !notificationManager.isNotificationEnabled {
+                        Button {
+                            if let url = URL(string: UIApplication.openSettingsURLString) {
+                                UIApplication.shared.open(url)
+                            }
+                        } label: {
+                            Label("Enable", systemImage: "arrow.up.forward.app")
+                        }
+                        .foregroundStyle(.primaryText)
+                        .listRowBackground(Color.cardSurface)
+                    }
                 }
 
                 Section("General") {
@@ -128,6 +155,17 @@ struct SettingsView: View {
                         .listRowBackground(Color.cardSurface)
                     }
 
+                    HStack {
+                        Text("Notifications")
+                        Spacer()
+                        Text(notificationStatusText)
+                            .foregroundStyle(notificationStatusColor)
+                    }
+                    .listRowBackground(Color.cardSurface)
+                    .task {
+                        await notificationManager.refreshAuthorizationStatus()
+                    }
+
                     Button("Open Push-Up Camera") {
                         showDevCamera = true
                     }
@@ -155,6 +193,25 @@ struct SettingsView: View {
                 }
             }
             .background(Color("AppBackground"))
+        }
+    }
+
+    private var notificationStatusText: String {
+        switch notificationManager.authorizationStatus {
+        case .authorized: "Authorized"
+        case .denied: "Denied"
+        case .notDetermined: "Not Determined"
+        case .provisional: "Provisional"
+        case .ephemeral: "Ephemeral"
+        @unknown default: "Unknown"
+        }
+    }
+
+    private var notificationStatusColor: Color {
+        switch notificationManager.authorizationStatus {
+        case .authorized, .provisional, .ephemeral: .assetGains
+        case .denied: .red
+        default: .secondary
         }
     }
 

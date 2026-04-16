@@ -54,6 +54,7 @@ struct FitRotApp: App {
                     if newPhase == .active {
                         lockService.restoreStateOnLaunch()
                         navigationCoordinator.checkPendingUnlockRequest()
+                        Task { await notificationManager.refreshAuthorizationStatus() }
                     }
                 }
             #else
