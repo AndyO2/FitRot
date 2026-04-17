@@ -60,6 +60,7 @@ struct FitRotApp: App {
                         lockService.restoreStateOnLaunch()
                         navigationCoordinator.checkPendingUnlockRequest()
                         Task { await notificationManager.refreshAuthorizationStatus() }
+                        AttributionService.shared.requestTrackingAuthorization()
                     }
                 }
             #else

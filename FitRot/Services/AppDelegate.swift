@@ -17,11 +17,6 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         return true
     }
 
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        AttributionService.shared.requestATTIfNeeded()
-        AttributionService.shared.start()
-    }
-
     func application(
         _ application: UIApplication,
         continue userActivity: NSUserActivity,
