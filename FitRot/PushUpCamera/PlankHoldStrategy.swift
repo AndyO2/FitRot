@@ -43,21 +43,22 @@ final class PlankHoldStrategy: ExerciseCountingStrategy {
     }
 
     private func isValidPlank(_ pose: DetectedPose) -> Bool {
-        guard let hip = averagePoint(pose.leftHip, pose.rightHip),
+        guard let shoulder = averagePoint(pose.leftShoulder, pose.rightShoulder),
               let wrist = averagePoint(pose.leftWrist, pose.rightWrist) else {
             return false
         }
 
-        // The wrists must be clearly below the hips in screen space — a plank's
-        // forearms/hands rest on the floor while the hips stay lifted. This
-        // cleanly separates a plank/pushup posture from standing, sitting,
-        // kneeling, or any upright pose where the hands are at or above hip
-        // level.
-        guard wrist.y > hip.y + 0.08 else { return false }
+        // Forearms on the floor: wrists sit well below the shoulders.
+        guard wrist.y - shoulder.y > 0.25 else { return false }
 
-        // Sanity check: head is above the hips (user is right-side-up, facing
-        // the camera). Only enforce when the nose is actually detected.
-        if let nose = pose.nose?.point, nose.y >= hip.y {
+        // Elbows sharply bent (~90°) — the defining signal of a forearm plank
+        // versus standing, a high plank, or any other straight-arm posture.
+        let elbowAngles = [pose.leftElbowAngle, pose.rightElbowAngle].compactMap { $0 }
+        guard !elbowAngles.isEmpty else { return false }
+        let avgElbowAngle = elbowAngles.reduce(0, +) / Double(elbowAngles.count)
+        guard avgElbowAngle < 110 else { return false }
+
+        if let nose = pose.nose?.point, nose.y >= shoulder.y {
             return false
         }
 

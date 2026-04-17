@@ -91,6 +91,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		611447462F91B7B900426588 /* Exceptions for "FitRot" folder in "FitRot" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 615FAE9A2F8436460020164D /* FitRot */;
+		};
 		61D9403B2F8EF29F005D033A /* Exceptions for "FitRotDeviceActivity" folder in "FitRotDeviceActivity" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -124,6 +131,9 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		615FAE9D2F8436460020164D /* FitRot */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				611447462F91B7B900426588 /* Exceptions for "FitRot" folder in "FitRot" target */,
+			);
 			path = FitRot;
 			sourceTree = "<group>";
 		};
@@ -654,7 +664,10 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FitRot/Info.plist;
+				INFOPLIST_KEY_NSAdvertisingAttributionReportEndpoint = "https://appsflyer-skadnetwork.com/";
 				INFOPLIST_KEY_NSCameraUsageDescription = "FitRot uses the camera to count your push-ups and squats so you can earn unlock time.";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "We use this to measure which ads brought you to FitRot so we can focus on what works.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -703,7 +716,10 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FitRot/Info.plist;
+				INFOPLIST_KEY_NSAdvertisingAttributionReportEndpoint = "https://appsflyer-skadnetwork.com/";
 				INFOPLIST_KEY_NSCameraUsageDescription = "FitRot uses the camera to count your push-ups and squats so you can earn unlock time.";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "We use this to measure which ads brought you to FitRot so we can focus on what works.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;

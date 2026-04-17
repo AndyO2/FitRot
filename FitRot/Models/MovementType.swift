@@ -126,7 +126,7 @@ enum MovementType: String, CaseIterable, Identifiable {
         case .squats: "Make sure your knees are visible"
         case .lunges: "Make sure your knees are visible"
         case .situps: "Make sure your torso is visible"
-        case .planks: "Make sure your shoulders and hips are visible"
+        case .planks: "Make sure your shoulders and forearms are visible"
         }
     }
 
@@ -136,7 +136,7 @@ enum MovementType: String, CaseIterable, Identifiable {
         case .squats: "Keep your knees in the frame"
         case .lunges: "Keep your knees in the frame"
         case .situps: "Keep your torso in the frame"
-        case .planks: "Hold a straight line from shoulders to hips"
+        case .planks: "Rest on your forearms, keep a straight line"
         }
     }
 
