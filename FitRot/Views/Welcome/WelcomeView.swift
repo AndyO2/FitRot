@@ -20,6 +20,7 @@ struct WelcomeView: View {
                         .font(.system(size: 22, weight: .bold))
                 }
 
+                /*
                 HStack {
                     Spacer()
                     Menu {
@@ -56,15 +57,20 @@ struct WelcomeView: View {
                         .background(.ultraThinMaterial, in: Capsule())
                     }
                 }
+                */
             }
+            .frame(maxWidth: .infinity)
 
-            LottieView(animationName: "sleepy")
+            Spacer()
+                .frame(height: 32)
+
+            LottieView(animationName: "Scrolling")
                 .frame(height: 160)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.bottom, 8)
-            
+                .padding(.bottom, 4)
+
             Spacer()
-                .frame(height: 72)
+                .frame(height: 36)
 
             Text("Replace Doomscrolling with Exercise")
                 .font(.system(size: 40, weight: .bold))
