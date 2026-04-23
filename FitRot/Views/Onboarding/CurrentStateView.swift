@@ -55,7 +55,7 @@ struct CurrentStateView: View {
                         .font(.system(size: 28, weight: .bold))
                         .foregroundStyle(.secondary)
 
-                    Image("logo")
+                    Image("logo-orange")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 32, height: 32)

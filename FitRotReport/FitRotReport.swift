@@ -14,11 +14,20 @@ struct FitRotReport: DeviceActivityReportExtension {
         ScreenTimeDashboardReport { configuration in
             ScreenTimeDashboardView(configuration: configuration)
         }
+        ScreenTimeStatsReport { configuration in
+            ScreenTimeStatsView(configuration: configuration)
+        }
         PickupsReport { configuration in
             PickupsView(configuration: configuration)
         }
         MostUsedAppsReport { configuration in
             MostUsedAppsView(configuration: configuration)
+        }
+        TopAppInsightReport { configuration in
+            TopAppInsightView(configuration: configuration)
+        }
+        CategoryBreakdownReport { configuration in
+            CategoryBreakdownView(configuration: configuration)
         }
     }
 }

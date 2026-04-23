@@ -15,6 +15,7 @@ struct HomeView: View {
     @Environment(AppLockService.self) private var lockService
     @State private var isPickerPresented = false
     @State private var showStreakCalendar = false
+    @State private var timeRange: HomeTimeRange = .today
 
     var body: some View {
         @Bindable var lockService = lockService
@@ -24,33 +25,36 @@ struct HomeView: View {
                     .padding(.bottom, 8)
 
                 ScrollView {
-                    VStack(spacing: 20) {
+                    VStack(spacing: 16) {
+//                        TimeRangeSegmentedControl(selection: $timeRange)
+//                            .padding(.horizontal)
 
                         Button {
-                        isPickerPresented = true
-                    } label: {
-                        BlockingStatusCard()
+                            isPickerPresented = true
+                        } label: {
+                            BlockingStatusCard()
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.horizontal)
+
+                        ScreenTimeSummaryCard()
+                            .padding(.horizontal)
+
+//                        InsightCalloutCard()
+//                            .padding(.horizontal)
+                        
+                        MostUsedAppsCard()
+                            .padding(.horizontal)
+
+                        CategoryBreakdownCard(range: timeRange)
+                            .padding(.horizontal)
                     }
-                    .buttonStyle(.plain)
-                    .padding(.horizontal)
-
-                    ScreenTimeDashboardCard()
-                        .padding(.horizontal)
-
-                    PickupsCard()
-                        .padding(.horizontal)
-
-                    MostUsedAppsCard()
-                        .padding(.horizontal)
-
-//                    DebugExtensionCard()
-//                        .padding(.horizontal)
-                }
-                .padding(.top)
+                    .padding(.top, 8)
+                    .padding(.bottom, 24)
                 }
                 .scrollIndicators(.hidden)
             }
-            .background(Color("AppBackground"))
+            .background(Color("PageBackground"))
             .familyActivityPicker(isPresented: $isPickerPresented, selection: $lockService.selection)
             .onChange(of: lockService.selection) {
                 lockService.commitSelection()

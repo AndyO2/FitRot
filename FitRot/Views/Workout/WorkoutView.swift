@@ -64,7 +64,7 @@ struct WorkoutView: View {
                 Spacer()
 
                 HStack(spacing: 6) {
-                    Image("logo")
+                    Image("logo-orange")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 28, height: 28)
@@ -81,7 +81,7 @@ struct WorkoutView: View {
                 } label: {
                     Image(systemName: "questionmark")
                         .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(Color.appBackground)
+                        .foregroundStyle(Color.pageBackground)
                         .frame(width: 32, height: 32)
                         .background(Color.primaryText)
                         .clipShape(Circle())
@@ -115,7 +115,7 @@ struct WorkoutView: View {
                     }
                 }
         }
-        .background(Color.appBackground.ignoresSafeArea())
+        .background(Color.pageBackground.ignoresSafeArea())
         .sheet(isPresented: $showHelp) {
             WorkoutHelpView(movementType: movementType)
         }

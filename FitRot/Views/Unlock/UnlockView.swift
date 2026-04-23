@@ -31,7 +31,7 @@ struct UnlockView: View {
 
     var body: some View {
         ZStack {
-            Color.appBackground
+            Color.pageBackground
                 .ignoresSafeArea()
 
             VStack(spacing: 0) {
@@ -44,7 +44,7 @@ struct UnlockView: View {
                             .font(.system(size: 18, weight: .semibold))
                             .foregroundStyle(.white)
                             .frame(width: 36, height: 36)
-                            .background(Color.buttonBackground)
+                            .background(Color.brandAccent)
                             .clipShape(Circle())
                     }
 
@@ -82,7 +82,7 @@ struct UnlockView: View {
                         .contentTransition(.numericText())
 
                     Slider(value: $selectedMinutes, in: 1...30, step: 1)
-                        .tint(.blue)
+                        .tint(.brandAccent)
                         .padding(.horizontal, 32)
                 }
                 .padding(.bottom, 32)
@@ -141,7 +141,7 @@ struct UnlockView: View {
                         .padding(.vertical, 16)
                         .background(
                             RoundedRectangle(cornerRadius: 16)
-                                .fill(ctaDisabled ? Color.blue.opacity(0.4) : Color.blue)
+                                .fill(ctaDisabled ? Color.brandAccent.opacity(0.4) : Color.brandAccent)
                         )
                 }
                 .disabled(ctaDisabled)
@@ -223,7 +223,7 @@ private struct UnlockOptionCard: View {
 
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                     .font(.system(size: 24))
-                    .foregroundStyle(isSelected ? .blue : .secondaryText)
+                    .foregroundStyle(isSelected ? .brandAccent : .secondaryText)
             }
             .padding(16)
             .background(
@@ -232,7 +232,7 @@ private struct UnlockOptionCard: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 16)
-                    .stroke(isSelected ? Color.blue : Color.cardBorder, lineWidth: isSelected ? 2 : 1)
+                    .stroke(isSelected ? Color.brandAccent : Color.cardBorder, lineWidth: isSelected ? 2 : 1)
             )
             .opacity(isDisabled ? 0.4 : 1)
         }

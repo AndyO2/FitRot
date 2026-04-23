@@ -11,7 +11,7 @@ struct WelcomeView: View {
         VStack(alignment: .leading, spacing: 0) {
             ZStack {
                 HStack(spacing: 8) {
-                    Image("logo")
+                    Image("logo-orange")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 32, height: 32)

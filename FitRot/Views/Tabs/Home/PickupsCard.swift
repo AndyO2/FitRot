@@ -110,7 +110,7 @@ struct PickupsCard: View {
         PickupsCard()
             .padding()
     }
-    .background(Color.appBackground)
+    .background(Color.pageBackground)
 }
 
 #endif

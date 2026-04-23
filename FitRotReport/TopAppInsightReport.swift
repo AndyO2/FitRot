@@ -1,5 +1,5 @@
 //
-//  MostUsedAppsReport.swift
+//  TopAppInsightReport.swift
 //  FitRotReport
 //
 
@@ -13,18 +13,17 @@ import ManagedSettings
 import SwiftUI
 
 private let appGroupID = "group.com.WinToday.FitRot"
-private let mostUsedAppsLastUpdatedKey = "mostUsedAppsLastUpdated"
-private let maxApps = 7
+private let topAppInsightLastUpdatedKey = "topAppInsightLastUpdated"
 
 extension DeviceActivityReport.Context {
-    static let mostUsedApps = Self("Most Used Apps")
+    static let topAppInsight = Self("Top App Insight")
 }
 
-struct MostUsedAppsReport: DeviceActivityReportScene {
-    let context: DeviceActivityReport.Context = .mostUsedApps
-    let content: (MostUsedAppsConfiguration) -> MostUsedAppsView
+struct TopAppInsightReport: DeviceActivityReportScene {
+    let context: DeviceActivityReport.Context = .topAppInsight
+    let content: (TopAppInsightConfiguration) -> TopAppInsightView
 
-    func makeConfiguration(representing data: DeviceActivityResults<DeviceActivityData>) async -> MostUsedAppsConfiguration {
+    func makeConfiguration(representing data: DeviceActivityResults<DeviceActivityData>) async -> TopAppInsightConfiguration {
         let defaults = UserDefaults(suiteName: appGroupID)
         let now = Date()
         let calendar = Calendar.current
@@ -33,7 +32,7 @@ struct MostUsedAppsReport: DeviceActivityReportScene {
 
         var thisWeek: [ApplicationToken: TimeInterval] = [:]
         var lastWeek: [ApplicationToken: TimeInterval] = [:]
-        var categoryByToken: [ApplicationToken: [String: TimeInterval]] = [:]
+        var totalThisWeek: TimeInterval = 0
 
         for await activity in data {
             for await segment in activity.activitySegments {
@@ -47,53 +46,44 @@ struct MostUsedAppsReport: DeviceActivityReportScene {
                     continue
                 }
                 for await categoryActivity in segment.categories {
-                    let categoryName = categoryActivity.category.localizedDisplayName
                     for await application in categoryActivity.applications {
                         guard let token = application.application.token else { continue }
                         let duration = application.totalActivityDuration
                         switch bucket {
                         case .current:
                             thisWeek[token, default: 0] += duration
+                            totalThisWeek += duration
                         case .previous:
                             lastWeek[token, default: 0] += duration
-                        }
-                        if let name = categoryName, !name.isEmpty {
-                            categoryByToken[token, default: [:]][name, default: 0] += duration
                         }
                     }
                 }
             }
         }
 
-        let sorted = thisWeek
-            .filter { $0.value > 0 }
-            .sorted { $0.value > $1.value }
-            .prefix(maxApps)
+        defaults?.set(Date().timeIntervalSinceReferenceDate, forKey: topAppInsightLastUpdatedKey)
 
-        let apps = sorted.map { pair -> AppUsage in
-            let token = pair.key
-            let current = pair.value
-            let previous = lastWeek[token] ?? 0
-            let percentChange: Double?
-            if previous > 0 {
-                percentChange = ((current - previous) / previous) * 100
-            } else {
-                percentChange = nil
-            }
-            let category = categoryByToken[token]?
-                .max(by: { $0.value < $1.value })?
-                .key
-            return AppUsage(
-                token: token,
-                duration: current,
-                category: category,
-                percentChange: percentChange
-            )
+        guard let top = thisWeek.max(by: { $0.value < $1.value }), top.value > 0 else {
+            return .empty
         }
 
-        defaults?.set(Date().timeIntervalSinceReferenceDate, forKey: mostUsedAppsLastUpdatedKey)
+        let percent = totalThisWeek > 0
+            ? Int(((top.value / totalThisWeek) * 100).rounded())
+            : 0
 
-        return MostUsedAppsConfiguration(apps: apps, hasData: !apps.isEmpty)
+        let previous = lastWeek[top.key] ?? 0
+        let percentChange: Double? = previous > 0
+            ? ((top.value - previous) / previous) * 100
+            : nil
+
+        return TopAppInsightConfiguration(
+            topAppToken: top.key,
+            topAppDuration: top.value,
+            totalDuration: totalThisWeek,
+            percentOfTotal: percent,
+            percentChangeFromLastWeek: percentChange,
+            hasData: true
+        )
     }
 
     private static func currentWeekStart(now: Date, calendar: Calendar) -> Date {

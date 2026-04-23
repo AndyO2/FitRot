@@ -15,7 +15,7 @@ struct BlockingStatusCard: View {
     @State private var remainingSeconds: TimeInterval = 0
     @State private var countdownTimer: Timer?
 
-    private static let cardBg = Color.cardSurface
+    private static let cardBg = Color.white
 
     var body: some View {
         HStack(spacing: 12) {

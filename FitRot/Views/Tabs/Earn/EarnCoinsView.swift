@@ -40,7 +40,7 @@ struct EarnCoinsView: View {
                 .scrollIndicators(.hidden)
             }
             .padding(.horizontal, 20)
-            .background(Color("AppBackground"))
+            .background(Color("PageBackground"))
         }
     }
 }

@@ -28,7 +28,7 @@ struct UnlockSuccessView: View {
 
     var body: some View {
         ZStack {
-            Color.appBackground
+            Color.pageBackground
                 .ignoresSafeArea()
 
             VStack(spacing: 0) {
@@ -63,7 +63,7 @@ struct UnlockSuccessView: View {
                     Text("Apps Unblocked")
                         .font(.title3)
                         .fontWeight(.semibold)
-                        .foregroundStyle(.highlight)
+                        .foregroundStyle(.brandAccent)
                 }
 
                 Spacer()

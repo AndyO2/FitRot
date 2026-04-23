@@ -37,6 +37,10 @@ struct MostUsedAppsCard: View {
         return min(end, Date())
     }
 
+    private var previousWeekStart: Date {
+        Calendar.current.date(byAdding: .day, value: -7, to: currentWeekStart) ?? currentWeekStart
+    }
+
     private var filter: DeviceActivityFilter {
         let interval: DateInterval
         switch timeRange {
@@ -44,7 +48,7 @@ struct MostUsedAppsCard: View {
             let start = Calendar.current.startOfDay(for: .now)
             interval = DateInterval(start: start, end: max(Date(), start))
         case .thisWeek:
-            interval = DateInterval(start: currentWeekStart, end: currentWeekEnd)
+            interval = DateInterval(start: previousWeekStart, end: currentWeekEnd)
         }
         return DeviceActivityFilter(segment: .daily(during: interval))
     }
@@ -56,7 +60,7 @@ struct MostUsedAppsCard: View {
                 .frame(height: contentHeight)
         }
         .padding(20)
-        .background(Color.cardSurface, in: RoundedRectangle(cornerRadius: 16))
+        .background(Color.white, in: RoundedRectangle(cornerRadius: 16))
         .overlay(
             RoundedRectangle(cornerRadius: 16)
                 .stroke(Color.cardBorder, lineWidth: 1)
@@ -71,7 +75,7 @@ struct MostUsedAppsCard: View {
 
     private var header: some View {
         HStack {
-            Text("MOST USED APPS")
+            Text("TOP OFFENDERS")
                 .font(.caption.weight(.semibold))
                 .tracking(0.8)
                 .foregroundStyle(.secondary)
@@ -119,7 +123,7 @@ struct MostUsedAppsCard: View {
         MostUsedAppsCard()
             .padding()
     }
-    .background(Color.appBackground)
+    .background(Color.pageBackground)
 }
 
 #endif

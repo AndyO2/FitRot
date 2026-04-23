@@ -170,7 +170,7 @@ struct ScreenTimeDashboardCard: View {
         ScreenTimeDashboardCard()
             .padding()
     }
-    .background(Color.appBackground)
+    .background(Color.pageBackground)
 }
 
 #endif

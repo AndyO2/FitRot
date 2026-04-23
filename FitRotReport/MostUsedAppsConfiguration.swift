@@ -20,6 +20,8 @@ struct AppUsage: Identifiable {
     var id: ApplicationToken { token }
     let token: ApplicationToken
     let duration: TimeInterval
+    let category: String?
+    let percentChange: Double?
 }
 
 #endif

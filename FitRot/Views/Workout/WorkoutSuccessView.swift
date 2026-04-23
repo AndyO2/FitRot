@@ -13,7 +13,7 @@ struct WorkoutSuccessView: View {
 
     var body: some View {
         ZStack {
-            Color.appBackground
+            Color.pageBackground
                 .ignoresSafeArea()
 
             VStack(spacing: 0) {

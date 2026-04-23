@@ -17,10 +17,17 @@ struct SplashScreenView: View {
 
     var body: some View {
         ZStack {
-            Color.white
-                .ignoresSafeArea()
+            LinearGradient(
+                colors: [
+                    Color(red: 1.0, green: 0.192, blue: 0.192),
+                    Color(red: 1.0, green: 0.569, blue: 0.302)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
 
-            Image("logo-black-transparent")
+            Image("logo-transparent")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 120, height: 120)

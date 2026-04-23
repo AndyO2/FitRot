@@ -18,14 +18,15 @@ struct HomeHeaderView: View {
         HStack {
             // Logo + app name
             HStack(spacing: 8) {
-                Image("logo")
+                Image("logo-orange")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 40, height: 40)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
 
-                Text("FITROT")
-                    .font(.system(size: 30, weight: .bold))
+                Text("FitRot")
+                    .font(.system(size: 28, weight: .bold))
+                    .foregroundStyle(.primaryText)
             }
 
             Spacer()
@@ -46,7 +47,11 @@ struct HomeHeaderView: View {
                 }
                 .padding(.horizontal, 14)
                 .padding(.vertical, 8)
-                .background(.ultraThinMaterial, in: Capsule())
+                .background(Color.white, in: Capsule())
+                .overlay(
+                    Capsule()
+                        .strokeBorder(Color.gray.opacity(0.2), lineWidth: 1)
+                )
             }
             .buttonStyle(.plain)
 
@@ -62,7 +67,11 @@ struct HomeHeaderView: View {
             }
             .padding(.horizontal, 14)
             .padding(.vertical, 8)
-            .background(.ultraThinMaterial, in: Capsule())
+            .background(Color.white, in: Capsule())
+            .overlay(
+                Capsule()
+                    .strokeBorder(Color.gray.opacity(0.2), lineWidth: 1)
+            )
         }
         .padding(.horizontal)
     }

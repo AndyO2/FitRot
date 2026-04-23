@@ -41,28 +41,28 @@ struct SettingsView: View {
                 .padding(.bottom, 8)
 
                 List {
-                    Section("Appearance") {
-                    Toggle(isOn: $themeService.isDarkMode) {
-                        Label("Dark Mode", systemImage: "moon.fill")
-                    }
-                    .listRowBackground(Color.cardSurface)
-                }
-
-                Section("App Icon") {
-                    HStack(spacing: 16) {
-                        ForEach(AppIconOption.allCases) { option in
-                            AppIconTile(
-                                option: option,
-                                isSelected: iconService.selected == option
-                            ) {
-                                iconService.selected = option
-                            }
-                        }
-                    }
-                    .listRowBackground(Color.cardSurface)
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
-                }
+                    // Section("Appearance") {
+                    //     Toggle(isOn: $themeService.isDarkMode) {
+                    //         Label("Dark Mode", systemImage: "moon.fill")
+                    //     }
+                    //     .listRowBackground(Color.cardSurface)
+                    // }
+                    //
+                    // Section("App Icon") {
+                    //     HStack(spacing: 16) {
+                    //         ForEach(AppIconOption.allCases) { option in
+                    //             AppIconTile(
+                    //                 option: option,
+                    //                 isSelected: iconService.selected == option
+                    //             ) {
+                    //                 iconService.selected = option
+                    //             }
+                    //         }
+                    //     }
+                    //     .listRowBackground(Color.cardSurface)
+                    //     .listRowSeparator(.hidden)
+                    //     .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                    // }
 
                 Section("Notifications") {
                     HStack {
@@ -72,21 +72,26 @@ struct SettingsView: View {
                         )
                         Spacer()
                         Circle()
-                            .fill(notificationManager.isNotificationEnabled ? Color.assetGains : .red)
+                            .fill(notificationManager.isNotificationEnabled ? Color.statusPositive : .red)
                             .frame(width: 10, height: 10)
                     }
-                    .listRowBackground(Color.cardSurface)
+                    .listRowBackground(Color.white)
 
                     if !notificationManager.isNotificationEnabled {
                         Button {
-                            if let url = URL(string: UIApplication.openSettingsURLString) {
+                            if notificationManager.authorizationStatus == .notDetermined {
+                                Task {
+                                    await notificationManager.requestPermission()
+                                    await notificationManager.refreshAuthorizationStatus()
+                                }
+                            } else if let url = URL(string: UIApplication.openSettingsURLString) {
                                 UIApplication.shared.open(url)
                             }
                         } label: {
                             Label("Enable", systemImage: "arrow.up.forward.app")
                         }
                         .foregroundStyle(.primaryText)
-                        .listRowBackground(Color.cardSurface)
+                        .listRowBackground(Color.white)
                     }
                 }
 
@@ -95,7 +100,7 @@ struct SettingsView: View {
                         Label("Support", systemImage: "questionmark.circle")
                     }
                     .foregroundStyle(.primaryText)
-                    .listRowBackground(Color.cardSurface)
+                    .listRowBackground(Color.white)
 
                     Button {
                         requestReview()
@@ -103,19 +108,19 @@ struct SettingsView: View {
                         Label("Leave a Review", systemImage: "star")
                     }
                     .foregroundStyle(.primaryText)
-                    .listRowBackground(Color.cardSurface)
+                    .listRowBackground(Color.white)
 
                     Link(destination: URL(string: "https://emerald-farmer-d10.notion.site/FitRot-Privacy-Policy-33ea2a1fd302808da603f71808127d16")!) {
                         Label("Privacy Policy", systemImage: "lock")
                     }
                     .foregroundStyle(.primaryText)
-                    .listRowBackground(Color.cardSurface)
+                    .listRowBackground(Color.white)
 
                     Link(destination: URL(string: "https://emerald-farmer-d10.notion.site/FitRot-Terms-of-Service-33ea2a1fd30280c68a4cd620132e15d8")!) {
                         Label("Terms of Service", systemImage: "doc.text")
                     }
                     .foregroundStyle(.primaryText)
-                    .listRowBackground(Color.cardSurface)
+                    .listRowBackground(Color.white)
                 }
 
                 #if DEBUG
@@ -126,34 +131,34 @@ struct SettingsView: View {
                         Text(authStatusText)
                             .foregroundStyle(.secondary)
                     }
-                    .listRowBackground(Color.cardSurface)
+                    .listRowBackground(Color.white)
 
                     if case .denied = authManager.status {
                         Link("Open Settings", destination: URL(string: UIApplication.openSettingsURLString)!)
-                            .listRowBackground(Color.cardSurface)
+                            .listRowBackground(Color.white)
                     }
 
                     HStack {
                         Text("Status")
                         Spacer()
                         Text(lockService.isBlockingEnabled ? "Enabled" : "Disabled")
-                            .foregroundStyle(lockService.isBlockingEnabled ? .assetGains : .secondaryText)
+                            .foregroundStyle(lockService.isBlockingEnabled ? .statusPositive : .secondaryText)
                     }
-                    .listRowBackground(Color.cardSurface)
+                    .listRowBackground(Color.white)
 
                     if lockService.isBlockingEnabled {
                         HStack {
                             Text("Shields")
                             Spacer()
                             Text(lockService.isUnlocked ? "Unlocked" : "Blocked")
-                                .foregroundStyle(lockService.isUnlocked ? .assetGains : .red)
+                                .foregroundStyle(lockService.isUnlocked ? .statusPositive : .red)
                         }
-                        .listRowBackground(Color.cardSurface)
+                        .listRowBackground(Color.white)
 
                         Button("Disable Blocking", role: .destructive) {
                             lockService.disableBlocking()
                         }
-                        .listRowBackground(Color.cardSurface)
+                        .listRowBackground(Color.white)
                     }
 
                     HStack {
@@ -162,7 +167,7 @@ struct SettingsView: View {
                         Text(notificationStatusText)
                             .foregroundStyle(notificationStatusColor)
                     }
-                    .listRowBackground(Color.cardSurface)
+                    .listRowBackground(Color.white)
                     .task {
                         await notificationManager.refreshAuthorizationStatus()
                     }
@@ -170,17 +175,17 @@ struct SettingsView: View {
                     Button("Open Push-Up Camera") {
                         showDevCamera = true
                     }
-                    .listRowBackground(Color.cardSurface)
+                    .listRowBackground(Color.white)
 
                     Button("Show Streak Commitment") {
                         showDevStreakCommitment = true
                     }
-                    .listRowBackground(Color.cardSurface)
+                    .listRowBackground(Color.white)
 
                     Button("Restart Onboarding") {
                         hasCompletedOnboarding = false
                     }
-                    .listRowBackground(Color.cardSurface)
+                    .listRowBackground(Color.white)
                 }
                 #endif
 
@@ -201,7 +206,7 @@ struct SettingsView: View {
                     StreakCommitmentView(onCommit: { showDevStreakCommitment = false })
                 }
             }
-            .background(Color("AppBackground"))
+            .background(Color("PageBackground"))
         }
     }
 
@@ -218,7 +223,7 @@ struct SettingsView: View {
 
     private var notificationStatusColor: Color {
         switch notificationManager.authorizationStatus {
-        case .authorized, .provisional, .ephemeral: .assetGains
+        case .authorized, .provisional, .ephemeral: .statusPositive
         case .denied: .red
         default: .secondary
         }
