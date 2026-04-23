@@ -69,6 +69,7 @@ struct ScreenTimeDashboardView: View {
             UserDefaults(suiteName: appGroupID)?.set(Double(height), forKey: dashboardHeightKey)
         }
         .allowsHitTesting(false)
+        .fontDesign(.rounded)
     }
 }
 

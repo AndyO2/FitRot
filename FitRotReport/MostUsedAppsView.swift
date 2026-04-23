@@ -48,6 +48,7 @@ struct MostUsedAppsView: View {
             UserDefaults(suiteName: appGroupID)?.set(Double(height), forKey: mostUsedAppsHeightKey)
         }
         .allowsHitTesting(false)
+        .fontDesign(.rounded)
     }
 
     @ViewBuilder
@@ -68,7 +69,6 @@ private struct TopOffenderRow: View {
     var body: some View {
         HStack(spacing: 14) {
             Label(app.token)
-                .font(.system(size: 20))
                 .labelStyle(TopOffenderLabelStyle(rank: rank, category: app.category))
                 .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -137,17 +137,17 @@ private struct TopOffenderLabelStyle: LabelStyle {
                         .offset(x: 6, y: 6)
                 }
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 4) {
                 configuration.title
-                    .font(.headline.weight(.bold))
+                    .font(.title3.weight(.bold))
                     .foregroundStyle(.primary)
                     .lineLimit(1)
-                if let category, !category.isEmpty {
-                    Text(category)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                }
+//                if let category, !category.isEmpty {
+//                    Text(category)
+//                        .font(.caption.weight(.semibold))
+//                        .foregroundStyle(.secondary)
+//                        .lineLimit(1)
+//                }
             }
         }
     }

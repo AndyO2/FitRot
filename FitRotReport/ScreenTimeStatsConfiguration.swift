@@ -9,6 +9,7 @@ import Foundation
 
 struct ScreenTimeStatsConfiguration: Equatable {
     let currentTotal: TimeInterval
+    let displayTotal: TimeInterval
     let priorTotal: TimeInterval
     let changePercent: Double
     let bars: [TimeInterval]
@@ -19,6 +20,7 @@ struct ScreenTimeStatsConfiguration: Equatable {
 
     static let empty = ScreenTimeStatsConfiguration(
         currentTotal: 0,
+        displayTotal: 0,
         priorTotal: 0,
         changePercent: 0,
         bars: [],

@@ -15,7 +15,6 @@ struct HomeView: View {
     @Environment(AppLockService.self) private var lockService
     @State private var isPickerPresented = false
     @State private var showStreakCalendar = false
-    @State private var timeRange: HomeTimeRange = .today
 
     var body: some View {
         @Bindable var lockService = lockService
@@ -46,7 +45,7 @@ struct HomeView: View {
                         MostUsedAppsCard()
                             .padding(.horizontal)
 
-                        CategoryBreakdownCard(range: timeRange)
+                        CategoryBreakdownCard()
                             .padding(.horizontal)
                     }
                     .padding(.top, 8)

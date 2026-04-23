@@ -7,6 +7,7 @@
 
 import SwiftUI
 import StoreKit
+import AVFoundation
 
 #if canImport(FamilyControls)
 import FamilyControls
@@ -18,8 +19,10 @@ struct SettingsView: View {
     @Environment(ThemeService.self) private var themeService
     @Environment(AppIconService.self) private var iconService
     @Environment(\.requestReview) private var requestReview
+    @Environment(\.scenePhase) private var scenePhase
     @State private var showDevCamera = false
     @State private var showDevStreakCommitment = false
+    @State private var cameraAuthStatus: AVAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
 
     @AppStorage(AppGroupConstants.hasCompletedOnboardingKey, store: AppGroupConstants.sharedDefaults)
     private var hasCompletedOnboarding = false
@@ -64,35 +67,58 @@ struct SettingsView: View {
                     //     .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
                     // }
 
-                Section("Notifications") {
-                    HStack {
-                        Label(
-                            notificationManager.isNotificationEnabled ? "Enabled" : "Disabled",
-                            systemImage: notificationManager.isNotificationEnabled ? "bell.fill" : "bell.slash.fill"
-                        )
-                        Spacer()
-                        Circle()
-                            .fill(notificationManager.isNotificationEnabled ? Color.statusPositive : .red)
-                            .frame(width: 10, height: 10)
-                    }
-                    .listRowBackground(Color.white)
+                Section("Permissions") {
+                    PermissionRow(
+                        title: "Screen Time",
+                        iconOn: "hourglass",
+                        iconOff: "hourglass.badge.plus",
+                        isGranted: isScreenTimeApproved,
+                        canRequestInApp: isScreenTimeNotDetermined,
+                        onRequest: {
+                            if isScreenTimeNotDetermined {
+                                Task { await authManager.requestAuthorization() }
+                            } else {
+                                openAppSettings()
+                            }
+                        }
+                    )
 
-                    if !notificationManager.isNotificationEnabled {
-                        Button {
+                    PermissionRow(
+                        title: "Camera",
+                        iconOn: "camera",
+                        iconOff: "camera.slash",
+                        isGranted: cameraAuthStatus == .authorized,
+                        canRequestInApp: cameraAuthStatus == .notDetermined,
+                        onRequest: {
+                            if cameraAuthStatus == .notDetermined {
+                                AVCaptureDevice.requestAccess(for: .video) { _ in
+                                    Task { @MainActor in
+                                        cameraAuthStatus = AVCaptureDevice.authorizationStatus(for: .video)
+                                    }
+                                }
+                            } else {
+                                openAppSettings()
+                            }
+                        }
+                    )
+
+                    PermissionRow(
+                        title: "Notifications",
+                        iconOn: "bell",
+                        iconOff: "bell.slash",
+                        isGranted: notificationManager.isNotificationEnabled,
+                        canRequestInApp: notificationManager.authorizationStatus == .notDetermined,
+                        onRequest: {
                             if notificationManager.authorizationStatus == .notDetermined {
                                 Task {
                                     await notificationManager.requestPermission()
                                     await notificationManager.refreshAuthorizationStatus()
                                 }
-                            } else if let url = URL(string: UIApplication.openSettingsURLString) {
-                                UIApplication.shared.open(url)
+                            } else {
+                                openAppSettings()
                             }
-                        } label: {
-                            Label("Enable", systemImage: "arrow.up.forward.app")
                         }
-                        .foregroundStyle(.primaryText)
-                        .listRowBackground(Color.white)
-                    }
+                    )
                 }
 
                 Section("General") {
@@ -199,6 +225,13 @@ struct SettingsView: View {
             }
                 .scrollContentBackground(.hidden)
                 .scrollIndicators(.hidden)
+                .task {
+                    await refreshPermissionStatuses()
+                }
+                .onChange(of: scenePhase) { _, newPhase in
+                    guard newPhase == .active else { return }
+                    Task { await refreshPermissionStatuses() }
+                }
                 .fullScreenCover(isPresented: $showDevCamera) {
                     WorkoutView()
                 }
@@ -229,6 +262,28 @@ struct SettingsView: View {
         }
     }
 
+    private var isScreenTimeApproved: Bool {
+        if case .approved = authManager.status { return true }
+        return false
+    }
+
+    private var isScreenTimeNotDetermined: Bool {
+        if case .notDetermined = authManager.status { return true }
+        return false
+    }
+
+    private func openAppSettings() {
+        if let url = URL(string: UIApplication.openSettingsURLString) {
+            UIApplication.shared.open(url)
+        }
+    }
+
+    private func refreshPermissionStatuses() async {
+        authManager.checkCurrentStatus()
+        await notificationManager.refreshAuthorizationStatus()
+        cameraAuthStatus = AVCaptureDevice.authorizationStatus(for: .video)
+    }
+
     private var authStatusText: String {
         switch authManager.status {
         case .approved: "Approved"
@@ -236,6 +291,35 @@ struct SettingsView: View {
         case .notDetermined: "Not Determined"
         case .error: "Error"
         }
+    }
+}
+
+private struct PermissionRow: View {
+    let title: String
+    let iconOn: String
+    let iconOff: String
+    let isGranted: Bool
+    let canRequestInApp: Bool
+    let onRequest: () -> Void
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Label(title, systemImage: isGranted ? iconOn : iconOff)
+                .foregroundStyle(.primaryText)
+            Spacer()
+            if !isGranted {
+                Button(action: onRequest) {
+                    Text("Enable")
+                        .font(.subheadline.weight(.semibold))
+                }
+                .buttonStyle(.borderless)
+                .foregroundStyle(.primaryText)
+            }
+            Circle()
+                .fill(isGranted ? Color.statusPositive : .red)
+                .frame(width: 10, height: 10)
+        }
+        .listRowBackground(Color.white)
     }
 }
 

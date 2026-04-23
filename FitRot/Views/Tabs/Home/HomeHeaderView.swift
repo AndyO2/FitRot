@@ -40,7 +40,7 @@ struct HomeHeaderView: View {
                 HStack(spacing: 6) {
                     Image(systemName: "flame.fill")
                         .font(.title3)
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(.streakOrange)
                     Text("\(streakManager.displayStreak)")
                         .font(.callout)
                         .fontWeight(.semibold)

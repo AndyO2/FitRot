@@ -14,37 +14,32 @@ extension DeviceActivityReport.Context {
 }
 
 struct CategoryBreakdownCard: View {
-    let range: HomeTimeRange
+    enum TimeRange: String, CaseIterable, Identifiable {
+        case today = "Today"
+        case thisWeek = "This week"
+        var id: String { rawValue }
+    }
 
+    @Environment(\.scenePhase) private var scenePhase
     @State private var contentHeight: CGFloat = 240
     @State private var lastUpdated: TimeInterval = 0
     // Bumping this changes `.id(…)` on the DeviceActivityReport (forcing iOS to
     // re-invoke the extension) and re-runs the poll `.task(id:)`.
     @State private var refreshNonce: Int = 0
+    @State private var timeRange: TimeRange = .thisWeek
 
     private var filter: DeviceActivityFilter {
         let cal = Calendar.current
         let now = Date()
         let today = cal.startOfDay(for: now)
         let start: Date
-        switch range {
+        switch timeRange {
         case .today:
             start = cal.date(byAdding: .day, value: -14, to: today) ?? today
-        case .week:
+        case .thisWeek:
             start = cal.date(byAdding: .day, value: -21, to: today) ?? today
-        case .month:
-            let monthStart = cal.date(from: cal.dateComponents([.year, .month], from: today)) ?? today
-            start = cal.date(byAdding: .month, value: -1, to: monthStart) ?? monthStart
         }
         return DeviceActivityFilter(segment: .daily(during: DateInterval(start: start, end: max(now, start))))
-    }
-
-    private var rangeLabel: String {
-        switch range {
-        case .today: return "Today"
-        case .week:  return "This week"
-        case .month: return "This month"
-        }
     }
 
     var body: some View {
@@ -64,7 +59,13 @@ struct CategoryBreakdownCard: View {
             hydrateFromAppGroup()
             refreshNonce &+= 1
         }
-        .onChange(of: range) {
+        .onChange(of: scenePhase) { _, new in
+            if new == .active {
+                writeRange()
+                refreshNonce &+= 1
+            }
+        }
+        .onChange(of: timeRange) {
             writeRange()
             refreshNonce &+= 1
         }
@@ -75,24 +76,31 @@ struct CategoryBreakdownCard: View {
 
     private var header: some View {
         HStack {
-            Text("BY CATEGORY")
+            Text("BY CATEGORY — \(timeRange.rawValue.uppercased())")
                 .font(.caption.weight(.semibold))
                 .tracking(0.8)
-                .foregroundStyle(.secondaryText)
+                .foregroundStyle(.secondary)
             Spacer()
-            Text(rangeLabel)
-                .font(.caption)
+            Menu {
+                Picker("Range", selection: $timeRange) {
+                    ForEach(TimeRange.allCases) { range in
+                        Text(range.rawValue).tag(range)
+                    }
+                }
+            } label: {
+                HStack(spacing: 4) {
+                    Text(timeRange.rawValue)
+                        .font(.caption)
+                    Image(systemName: "chevron.down")
+                        .font(.caption2)
+                }
                 .foregroundStyle(.secondaryText)
+            }
         }
     }
 
     private func writeRange() {
-        let raw: String
-        switch range {
-        case .today: raw = "today"
-        case .week:  raw = "week"
-        case .month: raw = "month"
-        }
+        let raw = timeRange == .today ? "today" : "week"
         AppGroupConstants.sharedDefaults.set(raw, forKey: AppGroupConstants.categoryBreakdownRangeKey)
     }
 

@@ -46,6 +46,7 @@ struct CategoryBreakdownView: View {
             UserDefaults(suiteName: appGroupID)?.set(Double(height), forKey: categoryBreakdownHeightKey)
         }
         .allowsHitTesting(false)
+        .fontDesign(.rounded)
     }
 
     private var stackedBar: some View {

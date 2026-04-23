@@ -43,6 +43,7 @@ struct PickupsView: View {
             UserDefaults(suiteName: appGroupID)?.set(Double(height), forKey: pickupsHeightKey)
         }
         .allowsHitTesting(false)
+        .fontDesign(.rounded)
     }
 }
 

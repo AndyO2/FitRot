@@ -50,6 +50,7 @@ struct TopAppInsightView: View {
             UserDefaults(suiteName: appGroupID)?.set(Double(height), forKey: topAppInsightHeightKey)
         }
         .allowsHitTesting(false)
+        .fontDesign(.rounded)
     }
 
     private var detailString: String {

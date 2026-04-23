@@ -14,32 +14,73 @@ extension DeviceActivityReport.Context {
 }
 
 struct ScreenTimeSummaryCard: View {
+    enum TimeRange: String, CaseIterable, Identifiable {
+        case today = "Today"
+        case thisWeek = "This week"
+        var id: String { rawValue }
+    }
+
     @Environment(\.scenePhase) private var scenePhase
     // Bumping this re-hosts the DeviceActivityReport, forcing iOS to
     // re-invoke makeConfiguration in the extension.
     @State private var refreshNonce: Int = 0
+    @State private var timeRange: TimeRange = .thisWeek
 
     private let goalSeconds: TimeInterval = AppGroupConstants.defaultDailyGoalSeconds
 
     var body: some View {
-        DeviceActivityReport(.screenTimeStats, filter: filter)
-            .frame(height: 300)
-            .id(refreshNonce)
-            .padding(20)
-            .background(Color.white, in: RoundedRectangle(cornerRadius: 20))
-            .overlay(
-                RoundedRectangle(cornerRadius: 20).stroke(Color.cardBorder, lineWidth: 1)
-            )
-            .onAppear {
+        VStack(alignment: .leading, spacing: 0) {
+            header
+            DeviceActivityReport(.screenTimeStats, filter: filter)
+                .frame(height: 300)
+                .id(refreshNonce)
+        }
+        .padding(20)
+        .background(Color.white, in: RoundedRectangle(cornerRadius: 20))
+        .overlay(
+            RoundedRectangle(cornerRadius: 20).stroke(Color.cardBorder, lineWidth: 1)
+        )
+        .onAppear {
+            writeGoal()
+            writeRange()
+            refreshNonce &+= 1
+        }
+        .onChange(of: scenePhase) { _, new in
+            if new == .active {
                 writeGoal()
+                writeRange()
                 refreshNonce &+= 1
             }
-            .onChange(of: scenePhase) { _, new in
-                if new == .active {
-                    writeGoal()
-                    refreshNonce &+= 1
+        }
+        .onChange(of: timeRange) {
+            writeRange()
+            refreshNonce &+= 1
+        }
+    }
+
+    private var header: some View {
+        HStack {
+            Text("SCREEN TIME — \(timeRange == .today ? "TODAY" : "THIS WEEK")")
+                .font(.caption.weight(.semibold))
+                .tracking(0.8)
+                .foregroundStyle(.secondary)
+            Spacer()
+            Menu {
+                Picker("Range", selection: $timeRange) {
+                    ForEach(TimeRange.allCases) { range in
+                        Text(range.rawValue).tag(range)
+                    }
                 }
+            } label: {
+                HStack(spacing: 4) {
+                    Text(timeRange.rawValue)
+                        .font(.caption)
+                    Image(systemName: "chevron.down")
+                        .font(.caption2)
+                }
+                .foregroundStyle(.secondaryText)
             }
+        }
     }
 
     private var filter: DeviceActivityFilter {
@@ -65,6 +106,11 @@ struct ScreenTimeSummaryCard: View {
         if defaults.double(forKey: AppGroupConstants.screenTimeStatsGoalSecondsKey) <= 0 {
             defaults.set(goalSeconds, forKey: AppGroupConstants.screenTimeStatsGoalSecondsKey)
         }
+    }
+
+    private func writeRange() {
+        let raw = timeRange == .today ? "today" : "week"
+        AppGroupConstants.sharedDefaults.set(raw, forKey: AppGroupConstants.screenTimeStatsRangeKey)
     }
 }
 

@@ -79,6 +79,7 @@ enum AppGroupConstants {
     static let screenTimeStatsUnderGoalKey     = "screenTimeStatsUnderGoal"     // Bool
     static let screenTimeStatsHasDataKey       = "screenTimeStatsHasData"       // Bool
     static let screenTimeStatsLastUpdatedKey   = "screenTimeStatsLastUpdated"   // Double (timeIntervalSinceReferenceDate)
+    static let screenTimeStatsRangeKey         = "screenTimeStatsRange"         // String: "today" | "week"
 
     static let defaultDailyGoalSeconds: Double = 4 * 60 * 60
 }

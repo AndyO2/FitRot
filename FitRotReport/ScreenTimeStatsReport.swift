@@ -14,6 +14,7 @@ import SwiftUI
 
 private let appGroupID = "group.com.WinToday.FitRot"
 private let goalSecondsKey      = "screenTimeStatsGoalSeconds"
+private let rangeKey            = "screenTimeStatsRange"
 private let defaultGoalSeconds: Double = 4 * 60 * 60
 
 extension DeviceActivityReport.Context {
@@ -28,6 +29,7 @@ struct ScreenTimeStatsReport: DeviceActivityReportScene {
         let defaults = UserDefaults(suiteName: appGroupID)
         let goalRaw = defaults?.double(forKey: goalSecondsKey) ?? 0
         let goalSeconds = goalRaw > 0 ? goalRaw : defaultGoalSeconds
+        let rangeRaw = defaults?.string(forKey: rangeKey) ?? "week"
 
         let calendar = Calendar.current
         let now = Date()
@@ -63,12 +65,15 @@ struct ScreenTimeStatsReport: DeviceActivityReportScene {
         let underGoal = (currentTotal / Double(elapsed)) <= goalSeconds
 
         let hasData = currentTotal > 0 || priorTotal > 0
+        let displayTotal: TimeInterval = rangeRaw == "today" ? (perDay[today] ?? 0) : currentTotal
         print("[FitRotReport.stats] bars=\(bars.count) " +
               "currentTotal=\(Int(currentTotal))s priorTotal=\(Int(priorTotal))s " +
+              "displayTotal=\(Int(displayTotal))s range=\(rangeRaw) " +
               "todayIndex=\(todayIndex) underGoal=\(underGoal) hasData=\(hasData)")
 
         return ScreenTimeStatsConfiguration(
             currentTotal: currentTotal,
+            displayTotal: displayTotal,
             priorTotal: priorTotal,
             changePercent: changePercent,
             bars: bars,

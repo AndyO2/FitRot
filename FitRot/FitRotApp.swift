@@ -39,6 +39,7 @@ struct FitRotApp: App {
             #if canImport(FamilyControls)
             RootView()
                 .tint(.brandAccent)
+                .fontDesign(.rounded)
                 .preferredColorScheme(themeService.appearanceMode.colorScheme)
                 .environment(authManager)
                 .environment(lockService)
@@ -65,6 +66,7 @@ struct FitRotApp: App {
                 }
             #else
             ContentView()
+                .fontDesign(.rounded)
             #endif
         }
     }

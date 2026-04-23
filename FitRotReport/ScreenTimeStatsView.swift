@@ -19,16 +19,13 @@ struct ScreenTimeStatsView: View {
             chart
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .fontDesign(.rounded)
     }
 
     // MARK: - Top row
 
     private var topRow: some View {
         HStack {
-            Text("SCREEN TIME — THIS WEEK")
-                .font(.caption.weight(.semibold))
-                .tracking(0.8)
-                .foregroundStyle(.secondary)
             Spacer()
             if configuration.hasData, configuration.underGoal {
                 HStack(spacing: 4) {
@@ -49,7 +46,7 @@ struct ScreenTimeStatsView: View {
     // MARK: - Time display
 
     private var timeDisplay: some View {
-        let totalMinutes = max(0, Int(configuration.currentTotal) / 60)
+        let totalMinutes = max(0, Int(configuration.displayTotal) / 60)
         let hours = totalMinutes / 60
         let minutes = totalMinutes % 60
         return HStack(alignment: .firstTextBaseline, spacing: 4) {
@@ -185,7 +182,7 @@ struct ScreenTimeStatsView: View {
 
     private func barColor(index: Int, seconds: TimeInterval) -> Color {
         if seconds <= 0 { return Color.secondary.opacity(0.15) }
-        if index == configuration.todayIndex { return Color.orange }
+        if index == configuration.todayIndex { return Color(red: 1.0, green: 0.192, blue: 0.192) }
         return Color.secondary.opacity(0.35)
     }
 }
