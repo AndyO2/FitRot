@@ -135,18 +135,28 @@ struct ScreenTimeStatsView: View {
         .chartYScale(domain: 0...chartYMax)
         .chartYAxis(.hidden)
         .chartXScale(domain: -0.5...(Double(max(configuration.bars.count, 1)) - 0.5))
-        .chartXAxis {
-            AxisMarks(values: Array(0..<max(configuration.bars.count, 1))) { value in
-                AxisValueLabel(centered: true) {
-                    if let idx = value.as(Int.self) {
-                        let isToday = idx == configuration.todayIndex
-                        Text(xAxisLabel(for: idx))
-                            .font(.caption.weight(isToday ? .bold : .regular))
-                            .foregroundStyle(isToday ? Color.primary : Color.secondary)
+        .chartXAxis(.hidden)
+        .chartOverlay { proxy in
+            GeometryReader { geo in
+                let plotFrame = geo[proxy.plotFrame!]
+                ZStack(alignment: .topLeading) {
+                    ForEach(0..<configuration.bars.count, id: \.self) { index in
+                        if let x = proxy.position(forX: index) {
+                            let isToday = index == configuration.todayIndex
+                            Text(xAxisLabel(for: index))
+                                .font(.caption.weight(isToday ? .bold : .regular))
+                                .foregroundStyle(isToday ? Color.primary : Color.secondary)
+                                .fixedSize()
+                                .position(
+                                    x: plotFrame.minX + x,
+                                    y: plotFrame.maxY + 14
+                                )
+                        }
                     }
                 }
             }
         }
+        .padding(.bottom, 24)
         .frame(height: 150)
     }
 
