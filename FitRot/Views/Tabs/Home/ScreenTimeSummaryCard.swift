@@ -25,6 +25,7 @@ struct ScreenTimeSummaryCard: View {
     // re-invoke makeConfiguration in the extension.
     @State private var refreshNonce: Int = 0
     @State private var timeRange: TimeRange = .thisWeek
+    @State private var hasAppearedOnce = false
 
     private let goalSeconds: TimeInterval = AppGroupConstants.defaultDailyGoalSeconds
 
@@ -41,6 +42,8 @@ struct ScreenTimeSummaryCard: View {
             RoundedRectangle(cornerRadius: 20).stroke(Color.cardBorder, lineWidth: 1)
         )
         .onAppear {
+            guard !hasAppearedOnce else { return }
+            hasAppearedOnce = true
             writeGoal()
             writeRange()
             refreshNonce &+= 1

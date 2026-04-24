@@ -120,13 +120,13 @@ struct ScreenTimeStatsView: View {
                 )
             }
             RuleMark(y: .value("Goal", configuration.dailyGoalSeconds / 3600))
-                .foregroundStyle(Color.red.opacity(0.55))
+                .foregroundStyle(Color.primary.opacity(0.35))
                 .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
                 .annotation(position: .top, alignment: .trailing, spacing: 2) {
                     Text("GOAL \(Int((configuration.dailyGoalSeconds / 3600).rounded()))h")
                         .font(.caption2.weight(.bold))
                         .tracking(0.4)
-                        .foregroundStyle(Color.red.opacity(0.8))
+                        .foregroundStyle(Color.primary.opacity(0.6))
                 }
         }
         .chartYScale(domain: 0...chartYMax)
@@ -180,10 +180,13 @@ struct ScreenTimeStatsView: View {
         return calendar.date(byAdding: .day, value: -offset, to: day) ?? day
     }
 
+    // StatusPositive from FitRot/Assets.xcassets — inlined because FitRotReport
+    // does not share the main target's asset catalog.
+    private static let statusPositive = Color(red: 0.133, green: 0.773, blue: 0.369)
+
     private func barColor(index: Int, seconds: TimeInterval) -> Color {
         if seconds <= 0 { return Color.secondary.opacity(0.15) }
-        if index == configuration.todayIndex { return Color(red: 1.0, green: 0.192, blue: 0.192) }
-        return Color.secondary.opacity(0.35)
+        return seconds >= configuration.dailyGoalSeconds ? .red : Self.statusPositive
     }
 }
 

@@ -228,7 +228,7 @@ private struct UnlockOptionCard: View {
             .padding(16)
             .background(
                 RoundedRectangle(cornerRadius: 16)
-                    .fill(Color.cardSurface)
+                    .fill(Color.white)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 16)

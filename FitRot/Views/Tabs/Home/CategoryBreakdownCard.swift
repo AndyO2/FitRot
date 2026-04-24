@@ -27,6 +27,7 @@ struct CategoryBreakdownCard: View {
     // re-invoke the extension) and re-runs the poll `.task(id:)`.
     @State private var refreshNonce: Int = 0
     @State private var timeRange: TimeRange = .thisWeek
+    @State private var hasAppearedOnce = false
 
     private var filter: DeviceActivityFilter {
         let cal = Calendar.current
@@ -55,6 +56,8 @@ struct CategoryBreakdownCard: View {
             RoundedRectangle(cornerRadius: 20).stroke(Color.cardBorder, lineWidth: 1)
         )
         .onAppear {
+            guard !hasAppearedOnce else { return }
+            hasAppearedOnce = true
             writeRange()
             hydrateFromAppGroup()
             refreshNonce &+= 1
