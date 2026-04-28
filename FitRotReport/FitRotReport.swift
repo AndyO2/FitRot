@@ -11,23 +11,20 @@ import SwiftUI
 @main
 struct FitRotReport: DeviceActivityReportExtension {
     var body: some DeviceActivityReportScene {
+        // Consolidated Home report — registered first so it connects earliest
+        // (research note: report views earlier in the body have better cross-
+        // process render performance).
+        HomeSummaryReport { configuration in
+            HomeSummaryView(configuration: configuration)
+        }
         ScreenTimeDashboardReport { configuration in
             ScreenTimeDashboardView(configuration: configuration)
-        }
-        ScreenTimeStatsReport { configuration in
-            ScreenTimeStatsView(configuration: configuration)
         }
         PickupsReport { configuration in
             PickupsView(configuration: configuration)
         }
-        MostUsedAppsReport { configuration in
-            MostUsedAppsView(configuration: configuration)
-        }
         TopAppInsightReport { configuration in
             TopAppInsightView(configuration: configuration)
-        }
-        CategoryBreakdownReport { configuration in
-            CategoryBreakdownView(configuration: configuration)
         }
     }
 }

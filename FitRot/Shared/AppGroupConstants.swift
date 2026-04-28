@@ -53,33 +53,15 @@ enum AppGroupConstants {
     static let pickupsHeightKey = "pickupsHeight"                         // Double
     static let pickupsLastUpdatedKey = "pickupsLastUpdated"               // Double, timeIntervalSinceReferenceDate
 
-    // Most Used Apps card (FitRotReport extension ↔ main app)
-    static let mostUsedAppsHeightKey = "mostUsedAppsHeight"               // Double
-    static let mostUsedAppsLastUpdatedKey = "mostUsedAppsLastUpdated"     // Double, timeIntervalSinceReferenceDate
-
     // Top App Insight card (FitRotReport extension ↔ main app)
     static let topAppInsightHeightKey = "topAppInsightHeight"             // Double
     static let topAppInsightLastUpdatedKey = "topAppInsightLastUpdated"   // Double, timeIntervalSinceReferenceDate
 
-    // Category Breakdown card (FitRotReport extension ↔ main app)
-    static let categoryBreakdownHeightKey = "categoryBreakdownHeight"             // Double
-    static let categoryBreakdownLastUpdatedKey = "categoryBreakdownLastUpdated"   // Double, timeIntervalSinceReferenceDate
-    static let categoryBreakdownRangeKey = "categoryBreakdownRange"               // String: "today" | "week" | "month"
-
     // Onboarding
     static let hasCompletedOnboardingKey = "hasCompletedOnboarding"
 
-    // Screen Time stats (ScreenTimeSummaryCard ↔ FitRotReport extension)
-    static let screenTimeStatsGoalSecondsKey   = "screenTimeStatsGoalSeconds"   // Double (seconds)
-    static let screenTimeStatsCurrentTotalKey  = "screenTimeStatsCurrentTotal"  // Double (seconds)
-    static let screenTimeStatsPriorTotalKey    = "screenTimeStatsPriorTotal"    // Double (seconds)
-    static let screenTimeStatsChangePercentKey = "screenTimeStatsChangePercent" // Double (%)
-    static let screenTimeStatsBarsKey          = "screenTimeStatsBars"          // Data (JSON [Double] seconds)
-    static let screenTimeStatsTodayIndexKey    = "screenTimeStatsTodayIndex"    // Int (-1 if none)
-    static let screenTimeStatsUnderGoalKey     = "screenTimeStatsUnderGoal"     // Bool
-    static let screenTimeStatsHasDataKey       = "screenTimeStatsHasData"       // Bool
-    static let screenTimeStatsLastUpdatedKey   = "screenTimeStatsLastUpdated"   // Double (timeIntervalSinceReferenceDate)
-    static let screenTimeStatsRangeKey         = "screenTimeStatsRange"         // String: "today" | "week"
+    // Home summary card (HomeSummaryCard ↔ FitRotReport extension)
+    static let screenTimeStatsGoalSecondsKey = "screenTimeStatsGoalSeconds" // Double (seconds)
 
     static let defaultDailyGoalSeconds: Double = 4 * 60 * 60
 }

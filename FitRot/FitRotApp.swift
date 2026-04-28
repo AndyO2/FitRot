@@ -20,6 +20,7 @@ struct FitRotApp: App {
     @State private var notificationManager = NotificationManager()
     @State private var themeService = ThemeService()
     @State private var appIconService = AppIconService()
+    @State private var healthKitService = HealthKitService()
     @State private var superwallBridge = SuperwallBridge()
     @Environment(\.scenePhase) private var scenePhase
     #endif
@@ -49,6 +50,7 @@ struct FitRotApp: App {
                 .environment(notificationManager)
                 .environment(themeService)
                 .environment(appIconService)
+                .environment(healthKitService)
                 .onAppear {
                     lockService.restoreStateOnLaunch()
                     notificationManager.configure(with: navigationCoordinator)
@@ -61,6 +63,7 @@ struct FitRotApp: App {
                         lockService.restoreStateOnLaunch()
                         navigationCoordinator.checkPendingUnlockRequest()
                         Task { await notificationManager.refreshAuthorizationStatus() }
+                        Task { await healthKitService.refreshTodaySteps() }
                         AttributionService.shared.requestTrackingAuthorization()
                     }
                 }

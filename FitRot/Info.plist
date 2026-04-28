@@ -6,5 +6,7 @@
 	<string>https://appsflyer-skadnetwork.com/</string>
 	<key>NSAdvertisingAttributionReportEndpoint</key>
 	<string>https://appsflyer-skadnetwork.com/</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>FitRot reads your daily step count so you can earn coins for being active.</string>
 </dict>
 </plist>

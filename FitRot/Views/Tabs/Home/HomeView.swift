@@ -12,12 +12,9 @@ import SwiftUI
 import FamilyControls
 
 struct HomeView: View {
-    @Environment(AppLockService.self) private var lockService
-    @State private var isPickerPresented = false
     @State private var showStreakCalendar = false
 
     var body: some View {
-        @Bindable var lockService = lockService
         NavigationStack {
             VStack(spacing: 0) {
                 HomeHeaderView(showStreakCalendar: $showStreakCalendar)
@@ -25,27 +22,7 @@ struct HomeView: View {
 
                 ScrollView {
                     VStack(spacing: 16) {
-//                        TimeRangeSegmentedControl(selection: $timeRange)
-//                            .padding(.horizontal)
-
-                        Button {
-                            isPickerPresented = true
-                        } label: {
-                            BlockingStatusCard()
-                        }
-                        .buttonStyle(.plain)
-                        .padding(.horizontal)
-
-                        ScreenTimeSummaryCard()
-                            .padding(.horizontal)
-
-//                        InsightCalloutCard()
-//                            .padding(.horizontal)
-                        
-                        MostUsedAppsCard()
-                            .padding(.horizontal)
-
-                        CategoryBreakdownCard()
+                        HomeSummaryCard()
                             .padding(.horizontal)
                     }
                     .padding(.top, 8)
@@ -54,10 +31,6 @@ struct HomeView: View {
                 .scrollIndicators(.hidden)
             }
             .background(Color("PageBackground"))
-            .familyActivityPicker(isPresented: $isPickerPresented, selection: $lockService.selection)
-            .onChange(of: lockService.selection) {
-                lockService.commitSelection()
-            }
             .overlay {
                 if showStreakCalendar {
                     StreakCalendarView(isPresented: $showStreakCalendar)

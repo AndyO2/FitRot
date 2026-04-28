@@ -22,6 +22,8 @@ struct SettingsView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var showDevCamera = false
     @State private var showDevStreakCommitment = false
+    @State private var showStreakCalendar = false
+    @State private var isPickerPresented = false
     @State private var cameraAuthStatus: AVAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
 
     @AppStorage(AppGroupConstants.hasCompletedOnboardingKey, store: AppGroupConstants.sharedDefaults)
@@ -30,20 +32,23 @@ struct SettingsView: View {
     var body: some View {
         @Bindable var themeService = themeService
         @Bindable var iconService = iconService
+        @Bindable var lockService = lockService
         NavigationStack {
             VStack(spacing: 0) {
-                HStack(spacing: 10) {
-                    Image(systemName: "gear")
-                        .font(.system(size: 28, weight: .bold))
-                    Text("Settings")
-                        .font(.system(size: 34, weight: .bold))
-                }
-                .foregroundStyle(.primaryText)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 20)
-                .padding(.bottom, 8)
+                HomeHeaderView(showStreakCalendar: $showStreakCalendar)
+                    .padding(.bottom, 8)
 
                 List {
+                    Button {
+                        isPickerPresented = true
+                    } label: {
+                        BlockingStatusCard()
+                    }
+                    .buttonStyle(.plain)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets())
+
                     // Section("Appearance") {
                     //     Toggle(isOn: $themeService.isDarkMode) {
                     //         Label("Dark Mode", systemImage: "moon.fill")
@@ -240,6 +245,16 @@ struct SettingsView: View {
                 }
             }
             .background(Color("PageBackground"))
+            .familyActivityPicker(isPresented: $isPickerPresented, selection: $lockService.selection)
+            .onChange(of: lockService.selection) {
+                lockService.commitSelection()
+            }
+            .overlay {
+                if showStreakCalendar {
+                    StreakCalendarView(isPresented: $showStreakCalendar)
+                        .transition(.opacity)
+                }
+            }
         }
     }
 

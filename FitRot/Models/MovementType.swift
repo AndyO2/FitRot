@@ -6,6 +6,9 @@
 //
 
 import Foundation
+#if canImport(SwiftUI)
+import SwiftUI
+#endif
 
 enum MovementType: String, CaseIterable, Identifiable {
     case pushups
@@ -99,6 +102,17 @@ enum MovementType: String, CaseIterable, Identifiable {
 
     var coinsPerRep: Double { 1.0 }
 
+    /// Body-part subtitle shown under the workout title in the Earn list.
+    var category: String {
+        switch self {
+        case .pushups: "Upper body"
+        case .squats:  "Legs"
+        case .lunges:  "Legs"
+        case .situps:  "Core"
+        case .planks:  "Core"
+        }
+    }
+
     var coinsPerRepLabel: String {
         let formatted = coinsPerRep.truncatingRemainder(dividingBy: 1) == 0
             ? String(format: "%.0f", coinsPerRep)
@@ -162,7 +176,9 @@ enum MovementType: String, CaseIterable, Identifiable {
 
     func makeCountingStrategy(target: Int?) -> ExerciseCountingStrategy {
         switch self {
-        case .pushups, .situps:
+        case .pushups:
+            ElbowAngleStrategy(target: target)
+        case .situps:
             AngleThresholdStrategy(
                 target: target,
                 downThreshold: 135,
@@ -189,3 +205,24 @@ enum MovementType: String, CaseIterable, Identifiable {
         }
     }
 }
+
+#if canImport(SwiftUI)
+extension MovementType {
+    /// Gradient used for the icon bubble in WorkoutCardV2.
+    var iconGradientColors: [Color] {
+        switch self {
+        case .pushups:
+            [Color(red: 1.00, green: 0.62, blue: 0.20),
+             Color(red: 1.00, green: 0.42, blue: 0.30)]
+        case .squats:
+            [Color(red: 0.30, green: 0.82, blue: 0.50),
+             Color(red: 0.18, green: 0.68, blue: 0.40)]
+        case .planks:
+            [Color(red: 0.42, green: 0.55, blue: 1.00),
+             Color(red: 0.27, green: 0.40, blue: 0.98)]
+        case .lunges, .situps:
+            [Color.gray.opacity(0.6), Color.gray]
+        }
+    }
+}
+#endif
