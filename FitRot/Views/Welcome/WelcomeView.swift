@@ -103,7 +103,7 @@ struct WelcomeView: View {
                         .foregroundStyle(.red)
                 }
                 Button {
-                    Superwall.shared.register(placement: "campaign_trigger")
+                    Superwall.shared.register(placement: "dev")
                 } label: {
                     Text("Show Paywall (DEV)")
                         .font(.system(size: 15, weight: .medium))

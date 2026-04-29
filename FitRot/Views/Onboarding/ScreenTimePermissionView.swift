@@ -27,8 +27,8 @@ struct ScreenTimePermissionView: View {
             }
             .padding(.horizontal, 20)
             .padding(.top, 12)
-            
-            Spacer()
+
+            Spacer().frame(maxHeight: 10)
 
             // Title
             Text("Connect FitRot to Screen Time, Securely.")

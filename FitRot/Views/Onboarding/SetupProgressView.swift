@@ -55,14 +55,18 @@ struct SetupProgressView: View {
                 ZStack(alignment: .leading) {
                     Capsule()
                         .fill(Color(.systemGray5))
-                        .frame(height: 4)
+                        .frame(height: 16)
 
                     Capsule()
-                        .fill(Color.primary)
-                        .frame(width: max(geo.size.width * progress, 4), height: 4)
+                        .fill(LinearGradient(
+                            colors: [Color("BrandAccent"), Color("StreakOrange")],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        ))
+                        .frame(width: max(geo.size.width * progress, 4), height: 16)
                 }
             }
-            .frame(height: 4)
+            .frame(height: 16)
             .padding(.horizontal, 40)
 
             Spacer().frame(height: 12)
