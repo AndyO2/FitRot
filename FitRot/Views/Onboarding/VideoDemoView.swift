@@ -75,7 +75,7 @@ struct VideoDemoView: View {
                     .padding(.vertical, 16)
                     .background(
                         RoundedRectangle(cornerRadius: 32)
-                            .fill(Color.primary)
+                            .fill(Color.streakOrange)
                     )
                     .foregroundStyle(Color(.systemBackground))
             }

@@ -9,11 +9,11 @@ struct SetupProgressView: View {
     @State private var revealedItems: Set<Int> = []
 
     private let items = [
-        String(localized: "Eliminate Snoozing"),
-        String(localized: "Creating Smart Alarm"),
-        String(localized: "Personalized Wake-Up Plan"),
-        String(localized: "Push-Up Calibration"),
-        String(localized: "Morning Routine Ready"),
+        String(localized: "Analyzing Screen Time Habits"),
+        String(localized: "Configuring App Blocks"),
+        String(localized: "Personalized Unlock Plan"),
+        String(localized: "Movement Calibration"),
+        String(localized: "FitRot Ready"),
     ]
 
     private let thresholds = [0.15, 0.35, 0.55, 0.75, 0.90]

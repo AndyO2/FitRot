@@ -1,0 +1,205 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
+  "identifier" : "B69ADB22",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6761732041",
+    "_askToBuyEnabled" : false,
+    "_billingGracePeriodEnabled" : false,
+    "_billingIssuesEnabled" : false,
+    "_developerTeamID" : "AH7UGRBNUY",
+    "_disableDialogs" : false,
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 799175527.593238,
+    "_locale" : "en_US",
+    "_renewalBillingIssuesEnabled" : false,
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+
+    ],
+    "_timeRate" : 0
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "22018103",
+      "localizations" : [
+        {
+          "description" : "",
+          "displayName" : "FitRot Pro",
+          "locale" : "en_US"
+        }
+      ],
+      "name" : "pro",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "14.99",
+          "familyShareable" : false,
+          "groupNumber" : 5,
+          "internalID" : "6762148278",
+          "introductoryOffers" : [
+
+          ],
+          "localizations" : [
+            {
+              "description" : "FitRot Monthly Subscription",
+              "displayName" : "FitRot Pro Monthly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "monthly_14.99",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Monthly 14.99",
+          "subscriptionGroupID" : "22018103",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "9.99",
+          "familyShareable" : false,
+          "groupNumber" : 3,
+          "internalID" : "6761733321",
+          "introductoryOffers" : [
+
+          ],
+          "localizations" : [
+            {
+              "description" : "Monthly Subscription",
+              "displayName" : "Monthly 9.99",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "pro_monthly_9.99",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Monthly 9.99",
+          "subscriptionGroupID" : "22018103",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "29.99",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "6761733232",
+          "introductoryOffers" : [
+
+          ],
+          "localizations" : [
+            {
+              "description" : "Yearly Subscription",
+              "displayName" : "FitRot Pro Yearly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "pro_yearly_29.99",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Yearly 29.99",
+          "subscriptionGroupID" : "22018103",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "39.99",
+          "familyShareable" : false,
+          "groupNumber" : 4,
+          "internalID" : "6761733382",
+          "introductoryOffers" : [
+
+          ],
+          "localizations" : [
+            {
+              "description" : "Yearly Subscription",
+              "displayName" : "Yearly 39.99",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "pro_yearly_39.99",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Yearly 39.99",
+          "subscriptionGroupID" : "22018103",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "59.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6761733043",
+          "introductoryOffers" : [
+
+          ],
+          "localizations" : [
+            {
+              "description" : "Yearly Subscription",
+              "displayName" : "FitRot Pro Yearly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "pro_yearly_59.99",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Yearly 59.99",
+          "subscriptionGroupID" : "22018103",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 5,
+    "minor" : 0
+  }
+}

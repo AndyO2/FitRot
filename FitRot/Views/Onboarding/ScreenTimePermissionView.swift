@@ -16,7 +16,7 @@ struct ScreenTimePermissionView: View {
                 } label: {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 17, weight: .medium))
-                        .foregroundStyle(.primary)
+                        .foregroundStyle(Color.primary)
                         .frame(width: 36, height: 36)
                         .background(
                             Circle()

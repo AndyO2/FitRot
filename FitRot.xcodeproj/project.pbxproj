@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		611445762F91800300426588 /* AppsFlyerLib-Static in Frameworks */ = {isa = PBXBuildFile; productRef = 611445752F91800300426588 /* AppsFlyerLib-Static */; };
+		615409E52FA2736400D6FC5C /* FitRotStoreKit.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 615409E42FA2736400D6FC5C /* FitRotStoreKit.storekit */; };
 		61D9401A2F8EDDBA005D033A /* SuperwallKit in Frameworks */ = {isa = PBXBuildFile; productRef = 61D940192F8EDDBA005D033A /* SuperwallKit */; };
 		61D9401D2F8EDDCE005D033A /* Mixpanel in Frameworks */ = {isa = PBXBuildFile; productRef = 61D9401C2F8EDDCE005D033A /* Mixpanel */; };
 		61D940202F8EDDE4005D033A /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 61D9401F2F8EDDE4005D033A /* Lottie */; };
@@ -80,6 +81,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		615409E42FA2736400D6FC5C /* FitRotStoreKit.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = FitRotStoreKit.storekit; sourceTree = "<group>"; };
 		615FAE9B2F8436460020164D /* FitRot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FitRot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		61D9402F2F8EF29F005D033A /* FitRotDeviceActivity.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FitRotDeviceActivity.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		61D940312F8EF29F005D033A /* DeviceActivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DeviceActivity.framework; path = System/Library/Frameworks/DeviceActivity.framework; sourceTree = SDKROOT; };
@@ -221,6 +223,7 @@
 		615FAE922F8436460020164D = {
 			isa = PBXGroup;
 			children = (
+				615409E42FA2736400D6FC5C /* FitRotStoreKit.storekit */,
 				615FAE9D2F8436460020164D /* FitRot */,
 				61D940332F8EF29F005D033A /* FitRotDeviceActivity */,
 				61D940492F8EF2C7005D033A /* FitRotShieldConfiguration */,
@@ -437,6 +440,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				615409E52FA2736400D6FC5C /* FitRotStoreKit.storekit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

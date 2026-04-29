@@ -72,7 +72,7 @@ struct WelcomeView: View {
             Spacer()
                 .frame(height: 36)
 
-            Text("Replace Doomscrolling with Exercise")
+            Text("Replace Doomscrolling With Exercise.")
                 .font(.system(size: 40, weight: .bold))
                 .lineSpacing(2)
 
@@ -88,12 +88,12 @@ struct WelcomeView: View {
 
             VStack(spacing: 16) {
                 Button(action: onBuildPlan) {
-                    Text("Get Started ➡️")
+                    Text("Get Started")
                         .font(.system(size: 20, weight: .semibold))
                         .foregroundStyle(Color(.systemBackground))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 20)
-                        .background(Color.primary, in: Capsule())
+                        .background(Color.streakOrange, in: Capsule())
                 }
 
                 #if DEBUG

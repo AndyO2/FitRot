@@ -18,7 +18,7 @@ struct FinishSetupView: View {
                 } label: {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 17, weight: .medium))
-                        .foregroundStyle(.primary)
+                        .foregroundStyle(Color.primary)
                         .frame(width: 36, height: 36)
                         .background(
                             Circle()
@@ -52,7 +52,7 @@ struct FinishSetupView: View {
                     .padding(.vertical, 16)
                     .background(
                         RoundedRectangle(cornerRadius: 32)
-                            .fill(Color.primary)
+                            .fill(Color.streakOrange)
                     )
             }
             .opacity(typingDone ? 1 : 0)

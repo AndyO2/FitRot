@@ -8,5 +8,7 @@
 	<string>https://appsflyer-skadnetwork.com/</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>FitRot reads your daily step count so you can earn coins for being active.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>FitRot does not write data to Apple Health.</string>
 </dict>
 </plist>

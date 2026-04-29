@@ -96,7 +96,7 @@ struct OnboardingView: View {
                     } label: {
                         Image(systemName: "chevron.left")
                             .font(.system(size: 17, weight: .medium))
-                            .foregroundStyle(.primary)
+                            .foregroundStyle(Color.primary)
                             .frame(width: 36, height: 36)
                             .background(
                                 Circle()
@@ -138,7 +138,7 @@ struct OnboardingView: View {
                     } label: {
                         Image(systemName: "chevron.left")
                             .font(.system(size: 17, weight: .medium))
-                            .foregroundStyle(.primary)
+                            .foregroundStyle(Color.primary)
                             .frame(width: 36, height: 36)
                             .background(
                                 Circle()
@@ -169,7 +169,7 @@ struct OnboardingView: View {
                 } label: {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 17, weight: .medium))
-                        .foregroundStyle(.primary)
+                        .foregroundStyle(Color.primary)
                         .frame(width: 36, height: 36)
                         .background(
                             Circle()
@@ -287,7 +287,7 @@ struct OnboardingView: View {
                         .padding(.vertical, 16)
                         .background(
                             RoundedRectangle(cornerRadius: 32)
-                                .fill(currentStep.id == "try_exercise" ? Color.clear : (canContinue ? Color.primary : Color(.systemGray4)))
+                                .fill(currentStep.id == "try_exercise" ? Color.clear : (canContinue ? Color.streakOrange : Color(.systemGray4)))
                         )
                         .foregroundStyle(currentStep.id == "try_exercise" ? Color.primary : (canContinue ? Color(.systemBackground) : Color(.systemGray)))
                         .overlay(

@@ -56,7 +56,7 @@ struct ExerciseTimePickerView: View {
                     .padding(.vertical, 16)
                     .background(
                         RoundedRectangle(cornerRadius: 32)
-                            .fill(Color.black)
+                            .fill(Color.streakOrange)
                     )
                     .foregroundStyle(.white)
             }
