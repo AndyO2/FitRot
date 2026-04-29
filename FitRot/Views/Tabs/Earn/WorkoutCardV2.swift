@@ -12,9 +12,13 @@ import SwiftUI
 struct WorkoutCardV2: View {
     let movement: MovementType
     var onTap: () -> Void
+    @State private var tapCount: Int = 0
 
     var body: some View {
-        Button(action: onTap) {
+        Button {
+            tapCount += 1
+            onTap()
+        } label: {
             HStack(spacing: 14) {
                 iconBubble
 
@@ -47,6 +51,7 @@ struct WorkoutCardV2: View {
             )
         }
         .buttonStyle(.plain)
+        .sensoryFeedback(.selection, trigger: tapCount)
     }
 
     // MARK: - Icon

@@ -12,6 +12,7 @@ import SwiftUI
 struct EarnedTodayCard: View {
     @Environment(CoinManager.self) private var coinManager
     @Environment(NavigationCoordinator.self) private var nav
+    @State private var spendTapCount: Int = 0
 
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
@@ -21,11 +22,11 @@ struct EarnedTodayCard: View {
                     .tracking(0.5)
                     .foregroundStyle(Color("SecondaryText"))
 
-                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                HStack(alignment: .center, spacing: 8) {
                     Image("FitScroll-Coin")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 28, height: 28)
+                        .frame(width: 32, height: 32)
                     Text("\(coinManager.balance)")
                         .font(.system(size: 28, weight: .bold))
                         .foregroundStyle(Color("PrimaryText"))
@@ -42,6 +43,7 @@ struct EarnedTodayCard: View {
             Spacer(minLength: 8)
 
             Button {
+                spendTapCount += 1
                 nav.showUnlock = true
             } label: {
                 Text("Spend coins")
@@ -55,6 +57,7 @@ struct EarnedTodayCard: View {
                     )
             }
             .buttonStyle(.plain)
+            .sensoryFeedback(.selection, trigger: spendTapCount)
         }
         .padding(16)
         .background(

@@ -18,6 +18,8 @@ struct SettingsView: View {
     @Environment(NotificationManager.self) private var notificationManager
     @Environment(ThemeService.self) private var themeService
     @Environment(AppIconService.self) private var iconService
+    @Environment(NavigationCoordinator.self) private var nav
+    @Environment(HealthKitService.self) private var healthKitService
     @Environment(\.requestReview) private var requestReview
     @Environment(\.scenePhase) private var scenePhase
     @State private var showDevCamera = false
@@ -124,6 +126,27 @@ struct SettingsView: View {
                             }
                         }
                     )
+
+                    PermissionRow(
+                        title: "Apple Health",
+                        iconOn: "heart",
+                        iconOff: "heart.slash",
+                        isGranted: healthKitService.authStatus == .approved,
+                        canRequestInApp: healthKitService.authStatus == .notDetermined,
+                        onRequest: {
+                            switch healthKitService.authStatus {
+                            case .notDetermined:
+                                Task {
+                                    await healthKitService.requestAuthorization()
+                                    await healthKitService.refreshTodaySteps()
+                                }
+                            case .denied, .approved:
+                                openAppSettings()
+                            case .unavailable:
+                                break
+                            }
+                        }
+                    )
                 }
 
                 Section("General") {
@@ -210,6 +233,34 @@ struct SettingsView: View {
 
                     Button("Show Streak Commitment") {
                         showDevStreakCommitment = true
+                    }
+                    .listRowBackground(Color.white)
+
+                    Button("Show Step Milestone Modal") {
+                        nav.stepMilestoneCelebration = StepMilestoneCelebration(
+                            milestones: StepMilestone.all,
+                            totalCoins: StepMilestone.all.reduce(0) { $0 + $1.coins }
+                        )
+                        nav.showStepMilestone = true
+                    }
+                    .listRowBackground(Color.white)
+
+                    Button("Show Unlock Success Modal") {
+                        nav.unlockSuccessPayload = UnlockSuccessPayload(
+                            minutes: 10,
+                            remainingBalance: 25
+                        )
+                        nav.showUnlockSuccess = true
+                    }
+                    .listRowBackground(Color.white)
+
+                    Button("Show Coins Earned Modal") {
+                        nav.coinsEarnedPayload = CoinsEarnedPayload(
+                            coins: 12,
+                            count: 12,
+                            movement: .pushups
+                        )
+                        nav.showCoinsEarned = true
                     }
                     .listRowBackground(Color.white)
 

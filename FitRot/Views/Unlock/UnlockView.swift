@@ -44,7 +44,7 @@ struct UnlockView: View {
                             .font(.system(size: 18, weight: .semibold))
                             .foregroundStyle(.white)
                             .frame(width: 36, height: 36)
-                            .background(Color.brandAccent)
+                            .background(Color.streakOrange)
                             .clipShape(Circle())
                     }
 
@@ -82,7 +82,7 @@ struct UnlockView: View {
                         .contentTransition(.numericText())
 
                     Slider(value: $selectedMinutes, in: 1...30, step: 1)
-                        .tint(.brandAccent)
+                        .tint(.streakOrange)
                         .padding(.horizontal, 32)
                 }
                 .padding(.bottom, 32)
@@ -141,7 +141,7 @@ struct UnlockView: View {
                         .padding(.vertical, 16)
                         .background(
                             RoundedRectangle(cornerRadius: 16)
-                                .fill(ctaDisabled ? Color.brandAccent.opacity(0.4) : Color.brandAccent)
+                                .fill(ctaDisabled ? Color.streakOrange.opacity(0.4) : Color.streakOrange)
                         )
                 }
                 .disabled(ctaDisabled)
@@ -223,7 +223,7 @@ private struct UnlockOptionCard: View {
 
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                     .font(.system(size: 24))
-                    .foregroundStyle(isSelected ? .brandAccent : .secondaryText)
+                    .foregroundStyle(isSelected ? .streakOrange : .secondaryText)
             }
             .padding(16)
             .background(
@@ -232,7 +232,7 @@ private struct UnlockOptionCard: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 16)
-                    .stroke(isSelected ? Color.brandAccent : Color.cardBorder, lineWidth: isSelected ? 2 : 1)
+                    .stroke(isSelected ? Color.streakOrange : Color.cardBorder, lineWidth: isSelected ? 2 : 1)
             )
             .opacity(isDisabled ? 0.4 : 1)
         }

@@ -45,7 +45,7 @@ struct StreakCommitmentView: View {
             VStack(spacing: 0) {
                 Text("Can you exercise everyday?")
                     .font(.system(size: 26, weight: .semibold))
-                    .foregroundStyle(Color.white.opacity(0.55))
+                    .foregroundStyle(Color.white)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 32)
                     .padding(.top, 40)

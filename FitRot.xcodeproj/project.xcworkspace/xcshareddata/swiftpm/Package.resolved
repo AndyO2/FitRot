@@ -1,13 +1,13 @@
 {
-  "originHash" : "5be4f87725fb1c5c354bb5b725a55f73bf140646bc343d932d5636558481161d",
+  "originHash" : "6e9c0e79758ee8c5b2e4905116ee55771261021af74fd9c015b4f2579cd0fd37",
   "pins" : [
     {
       "identity" : "appsflyerframework-static",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/AppsFlyerSDK/AppsFlyerFramework-Static",
       "state" : {
-        "revision" : "80b7f4fcfafe6268ffd62c04076b510cb5bd0958",
-        "version" : "6.17.9"
+        "revision" : "d07a2b2ae1b5f1ef4c369ed8e3f85fabc6061915",
+        "version" : "6.18.0"
       }
     },
     {
@@ -33,8 +33,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mixpanel/mixpanel-swift",
       "state" : {
-        "revision" : "aa439062609c4cb9bdf34a9c255e0cb7bb3e1f34",
-        "version" : "6.2.0"
+        "revision" : "44b215162eedf635233fb34c11d0ed7c81f783e4",
+        "version" : "6.3.0"
+      }
+    },
+    {
+      "identity" : "mixpanel-swift-common",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mixpanel/mixpanel-swift-common.git",
+      "state" : {
+        "revision" : "ffd168d972a1bea7e86104f253a3e105c69217e5",
+        "version" : "1.0.1"
       }
     },
     {
@@ -51,8 +60,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/superwall/Superwall-iOS",
       "state" : {
-        "revision" : "7468306e92666dfea7470c78022082f0e65203d2",
-        "version" : "4.14.2"
+        "revision" : "4850e1ade9f4e06d4ed796a3a89077de7c70fbf4",
+        "version" : "4.15.1"
       }
     }
   ],

@@ -14,6 +14,7 @@ struct WorkoutView: View {
     @Environment(AppLockService.self) private var lockService
     @Environment(CoinManager.self) private var coinManager
     @Environment(StreakManager.self) private var streakManager
+    @Environment(NavigationCoordinator.self) private var nav
     @Environment(\.dismiss) private var dismiss
 
     var movementType: MovementType = .pushups
@@ -34,9 +35,19 @@ struct WorkoutView: View {
 
     var body: some View {
         if showStreakCommitment {
-            StreakCommitmentView(onCommit: { dismiss() })
+            StreakCommitmentView(onCommit: {
+                if mode == .earnCoins {
+                    finishEarnFlow()
+                } else {
+                    dismiss()
+                }
+            })
         } else if showSuccess {
-            WorkoutSuccessView(minutes: earnedMinutes, earnedCoins: mode == .earnCoins ? earnedCoins : nil) {
+            WorkoutSuccessView(
+                minutes: earnedMinutes,
+                earnedCoins: nil,
+                movement: movementType
+            ) {
                 if pendingStreakCommitment {
                     pendingStreakCommitment = false
                     withAnimation {
@@ -154,7 +165,7 @@ struct WorkoutView: View {
             .frame(height: 50)
             .background(
                 RoundedRectangle(cornerRadius: 14)
-                    .fill(Color.brandAccent)
+                    .fill(Color.streakOrange)
             )
         }
         .animation(.default, value: count)
@@ -170,10 +181,32 @@ struct WorkoutView: View {
             try? lockService.unlockFromWorkout(minutes: earnedMinutes)
         }
         let isFirstWorkoutToday = streakManager.recordWorkout()
-        pendingStreakCommitment = isFirstWorkoutToday
-        withAnimation {
-            showSuccess = true
+
+        switch mode {
+        case .earnCoins:
+            if isFirstWorkoutToday {
+                withAnimation {
+                    showStreakCommitment = true
+                }
+            } else {
+                finishEarnFlow()
+            }
+        case .unlockScreenTime:
+            pendingStreakCommitment = isFirstWorkoutToday
+            withAnimation {
+                showSuccess = true
+            }
         }
+    }
+
+    private func finishEarnFlow() {
+        nav.coinsEarnedPayload = CoinsEarnedPayload(
+            coins: earnedCoins,
+            count: earnedMinutes,
+            movement: movementType
+        )
+        nav.selectedTab = 0
+        dismiss()
     }
 }
 

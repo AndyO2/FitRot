@@ -75,8 +75,8 @@ enum MovementType: String, CaseIterable, Identifiable {
     /// Whether camera-based detection is implemented for this movement
     var isImplemented: Bool {
         switch self {
-        case .pushups, .squats, .planks: true
-        case .lunges, .situps: false
+        case .pushups, .squats, .lunges: true
+        case .situps, .planks: false
         }
     }
 
@@ -217,10 +217,10 @@ extension MovementType {
         case .squats:
             [Color(red: 0.30, green: 0.82, blue: 0.50),
              Color(red: 0.18, green: 0.68, blue: 0.40)]
-        case .planks:
+        case .lunges:
             [Color(red: 0.42, green: 0.55, blue: 1.00),
              Color(red: 0.27, green: 0.40, blue: 0.98)]
-        case .lunges, .situps:
+        case .planks, .situps:
             [Color.gray.opacity(0.6), Color.gray]
         }
     }

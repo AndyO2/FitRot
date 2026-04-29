@@ -14,12 +14,7 @@ struct StepsCardView: View {
 
     private static let dailyGoal = 10_000
     private static let stepsPerMinute = 100
-    private static let milestones: [Milestone] = [
-        Milestone(steps: 2_500, coins: 5),
-        Milestone(steps: 5_000, coins: 15),
-        Milestone(steps: 7_500, coins: 25),
-        Milestone(steps: 10_000, coins: 50),
-    ]
+    private static var milestones: [StepMilestone] { StepMilestone.all }
 
     private static let countFormatter: NumberFormatter = {
         let f = NumberFormatter()
@@ -202,7 +197,7 @@ struct StepsCardView: View {
 
     // MARK: - Next-milestone hint
 
-    private func nextMilestoneHint(stepCount: Int, next: Milestone) -> some View {
+    private func nextMilestoneHint(stepCount: Int, next: StepMilestone) -> some View {
         let remaining = max(0, next.steps - stepCount)
         let minutes = max(1, Int((Double(remaining) / Double(Self.stepsPerMinute)).rounded()))
 
@@ -298,14 +293,8 @@ struct StepsCardView: View {
         return String(format: "%.1fk", thousands)
     }
 
-    private static func nextMilestone(stepCount: Int) -> Milestone? {
+    private static func nextMilestone(stepCount: Int) -> StepMilestone? {
         milestones.first(where: { $0.steps > stepCount })
-    }
-
-    struct Milestone: Identifiable {
-        let steps: Int
-        let coins: Int
-        var id: Int { steps }
     }
 }
 

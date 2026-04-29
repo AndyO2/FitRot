@@ -27,6 +27,10 @@ enum AppGroupConstants {
     static let streakLastWorkoutDayKey = "streakLastWorkoutDay" // Double (timeIntervalSinceReferenceDate of startOfDay)
     static let streakWorkoutDaysKey = "streakWorkoutDays" // [Double] of startOfDay timeIntervalSinceReferenceDate values
 
+    // Step milestones
+    static let stepMilestoneClaimedDayKey = "stepMilestoneClaimedDay"             // Double, startOfDay timeIntervalSinceReferenceDate
+    static let stepMilestoneClaimedThresholdsKey = "stepMilestoneClaimedThresholds" // [Int]
+
     // Unlock window
     static let unlockActiveKey = "unlockActive"
     static let unlockEndTimeKey = "unlockEndTime" // Double (timeIntervalSinceReferenceDate)

@@ -9,6 +9,24 @@ import SwiftUI
 
 #if canImport(FamilyControls)
 
+struct StepMilestoneCelebration: Equatable {
+    let milestones: [StepMilestone]   // ascending, newly awarded
+    let totalCoins: Int
+
+    var highest: StepMilestone? { milestones.last }
+}
+
+struct UnlockSuccessPayload: Equatable {
+    let minutes: Int
+    let remainingBalance: Int
+}
+
+struct CoinsEarnedPayload: Equatable {
+    let coins: Int
+    let count: Int
+    let movement: MovementType
+}
+
 @Observable
 final class NavigationCoordinator {
     enum WorkoutMode {
@@ -16,11 +34,21 @@ final class NavigationCoordinator {
         case unlockScreenTime
     }
 
+    var selectedTab: Int = 0
     var showWorkout = false
     var showUnlock = false
     var selectedMovement: MovementType = .pushups
     var selectedUnlockMinutes: Int = 15
     var workoutMode: WorkoutMode = .unlockScreenTime
+
+    var showStepMilestone = false
+    var stepMilestoneCelebration: StepMilestoneCelebration?
+
+    var showUnlockSuccess = false
+    var unlockSuccessPayload: UnlockSuccessPayload?
+
+    var showCoinsEarned = false
+    var coinsEarnedPayload: CoinsEarnedPayload?
 
     private let defaults = AppGroupConstants.sharedDefaults
 

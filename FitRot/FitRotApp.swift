@@ -7,6 +7,9 @@
 
 import SwiftUI
 import SuperwallKit
+#if os(iOS)
+import Lottie
+#endif
 
 @main
 struct FitRotApp: App {
@@ -21,6 +24,7 @@ struct FitRotApp: App {
     @State private var themeService = ThemeService()
     @State private var appIconService = AppIconService()
     @State private var healthKitService = HealthKitService()
+    @State private var stepMilestoneService = StepMilestoneService()
     @State private var superwallBridge = SuperwallBridge()
     @Environment(\.scenePhase) private var scenePhase
     #endif
@@ -32,6 +36,11 @@ struct FitRotApp: App {
         Superwall.configure(apiKey: "pk_ofSEaQSbRNB55wykUOfn7")
         #if canImport(FamilyControls)
         Superwall.shared.delegate = superwallBridge
+        #endif
+        #if os(iOS)
+        Task.detached(priority: .utility) {
+            _ = LottieAnimation.named("Unlocked")
+        }
         #endif
     }
 
@@ -51,6 +60,7 @@ struct FitRotApp: App {
                 .environment(themeService)
                 .environment(appIconService)
                 .environment(healthKitService)
+                .environment(stepMilestoneService)
                 .onAppear {
                     lockService.restoreStateOnLaunch()
                     notificationManager.configure(with: navigationCoordinator)
