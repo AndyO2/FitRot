@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SuperwallKit
 
 #if canImport(FamilyControls)
 import FamilyControls
@@ -18,6 +19,7 @@ struct RootView: View {
 
     @State private var showingOnboarding = false
     @State private var showSplash = true
+    @State private var subscriptionStatus: SubscriptionStatus = .unknown
 
     var body: some View {
         ZStack {
@@ -34,6 +36,8 @@ struct RootView: View {
                             onSkip: { hasCompletedOnboarding = true }
                         )
                     }
+                } else if !subscriptionStatus.isActive {
+                    SubscriptionGateView()
                 } else {
                     switch authManager.status {
                     case .approved:
@@ -54,6 +58,9 @@ struct RootView: View {
         }
         .onChange(of: AuthorizationCenter.shared.authorizationStatus) {
             authManager.checkCurrentStatus()
+        }
+        .onReceive(Superwall.shared.$subscriptionStatus) { status in
+            subscriptionStatus = status
         }
     }
 }
