@@ -14,6 +14,7 @@ import SwiftUI
 
 private let appGroupID = "group.com.WinToday.FitRot"
 private let goalSecondsKey = "screenTimeStatsGoalSeconds"
+private let homeSummaryLastUpdatedKey = "homeSummaryLastUpdated"
 private let defaultGoalSeconds: Double = 4 * 60 * 60
 private let maxApps = 7
 private let maxNamedCategories = 4
@@ -171,6 +172,8 @@ struct HomeSummaryReport: DeviceActivityReportScene {
                 percent: percent
             )
         }
+
+        defaults?.set(Date().timeIntervalSinceReferenceDate, forKey: homeSummaryLastUpdatedKey)
 
         return HomeSummaryConfiguration(
             stats: stats,

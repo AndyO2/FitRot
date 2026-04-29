@@ -66,6 +66,7 @@ enum AppGroupConstants {
 
     // Home summary card (HomeSummaryCard ↔ FitRotReport extension)
     static let screenTimeStatsGoalSecondsKey = "screenTimeStatsGoalSeconds" // Double (seconds)
+    static let homeSummaryLastUpdatedKey = "homeSummaryLastUpdated"         // Double, timeIntervalSinceReferenceDate
 
     static let defaultDailyGoalSeconds: Double = 4 * 60 * 60
 }

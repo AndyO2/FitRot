@@ -25,7 +25,7 @@ struct PhoneProjectionView: View {
     }
 
     private var targetYears: Int {
-        Int((85.0 * Double(dailyPhoneHours) / 16.0).rounded())
+        Int((85.0 * Double(dailyPhoneHours) / 16.0 * configuration.yearsMultiplier).rounded())
     }
 
     var body: some View {
@@ -152,7 +152,7 @@ struct PhoneProjectionView: View {
         for i in 1...total {
             let fireAt = baseDelay + Double(i) * tickInterval
             DispatchQueue.main.asyncAfter(deadline: .now() + fireAt) {
-                withAnimation(.easeOut(duration: tickInterval)) {
+                withAnimation(.easeInOut(duration: tickInterval)) {
                     displayedYears = i
                 }
             }
@@ -175,6 +175,7 @@ extension PhoneProjectionView {
         var bigNumberStyle: AnyShapeStyle
         var explanation: String
         var footnote: String
+        var yearsMultiplier: Double = 1.0
 
         static let currentRate = Configuration(
             headline: .currentRate,
@@ -198,7 +199,8 @@ extension PhoneProjectionView {
                 endPoint: .bottom
             )),
             explanation: "of your life free from distractions, and help you achieve your dreams.",
-            footnote: "According to your profile combined with FitRot program"
+            footnote: "According to your profile combined with FitRot program",
+            yearsMultiplier: 0.25
         )
     }
 }

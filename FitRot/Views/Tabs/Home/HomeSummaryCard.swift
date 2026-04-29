@@ -21,30 +21,48 @@ struct HomeSummaryCard: View {
     private let goalSeconds: TimeInterval = AppGroupConstants.defaultDailyGoalSeconds
     /// Generous fixed height covering all three sections. The framework
     /// renders the report cross-process, so we can't read its intrinsic size;
-    /// any extension→host writeback (e.g. preference-key polling) is not
-    /// reliably supported.
+    /// any extension→host writeback for size measurement (PreferenceKey-style)
+    /// is not reliably supported. UserDefaults polling for a "render-complete"
+    /// timestamp does work — see `pollForFirstRender` below.
     private let reportHeight: CGFloat = 1080
 
+    @State private var hasRendered = false
+    @State private var appearTime: Date = .distantPast
+
     var body: some View {
-        DeviceActivityReport(.homeSummary, filter: filter)
-            .frame(height: reportHeight)
-            .overlay {
-                // The DeviceActivityReport hosts cross-process content via
-                // EXHostViewController, whose UIView absorbs touches before the
-                // parent ScrollView's pan gesture can pick them up — and
-                // `.allowsHitTesting(false)` doesn't propagate down to it. A
-                // near-transparent SwiftUI overlay sits above the host view in
-                // the SwiftUI hit chain, giving the parent ScrollView a normal
-                // surface to recognize pans on. Color.clear is optimized out
-                // of hit-testing, hence the 0.001 opacity.
-                Color.white.opacity(0.001)
+        ZStack {
+            DeviceActivityReport(.homeSummary, filter: filter)
+                .frame(height: reportHeight)
+                .overlay {
+                    // The DeviceActivityReport hosts cross-process content via
+                    // EXHostViewController, whose UIView absorbs touches before the
+                    // parent ScrollView's pan gesture can pick them up — and
+                    // `.allowsHitTesting(false)` doesn't propagate down to it. A
+                    // near-transparent SwiftUI overlay sits above the host view in
+                    // the SwiftUI hit chain, giving the parent ScrollView a normal
+                    // surface to recognize pans on. Color.clear is optimized out
+                    // of hit-testing, hence the 0.001 opacity.
+                    Color.white.opacity(0.001)
+                }
+                .padding(20)
+                .background(Color.white, in: RoundedRectangle(cornerRadius: 20))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20).stroke(Color.cardBorder, lineWidth: 1)
+                )
+
+            if !hasRendered {
+                HomeSummaryCardSkeleton()
+                    .transition(.opacity)
             }
-            .padding(20)
-            .background(Color.white, in: RoundedRectangle(cornerRadius: 20))
-            .overlay(
-                RoundedRectangle(cornerRadius: 20).stroke(Color.cardBorder, lineWidth: 1)
-            )
-            .onAppear { writeGoal() }
+        }
+        .onAppear {
+            writeGoal()
+            appearTime = Date()
+            hasRendered = isAlreadyRendered()
+        }
+        .task(id: appearTime) {
+            await pollForFirstRender()
+        }
     }
 
     /// Always 14 days of hourly data: current week (Sun–Sat) plus prior week
@@ -69,6 +87,36 @@ struct HomeSummaryCard: View {
         if defaults.double(forKey: AppGroupConstants.screenTimeStatsGoalSecondsKey) <= 0 {
             defaults.set(goalSeconds, forKey: AppGroupConstants.screenTimeStatsGoalSecondsKey)
         }
+    }
+
+    /// Skip the skeleton on warm foreground re-entries: if the extension wrote
+    /// a timestamp within the last 5s, treat the existing report as fresh.
+    private func isAlreadyRendered() -> Bool {
+        let raw = AppGroupConstants.sharedDefaults.double(forKey: AppGroupConstants.homeSummaryLastUpdatedKey)
+        guard raw > 0 else { return false }
+        let last = Date(timeIntervalSinceReferenceDate: raw)
+        return Date().timeIntervalSince(last) < 5
+    }
+
+    /// Poll App Group defaults for a "render-complete" timestamp newer than
+    /// this view's appear time. Same shape as ScreenTimeDashboardCard.pollAppGroup.
+    private func pollForFirstRender() async {
+        guard !hasRendered else { return }
+        for _ in 0..<20 {
+            try? await Task.sleep(for: .milliseconds(500))
+            let raw = AppGroupConstants.sharedDefaults.double(forKey: AppGroupConstants.homeSummaryLastUpdatedKey)
+            if raw > 0 {
+                let last = Date(timeIntervalSinceReferenceDate: raw)
+                if last >= appearTime {
+                    withAnimation(.easeOut(duration: 0.25)) { hasRendered = true }
+                    return
+                }
+            }
+        }
+        // Failsafe: if the extension never signals (e.g. no Family Controls
+        // authorization yet, or the framework didn't run), drop the skeleton
+        // so the underlying report's empty state can show through.
+        withAnimation(.easeOut(duration: 0.25)) { hasRendered = true }
     }
 }
 
