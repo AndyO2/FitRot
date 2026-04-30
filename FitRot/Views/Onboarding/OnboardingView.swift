@@ -357,7 +357,9 @@ struct OnboardingView: View {
                 LottieInfoContentView(
                     animationName: animationName,
                     title: displayText,
-                    subtitle: displaySubtitle
+                    subtitle: displaySubtitle,
+                    animationHeight: currentStep.id == "walking_earns_coins" ? 500 : 200,
+                    animationBottomPadding: currentStep.id == "walking_earns_coins" ? -80 : 0
                 )
             } else {
                 EmptyView()
@@ -522,11 +524,14 @@ private struct LottieInfoContentView: View {
     let animationName: String
     let title: String
     let subtitle: String?
+    var animationHeight: CGFloat = 200
+    var animationBottomPadding: CGFloat = 0
 
     var body: some View {
         VStack(spacing: 16) {
             LottieView(animationName: animationName)
-                .frame(height: 200)
+                .frame(height: animationHeight)
+                .padding(.bottom, animationBottomPadding)
 
             Text(title)
                 .font(.system(size: 28, weight: .bold))

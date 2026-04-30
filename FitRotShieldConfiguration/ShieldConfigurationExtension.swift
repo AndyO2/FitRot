@@ -54,6 +54,13 @@ private enum ShieldStateStore {
     }
 }
 
+// iOS renders the shield's primary button as a tinted material that inverts brightness
+// with appearance — dark surface in light mode, near-white in dark mode. Text needs the
+// inverse of .label so it stays legible: white in light, black in dark.
+private let primaryButtonTextColor = UIColor { trait in
+    trait.userInterfaceStyle == .dark ? .black : .white
+}
+
 class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     override func configuration(shielding application: Application) -> ShieldConfiguration {
         currentConfiguration(blockedName: application.localizedDisplayName ?? "This app")
@@ -85,21 +92,21 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     private func makeDefaultConfig(blockedName: String) -> ShieldConfiguration {
         ShieldConfiguration(
             backgroundBlurStyle: nil,
-            backgroundColor: .black,
+            backgroundColor: nil,
             icon: UIImage(named: "logo-transparent"),
             title: ShieldConfiguration.Label(
                 text: "\(blockedName) blocked by FitRot",
-                color: .white
+                color: .label
             ),
             subtitle: nil,
             primaryButtonLabel: ShieldConfiguration.Label(
                 text: "Close",
-                color: .white
+                color: primaryButtonTextColor
             ),
             primaryButtonBackgroundColor: .systemBlue,
             secondaryButtonLabel: ShieldConfiguration.Label(
                 text: "Open temporarily",
-                color: .white
+                color: .label
             )
         )
     }
@@ -107,18 +114,18 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     private func makeAwaitingConfig() -> ShieldConfiguration {
         ShieldConfiguration(
             backgroundBlurStyle: nil,
-            backgroundColor: .black,
+            backgroundColor: nil,
             icon: UIImage(named: "logo-transparent"),
             title: ShieldConfiguration.Label(
                 text: "⬆ Tap the notification ⬆",
-                color: .white
+                color: .label
             ),
             subtitle: nil,
             primaryButtonLabel: nil,
             primaryButtonBackgroundColor: nil,
             secondaryButtonLabel: ShieldConfiguration.Label(
                 text: "Didn't get a notification?",
-                color: .white
+                color: .label
             )
         )
     }
@@ -130,19 +137,19 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
 
         return ShieldConfiguration(
             backgroundBlurStyle: nil,
-            backgroundColor: .black,
+            backgroundColor: nil,
             icon: moonIcon,
             title: ShieldConfiguration.Label(
                 text: "Do Not Disturb mode is active",
-                color: .white
+                color: .label
             ),
             subtitle: ShieldConfiguration.Label(
                 text: "You can allow FitRot in Settings > Focus.\n\nAlternatively, open FitRot yourself.",
-                color: .white
+                color: .label
             ),
             primaryButtonLabel: ShieldConfiguration.Label(
                 text: "Retry",
-                color: .white
+                color: primaryButtonTextColor
             ),
             primaryButtonBackgroundColor: .systemBlue,
             secondaryButtonLabel: nil

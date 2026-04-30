@@ -318,6 +318,12 @@ enum OnboardingData {
             videoName: "pushup"
         ),
         .info(id: "tips_for_better_detection", text: String(localized: "Tips for better detection")),
+        .info(
+            id: "walking_earns_coins",
+            text: String(localized: "Earn coins\njust by walking"),
+            subtitle: String(localized: "Your steps automatically turn into unlock time. No camera, no setup — just walk."),
+            lottieAnimation: "Batman"
+        ),
 //        TODO: live demonstration with camera (CTA: try later)
         .question(
             id: "how_often_you_currently_exercise",
