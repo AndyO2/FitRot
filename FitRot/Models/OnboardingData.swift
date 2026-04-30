@@ -291,8 +291,10 @@ enum OnboardingData {
             id: "quitting_is_hard",
             text: String(localized: "We know that Quitting is hard.")
         ),
-//        TODO: In FitRot, you save up Screen Time by exercising (animated)
-//        TODO: Scroll, you can use your saved up Screen Time (animated)
+        .info(
+            id: "how_fitrot_works",
+            text: String(localized: "How FitRot works")
+        ),
         .timePicker(
             id: "exercise_time",
             text: String(localized: "What is the best time for you to Exercise?"),
@@ -322,7 +324,7 @@ enum OnboardingData {
             id: "walking_earns_coins",
             text: String(localized: "Earn coins\njust by walking"),
             subtitle: String(localized: "Your steps automatically turn into unlock time. No camera, no setup — just walk."),
-            lottieAnimation: "Batman"
+            lottieAnimation: "WalkingOrange"
         ),
 //        TODO: live demonstration with camera (CTA: try later)
         .question(

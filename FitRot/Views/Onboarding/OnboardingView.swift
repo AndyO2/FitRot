@@ -190,6 +190,7 @@ struct OnboardingView: View {
                     && currentStep.id != "good_news_projection"
                     && currentStep.id != "current_state"
                     && currentStep.id != "quitting_is_hard"
+                    && currentStep.id != "how_fitrot_works"
                     && currentStep.id != "try_exercise"
                     && currentStep.lottieAnimation == nil {
                     Text(displayText)
@@ -345,6 +346,8 @@ struct OnboardingView: View {
             TipsForBetterDetectionView()
         case "quitting_is_hard":
             QuittingIsHardView()
+        case "how_fitrot_works":
+            HowFitRotWorksView()
         case "research_breakdown":
             ResearchBreakdownView(
                 triedMethods: answers["what_have_you_already_tried"] ?? []
