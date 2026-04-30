@@ -50,6 +50,17 @@ final class NavigationCoordinator {
     var showCoinsEarned = false
     var coinsEarnedPayload: CoinsEarnedPayload?
 
+    var showAchievementUnlock = false
+    var achievementUnlockPayload: Achievement?
+    private var achievementUnlockQueue: [Achievement] = []
+
+    /// True while there are still unlocks waiting to display after the
+    /// current one dismisses. Used by MainTabView to defer other modals
+    /// (coins-earned, step-milestone) until the achievement queue drains.
+    var hasPendingAchievementUnlocks: Bool {
+        !achievementUnlockQueue.isEmpty
+    }
+
     private let defaults = AppGroupConstants.sharedDefaults
 
     func handleDeepLink(_ url: URL) {
@@ -90,6 +101,32 @@ final class NavigationCoordinator {
         selectedMovement = movement
         workoutMode = .earnCoins
         showWorkout = true
+    }
+
+    /// Queue newly-unlocked achievements for sequential celebration overlays.
+    /// If nothing is currently displayed, the first one starts immediately.
+    func enqueueAchievementUnlocks(_ list: [Achievement]) {
+        guard !list.isEmpty else { return }
+        achievementUnlockQueue.append(contentsOf: list)
+        if !showAchievementUnlock {
+            popNextAchievementUnlock()
+        }
+    }
+
+    func dismissCurrentAchievementUnlock() {
+        showAchievementUnlock = false
+        achievementUnlockPayload = nil
+        // Allow the dismissal animation to play before showing the next one.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+            self?.popNextAchievementUnlock()
+        }
+    }
+
+    private func popNextAchievementUnlock() {
+        guard !achievementUnlockQueue.isEmpty else { return }
+        let next = achievementUnlockQueue.removeFirst()
+        achievementUnlockPayload = next
+        showAchievementUnlock = true
     }
 
     private func clearPendingRequest() {

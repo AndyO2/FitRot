@@ -11,45 +11,74 @@ import ManagedSettings
 import FamilyControls
 
 class DeviceActivityMonitorExtension: DeviceActivityMonitor {
+    // Mirror of AppGroupConstants — extension can't import the main target.
+    // Keep these literals in sync with FitRot/Shared/AppGroupConstants.swift.
+    private enum Names {
+        static let groupID = "group.com.WinToday.FitRot"
+        static let selection = "familyActivitySelection"
+        static let unlockActive = "unlockActive"
+        static let unlockEndTime = "unlockEndTime"
+        static let unlockActivity = "FitRot.unlockWindow"
+        static let usageActivity = "FitRot.usageWindow"
+    }
+
     private let store = ManagedSettingsStore()
-    private let defaults = UserDefaults(suiteName: "group.com.WinToday.FitRot")
+    private let defaults = UserDefaults(suiteName: Names.groupID)
 
     override func intervalDidStart(for activity: DeviceActivityName) {
         super.intervalDidStart(for: activity)
-
-        // Unlock window started — clear shields (safety net)
-        store.shield.applications = nil
-        store.shield.applicationCategories = nil
-        store.shield.webDomains = nil
-        store.shield.webDomainCategories = nil
+        // Layer 3 firing path. The unlock schedule is INVERTED: intervalStart is set
+        // to unlockEnd and intervalEnd to unlockEnd + 15min (the 15-min minimum
+        // applies to interval LENGTH, not time-from-now). So when the OS wakes us
+        // for intervalDidStart on the unlockActivity, that means we've reached
+        // unlockEnd → re-shield.
+        // The usageActivity's intervalDidStart fires at midnight (daily container) — no-op.
+        if activity.rawValue == Names.unlockActivity {
+            reapplyShield()
+            DeviceActivityCenter().stopMonitoring([activity])
+        }
     }
 
     override func intervalDidEnd(for activity: DeviceActivityName) {
         super.intervalDidEnd(for: activity)
-
-        // Unlock window ended — re-apply shields from saved selection
-        if let selection = loadSelection() {
-            applyShields(from: selection)
+        // Belt-and-suspenders for Layer 3: if intervalDidStart somehow didn't fire,
+        // intervalDidEnd 15 min later still re-shields (idempotent).
+        if activity.rawValue == Names.unlockActivity {
+            reapplyShield()
+            DeviceActivityCenter().stopMonitoring([activity])
         }
+        // Don't stopMonitoring the daily usage container at 23:59 — it has repeats: true
+        // and is meant to re-arm at 00:00 the next day for any active unlock.
+    }
 
-        // Clear unlock state
-        defaults?.set(false, forKey: "unlockActive")
-        defaults?.removeObject(forKey: "unlockEndTime")
+    override func eventDidReachThreshold(_ event: DeviceActivityEvent.Name, activity: DeviceActivityName) {
+        super.eventDidReachThreshold(event, activity: activity)
+        // Layer 2: user has spent the threshold of *active* time in unlocked apps. Re-shield.
+        reapplyShield()
+    }
 
-        // Stop monitoring to prevent daily repeats (schedule uses repeats: true)
-        DeviceActivityCenter().stopMonitoring([activity])
+    private func reapplyShield() {
+        guard let selection = loadSelection() else {
+            // No selection persisted — still clear unlock state so other layers don't loop.
+            defaults?.set(false, forKey: Names.unlockActive)
+            defaults?.removeObject(forKey: Names.unlockEndTime)
+            return
+        }
+        print("[FitRot] applyShields (ext) — apps: \(selection.applicationTokens.count), categories: \(selection.categoryTokens.count), webDomains: \(selection.webDomainTokens.count)")
+        store.shield.applications = selection.applicationTokens.isEmpty
+            ? nil : selection.applicationTokens
+        store.shield.applicationCategories = selection.categoryTokens.isEmpty
+            ? nil : .specific(selection.categoryTokens)
+        store.shield.webDomains = selection.webDomainTokens.isEmpty
+            ? nil : selection.webDomainTokens
+        store.shield.webDomainCategories = selection.categoryTokens.isEmpty
+            ? nil : .specific(selection.categoryTokens)
+        defaults?.set(false, forKey: Names.unlockActive)
+        defaults?.removeObject(forKey: Names.unlockEndTime)
     }
 
     private func loadSelection() -> FamilyActivitySelection? {
-        guard let data = defaults?.data(forKey: "familyActivitySelection") else { return nil }
+        guard let data = defaults?.data(forKey: Names.selection) else { return nil }
         return try? PropertyListDecoder().decode(FamilyActivitySelection.self, from: data)
-    }
-
-    private func applyShields(from selection: FamilyActivitySelection) {
-        print("[FitRot] applyShields (ext) — apps: \(selection.applicationTokens.count), categories: \(selection.categoryTokens.count), webDomains: \(selection.webDomainTokens.count)")
-        store.shield.applications = selection.applicationTokens
-        store.shield.applicationCategories = .specific(selection.categoryTokens)
-        store.shield.webDomains = selection.webDomainTokens
-        store.shield.webDomainCategories = .specific(selection.categoryTokens)
     }
 }

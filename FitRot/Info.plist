@@ -4,6 +4,10 @@
 <dict>
 	<key>AttributionCopyEndpoint</key>
 	<string>https://appsflyer-skadnetwork.com/</string>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.WinToday.FitRot.reblock</string>
+	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>NSAdvertisingAttributionReportEndpoint</key>
@@ -12,5 +16,9 @@
 	<string>FitRot reads your daily step count so you can earn coins for being active.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>FitRot does not write data to Apple Health.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>processing</string>
+	</array>
 </dict>
 </plist>

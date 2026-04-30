@@ -19,7 +19,9 @@ final class AppLockService {
     private let defaults = AppGroupConstants.sharedDefaults
     private var reblockTimer: Timer?
 
-    static let unlockActivityName = DeviceActivityName("FitRot.unlockWindow")
+    static let unlockActivityName = DeviceActivityName(AppGroupConstants.unlockActivityName)
+    static let usageActivityName = DeviceActivityName(AppGroupConstants.usageActivityName)
+    static let usageThresholdEventName = DeviceActivityEvent.Name(AppGroupConstants.usageThresholdEventName)
 
     // MARK: - Stored State (tracked by @Observable)
 
@@ -66,7 +68,8 @@ final class AppLockService {
     func disableBlocking() {
         reblockTimer?.invalidate()
         clearShields()
-        center.stopMonitoring([Self.unlockActivityName])
+        center.stopMonitoring([Self.unlockActivityName, Self.usageActivityName])
+        BGReblockScheduler.cancel()
         isBlockingEnabled = false
         isUnlocked = false
         unlockEndTime = nil
@@ -110,45 +113,84 @@ final class AppLockService {
 
     private func scheduleUnlock(minutes: Int) throws {
         let now = Date()
-        let calendar = Calendar.current
+        let cal = Calendar.current
 
-        // Cap at 23:59 today
-        var unlockEnd = now.addingTimeInterval(TimeInterval(minutes * 60))
-        let endOfDay = calendar.startOfDay(for: now).addingTimeInterval(23 * 3600 + 59 * 60)
-        if unlockEnd > endOfDay {
-            unlockEnd = endOfDay
-        }
+        let unlockEnd = now.addingTimeInterval(TimeInterval(minutes * 60))
+        // Refuse if less than 60 seconds of unlock time. The 23:59 cap is gone — short
+        // schedules are fine; we just need ≥60s for any of the layers to be useful.
+        guard unlockEnd.timeIntervalSince(now) >= 60 else { throw UnlockError.tooCloseToMidnight }
 
-        // Refuse if less than 60 seconds of unlock time
-        let actualSeconds = unlockEnd.timeIntervalSince(now)
-        guard actualSeconds >= 60 else { throw UnlockError.tooCloseToMidnight }
-
-        // Clear shields
+        // Layer 1: instant unlock (already mirrored in ManagedSettingsStore).
         clearShields()
 
-        // Update stored properties (triggers SwiftUI observation)
+        // Update stored properties (triggers SwiftUI observation).
         isUnlocked = true
         unlockEndTime = unlockEnd
 
-        // Persist for cross-process access
+        // Persist for cross-process access.
         defaults.set(true, forKey: AppGroupConstants.unlockActiveKey)
         defaults.set(unlockEnd.timeIntervalSinceReferenceDate, forKey: AppGroupConstants.unlockEndTimeKey)
 
-        let startComponents = calendar.dateComponents([.hour, .minute, .second], from: now)
-        let endComponents = calendar.dateComponents([.hour, .minute, .second], from: unlockEnd)
+        // CRITICAL GOTCHA (Apple forum 729841): DeviceActivitySchedule's DateComponents
+        // must contain TIME components only. Including .era/.year/.month/.day/.calendar/
+        // .timeZone causes callbacks to silently fail. Use [.hour, .minute, .second].
 
-        let schedule = DeviceActivitySchedule(
-            intervalStart: startComponents,
-            intervalEnd: endComponents,
+        // Layer 2: usage threshold event — fires after `minutes` of *active* in-app time.
+        // Wrapped in a 24-hour container schedule per Apple's intended pattern.
+        let dailyStart = DateComponents(hour: 0, minute: 0, second: 0)
+        let dailyEnd = DateComponents(hour: 23, minute: 59, second: 59)
+        let usageContainer = DeviceActivitySchedule(
+            intervalStart: dailyStart,
+            intervalEnd: dailyEnd,
             repeats: true
         )
+        let usageEvent = DeviceActivityEvent(
+            applications: selection.applicationTokens,
+            threshold: DateComponents(minute: minutes)
+        )
 
-        center.stopMonitoring([Self.unlockActivityName])
-        do {
-            try center.startMonitoring(Self.unlockActivityName, during: schedule)
-        } catch {
-            print("[FitRot] DeviceActivity monitor error: \(error.localizedDescription)")
+        // Layer 3: inverted wall-clock schedule. iOS rejects schedules whose interval
+        // length is < 15 min (DeviceActivityCenter.MonitoringError.intervalTooShort),
+        // so we can't directly schedule a sub-15-min unlock window and listen on
+        // intervalDidEnd. Instead, we arm a 15-min schedule whose intervalStart lands
+        // AT unlockEnd — the extension's intervalDidStart fires at unlockEnd and
+        // triggers re-shield. The 15-min interval LENGTH satisfies iOS's minimum.
+        let reblockEnd = unlockEnd.addingTimeInterval(15 * 60)
+        let crossesMidnight = cal.startOfDay(for: unlockEnd) != cal.startOfDay(for: reblockEnd)
+
+        center.stopMonitoring([Self.unlockActivityName, Self.usageActivityName])
+        if !selection.applicationTokens.isEmpty {
+            do {
+                try center.startMonitoring(
+                    Self.usageActivityName,
+                    during: usageContainer,
+                    events: [Self.usageThresholdEventName: usageEvent]
+                )
+            } catch {
+                print("[FitRot] usage monitor error: \(error.localizedDescription)")
+            }
         }
+        if !crossesMidnight {
+            let startC = cal.dateComponents([.hour, .minute, .second], from: unlockEnd)
+            let endC = cal.dateComponents([.hour, .minute, .second], from: reblockEnd)
+            let wallClockSchedule = DeviceActivitySchedule(
+                intervalStart: startC,
+                intervalEnd: endC,
+                repeats: false
+            )
+            do {
+                try center.startMonitoring(Self.unlockActivityName, during: wallClockSchedule)
+            } catch {
+                print("[FitRot] wall-clock monitor error: \(error.localizedDescription)")
+            }
+        }
+        // If crossesMidnight: skip Layer 3 (cross-midnight time-of-day components are
+        // unreliable). Layer 4 BGTask + Layer 5 foreground sanity cover the gap.
+
+        // Layer 4: BGTaskScheduler safety net (~30s slack so the OS prefers DAM callbacks).
+        BGReblockScheduler.scheduleReblock(at: unlockEnd.addingTimeInterval(30))
+
+        // Foreground fast path (works while app process is alive).
         scheduleReblockTimer(at: unlockEnd)
     }
 
@@ -156,12 +198,19 @@ final class AppLockService {
 
     func reblock() {
         reblockTimer?.invalidate()
+        // Idempotent: if state is already cleared, just defensively cancel any layer.
+        guard isUnlocked || unlockEndTime != nil else {
+            center.stopMonitoring([Self.unlockActivityName, Self.usageActivityName])
+            BGReblockScheduler.cancel()
+            return
+        }
         applyShields(from: selection)
         isUnlocked = false
         unlockEndTime = nil
         defaults.set(false, forKey: AppGroupConstants.unlockActiveKey)
         defaults.removeObject(forKey: AppGroupConstants.unlockEndTimeKey)
-        center.stopMonitoring([Self.unlockActivityName])
+        center.stopMonitoring([Self.unlockActivityName, Self.usageActivityName])
+        BGReblockScheduler.cancel()
     }
 
     // MARK: - Restore on Launch
@@ -177,16 +226,18 @@ final class AppLockService {
 
         if isUnlocked {
             if let end = unlockEndTime, end > Date() {
-                // Unlock still active — keep shields off
+                // Unlock still active — keep shields off, re-arm fast-path Timer.
                 clearShields()
                 scheduleReblockTimer(at: end)
             } else {
-                // Unlock expired — re-block
+                // Layer 5: foreground sanity check caught an expired unlock. Re-block.
                 reblock()
             }
         } else {
-            // Just blocked — ensure shields applied
+            // Just blocked — ensure shields applied. No active layers should be running.
             applyShields(from: selection)
+            center.stopMonitoring([Self.unlockActivityName, Self.usageActivityName])
+            BGReblockScheduler.cancel()
         }
     }
 

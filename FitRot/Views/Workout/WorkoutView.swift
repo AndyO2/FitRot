@@ -15,6 +15,7 @@ struct WorkoutView: View {
     @Environment(CoinManager.self) private var coinManager
     @Environment(StreakManager.self) private var streakManager
     @Environment(NavigationCoordinator.self) private var nav
+    @Environment(AchievementService.self) private var achievements
     @Environment(\.dismiss) private var dismiss
 
     var movementType: MovementType = .pushups
@@ -136,6 +137,15 @@ struct WorkoutView: View {
                 coinPlayer = try? AVAudioPlayer(contentsOf: url)
                 coinPlayer?.prepareToPlay()
             }
+
+            let defaults = AppGroupConstants.sharedDefaults
+            let key = AppGroupConstants.seenWorkoutTutorialMovementsKey
+            var seen = defaults.stringArray(forKey: key) ?? []
+            if !seen.contains(movementType.rawValue) {
+                seen.append(movementType.rawValue)
+                defaults.set(seen, forKey: key)
+                showHelp = true
+            }
         }
     }
 
@@ -179,8 +189,16 @@ struct WorkoutView: View {
             coinManager.earn(earnedCoins)
         case .unlockScreenTime:
             try? lockService.unlockFromWorkout(minutes: earnedMinutes)
+            achievements.incrementWorkoutUnlocks()
         }
         let isFirstWorkoutToday = streakManager.recordWorkout()
+
+        // Achievement counters / XP for the workout itself.
+        achievements.incrementMovementReps(movementType, by: currentCount)
+        achievements.awardXP(5, source: "workout_completed")
+        if isFirstWorkoutToday {
+            achievements.awardXP(2, source: "streak_day")
+        }
 
         switch mode {
         case .earnCoins:

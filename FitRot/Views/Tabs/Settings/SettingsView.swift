@@ -268,6 +268,13 @@ struct SettingsView: View {
                         hasCompletedOnboarding = false
                     }
                     .listRowBackground(Color.white)
+
+                    Button("Reset Workout Tutorials") {
+                        AppGroupConstants.sharedDefaults.removeObject(
+                            forKey: AppGroupConstants.seenWorkoutTutorialMovementsKey
+                        )
+                    }
+                    .listRowBackground(Color.white)
                 }
                 #endif
 

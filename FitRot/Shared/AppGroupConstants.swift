@@ -35,6 +35,13 @@ enum AppGroupConstants {
     static let unlockActiveKey = "unlockActive"
     static let unlockEndTimeKey = "unlockEndTime" // Double (timeIntervalSinceReferenceDate)
 
+    // DeviceActivity schedule + event names. NOTE: DeviceActivityMonitorExtension
+    // hardcodes these strings (extension can't import the main target). Keep in sync.
+    static let unlockActivityName = "FitRot.unlockWindow"           // Layer 3 wall-clock schedule
+    static let usageActivityName = "FitRot.usageWindow"             // Layer 2 daily container
+    static let usageThresholdEventName = "FitRot.usageThreshold"    // Layer 2 event
+    static let bgReblockTaskID = "com.WinToday.FitRot.reblock"      // Layer 4 BGTask identifier
+
     // Workout unlock request (shield → notification → workout flow)
     static let unlockRequestPendingKey = "unlockRequestPending"
     static let unlockRequestTimestampKey = "unlockRequestTimestamp" // Double (timeIntervalSinceReferenceDate)
@@ -63,10 +70,17 @@ enum AppGroupConstants {
 
     // Onboarding
     static let hasCompletedOnboardingKey = "hasCompletedOnboarding"
+    static let seenWorkoutTutorialMovementsKey = "seenWorkoutTutorialMovements" // [String] of MovementType raw values
 
     // Home summary card (HomeSummaryCard ↔ FitRotReport extension)
     static let screenTimeStatsGoalSecondsKey = "screenTimeStatsGoalSeconds" // Double (seconds)
     static let homeSummaryLastUpdatedKey = "homeSummaryLastUpdated"         // Double, timeIntervalSinceReferenceDate
 
     static let defaultDailyGoalSeconds: Double = 4 * 60 * 60
+
+    // Achievements / XP
+    static let achievementUnlockedIDsKey = "achievementUnlockedIDs"        // [String]
+    static let achievementTotalXPKey = "achievementTotalXP"                // Int
+    static let achievementCoinsEarnedKey = "achievementCoinsEarned"        // Int (coins awarded by trophies)
+    static let achievementCountersKey = "achievementCounters"              // Data (JSON [String: Int])
 }

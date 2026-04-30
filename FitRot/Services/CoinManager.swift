@@ -20,6 +20,12 @@ final class CoinManager {
         }
     }
 
+    /// Set by FitRotApp after AchievementService is constructed. Lets us
+    /// notify the achievement system about coin earnings without holding a
+    /// direct reference (avoids a circular env dependency between two
+    /// @Observable services).
+    var onEarn: ((Int) -> Void)?
+
     init() {
         if defaults.bool(forKey: AppGroupConstants.coinBalanceInitializedKey) {
             balance = defaults.integer(forKey: AppGroupConstants.coinBalanceKey)
@@ -45,6 +51,7 @@ final class CoinManager {
     func earn(_ amount: Int) {
         guard amount > 0 else { return }
         balance += amount
+        onEarn?(amount)
     }
 }
 

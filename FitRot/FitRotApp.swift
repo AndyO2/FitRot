@@ -25,12 +25,17 @@ struct FitRotApp: App {
     @State private var appIconService = AppIconService()
     @State private var healthKitService = HealthKitService()
     @State private var stepMilestoneService = StepMilestoneService()
+    @State private var achievementService = AchievementService()
     @State private var superwallBridge = SuperwallBridge()
     @Environment(\.scenePhase) private var scenePhase
     #endif
 
     init() {
         #if os(iOS)
+        // Register the BGTask handler synchronously at launch (Apple requirement: must
+        // happen before applicationDidFinishLaunching returns). Layer 4 of the re-block
+        // defense-in-depth — see BGReblockScheduler.
+        BGReblockScheduler.register()
         AnalyticsService.shared.configure(token: "4142907f333c6d2647bfa98d0c2f22d6")
         #endif
         Superwall.configure(apiKey: "pk_ofSEaQSbRNB55wykUOfn7")
@@ -61,9 +66,14 @@ struct FitRotApp: App {
                 .environment(appIconService)
                 .environment(healthKitService)
                 .environment(stepMilestoneService)
+                .environment(achievementService)
                 .onAppear {
                     lockService.restoreStateOnLaunch()
                     notificationManager.configure(with: navigationCoordinator)
+                    let achievements = achievementService
+                    coinManager.onEarn = { amount in
+                        achievements.incrementLifetimeCoins(by: amount)
+                    }
                 }
                 .onOpenURL { url in
                     navigationCoordinator.handleDeepLink(url)

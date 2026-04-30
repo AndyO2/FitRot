@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 #endif
 
-enum MovementType: String, CaseIterable, Identifiable {
+enum MovementType: String, CaseIterable, Identifiable, Codable {
     case pushups
     case squats
     case lunges

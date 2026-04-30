@@ -12,7 +12,6 @@ import SwiftUI
 struct EarnCoinsView: View {
     @Environment(CoinManager.self) private var coinManager
     @Environment(NavigationCoordinator.self) private var nav
-    @State private var showStreakCalendar = false
 
     private var activeMovements: [MovementType] {
         MovementType.allCases.filter(\.isImplemented)
@@ -21,7 +20,9 @@ struct EarnCoinsView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                HomeHeaderView(showStreakCalendar: $showStreakCalendar)
+                header
+                    .padding(.horizontal, 20)
+                    .padding(.top, 8)
                     .padding(.bottom, 8)
 
                 ScrollView {
@@ -30,24 +31,10 @@ struct EarnCoinsView: View {
 
                         StepsCardView()
 
-                        VStack(alignment: .leading, spacing: 12) {
-                            HStack {
-                                Text("WORKOUTS")
-                                    .font(.system(size: 12, weight: .bold))
-                                    .tracking(1.0)
-                                    .foregroundStyle(.secondary)
-                                Spacer()
-                                Text("\(activeMovements.count) active")
-                                    .font(.system(size: 13, weight: .semibold))
-                                    .foregroundStyle(.secondary)
-                            }
-                            .padding(.horizontal, 4)
-
-                            VStack(spacing: 12) {
-                                ForEach(activeMovements) { movement in
-                                    WorkoutCardV2(movement: movement) {
-                                        nav.startWorkout(for: movement)
-                                    }
+                        VStack(spacing: 12) {
+                            ForEach(activeMovements) { movement in
+                                WorkoutCardV2(movement: movement) {
+                                    nav.startWorkout(for: movement)
                                 }
                             }
                         }
@@ -60,13 +47,20 @@ struct EarnCoinsView: View {
                 .scrollIndicators(.hidden)
             }
             .background(Color("PageBackground"))
-            .overlay {
-                if showStreakCalendar {
-                    StreakCalendarView(isPresented: $showStreakCalendar)
-                        .transition(.opacity)
-                }
-            }
         }
+    }
+
+    private var header: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("WORKOUTS")
+                .font(.system(size: 12, weight: .bold))
+                .tracking(1.4)
+                .foregroundStyle(Color("SecondaryText"))
+            Text("Earn Coins")
+                .font(.system(size: 32, weight: .heavy))
+                .foregroundStyle(Color("PrimaryText"))
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
