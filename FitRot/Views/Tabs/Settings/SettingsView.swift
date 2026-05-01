@@ -20,6 +20,7 @@ struct SettingsView: View {
     @Environment(AppIconService.self) private var iconService
     @Environment(NavigationCoordinator.self) private var nav
     @Environment(HealthKitService.self) private var healthKitService
+    @Environment(StreakManager.self) private var streakManager
     @Environment(\.requestReview) private var requestReview
     @Environment(\.scenePhase) private var scenePhase
     @State private var showDevCamera = false
@@ -328,7 +329,13 @@ struct SettingsView: View {
             }
             .background(Color("PageBackground"))
             .familyActivityPicker(isPresented: $isPickerPresented, selection: $lockService.selection)
-            .onChange(of: lockService.selection) {
+            .onChange(of: lockService.selection) { oldValue, newValue in
+                let removedApps = !oldValue.applicationTokens.subtracting(newValue.applicationTokens).isEmpty
+                let removedCategories = !oldValue.categoryTokens.subtracting(newValue.categoryTokens).isEmpty
+                if removedApps || removedCategories {
+                    streakManager.resetStreak()
+                    AnalyticsService.shared.track("streak_reset_unselected_app")
+                }
                 lockService.commitSelection()
             }
             .fullScreenCover(isPresented: $showBlockingIntervention) {

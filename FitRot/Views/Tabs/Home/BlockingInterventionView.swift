@@ -47,6 +47,9 @@ struct BlockingInterventionView: View {
                         .foregroundStyle(.secondaryText)
                         .multilineTextAlignment(.center)
                         .fixedSize(horizontal: false, vertical: true)
+
+                    streakWarningCard
+                        .padding(.top, 4)
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, -40)
@@ -88,6 +91,33 @@ struct BlockingInterventionView: View {
                 ])
             }
         }
+    }
+
+    private var streakWarningCard: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "flame.fill")
+                .font(.title3)
+                .foregroundStyle(Color.streakOrange)
+                .frame(width: 36, height: 36)
+                .background(Color.streakOrange.opacity(0.15), in: Circle())
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Your streak will reset")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.primaryText)
+                Text("Removing a blocked app ends your current streak.")
+                    .font(.caption)
+                    .foregroundStyle(.secondaryText)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(12)
+        .background(Color.white, in: RoundedRectangle(cornerRadius: 16))
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.streakOrange.opacity(0.4), lineWidth: 1)
+        )
     }
 
     private var countdownRing: some View {

@@ -77,6 +77,12 @@ final class StreakManager {
     func hasWorkout(on date: Date) -> Bool {
         workoutDays.contains(Calendar.current.startOfDay(for: date))
     }
+
+    func resetStreak() {
+        currentStreak = 0
+        lastWorkoutDayTimestamp = 0
+        workoutDays.removeAll()
+    }
 }
 
 #endif
