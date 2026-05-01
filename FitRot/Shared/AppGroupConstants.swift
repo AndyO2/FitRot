@@ -73,10 +73,11 @@ enum AppGroupConstants {
     static let seenWorkoutTutorialMovementsKey = "seenWorkoutTutorialMovements" // [String] of MovementType raw values
 
     // Home summary card (HomeSummaryCard ↔ FitRotReport extension)
-    static let screenTimeStatsGoalSecondsKey = "screenTimeStatsGoalSeconds" // Double (seconds)
     static let homeSummaryLastUpdatedKey = "homeSummaryLastUpdated"         // Double, timeIntervalSinceReferenceDate
 
-    static let defaultDailyGoalSeconds: Double = 4 * 60 * 60
+    // Daily screen-time goal (set in onboarding, editable in Settings, read by FitRotReport)
+    static let targetPhoneHoursKey = "targetPhoneHours"                     // Int (hours/day)
+    static let defaultTargetPhoneHours: Int = 2
 
     // Achievements / XP
     static let achievementUnlockedIDsKey = "achievementUnlockedIDs"        // [String]

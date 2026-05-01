@@ -13,9 +13,9 @@ import ManagedSettings
 import SwiftUI
 
 private let appGroupID = "group.com.WinToday.FitRot"
-private let goalSecondsKey = "screenTimeStatsGoalSeconds"
+private let targetHoursKey = "targetPhoneHours"
 private let homeSummaryLastUpdatedKey = "homeSummaryLastUpdated"
-private let defaultGoalSeconds: Double = 4 * 60 * 60
+private let defaultTargetHours: Int = 2
 private let maxApps = 7
 private let maxNamedCategories = 4
 
@@ -29,8 +29,8 @@ struct HomeSummaryReport: DeviceActivityReportScene {
 
     func makeConfiguration(representing data: DeviceActivityResults<DeviceActivityData>) async -> HomeSummaryConfiguration {
         let defaults = UserDefaults(suiteName: appGroupID)
-        let goalRaw = defaults?.double(forKey: goalSecondsKey) ?? 0
-        let goalSeconds = goalRaw > 0 ? goalRaw : defaultGoalSeconds
+        let hoursRaw = defaults?.integer(forKey: targetHoursKey) ?? 0
+        let goalSeconds = TimeInterval(hoursRaw > 0 ? hoursRaw : defaultTargetHours) * 3600
 
         var calendar = Calendar.current
         calendar.firstWeekday = 1 // Sunday — force Sunday-to-Saturday week regardless of locale.

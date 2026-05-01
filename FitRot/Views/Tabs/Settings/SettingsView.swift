@@ -31,6 +31,9 @@ struct SettingsView: View {
     @AppStorage(AppGroupConstants.hasCompletedOnboardingKey, store: AppGroupConstants.sharedDefaults)
     private var hasCompletedOnboarding = false
 
+    @AppStorage(AppGroupConstants.targetPhoneHoursKey, store: AppGroupConstants.sharedDefaults)
+    private var targetPhoneHours: Int = AppGroupConstants.defaultTargetPhoneHours
+
     var body: some View {
         @Bindable var themeService = themeService
         @Bindable var iconService = iconService
@@ -73,6 +76,19 @@ struct SettingsView: View {
                     //     .listRowSeparator(.hidden)
                     //     .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
                     // }
+
+                Section("Goal") {
+                    Stepper(value: $targetPhoneHours, in: 0...16) {
+                        HStack {
+                            Label("Daily Screen-Time Goal", systemImage: "hourglass")
+                                .foregroundStyle(.primaryText)
+                            Spacer()
+                            Text("\(targetPhoneHours) hr")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .listRowBackground(Color.white)
+                }
 
                 Section("Permissions") {
                     PermissionRow(

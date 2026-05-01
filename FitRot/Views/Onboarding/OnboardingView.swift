@@ -9,13 +9,16 @@ struct OnboardingView: View {
 
     private let steps = OnboardingData.steps
 
+    @Environment(HealthKitService.self) private var healthKitService
+    @State private var walkingPermissionRequested = false
     @State private var currentIndex = 0
     @State private var answers: [String: [String]] = [:]
     @State private var selectedOptions: Set<String> = []
     @State private var selectedTime = Calendar.current.date(from: DateComponents(hour: 7, minute: 0))!
     @State private var hasSignature = false
     @AppStorage("dailyPhoneHours") private var dailyPhoneHours: Int = 4
-    @AppStorage("targetPhoneHours") private var targetPhoneHours: Int = 2
+    @AppStorage(AppGroupConstants.targetPhoneHoursKey, store: AppGroupConstants.sharedDefaults)
+    private var targetPhoneHours: Int = AppGroupConstants.defaultTargetPhoneHours
     @AppStorage("goalWakeUpHour") private var goalWakeUpHour: Int = 7
     @AppStorage("goalWakeUpMinute") private var goalWakeUpMinute: Int = 0
     @AppStorage("referralCode") private var referralCode: String = ""
@@ -280,7 +283,7 @@ struct OnboardingView: View {
                 // MARK: - Continue button
                 Button {
                     UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                    advance()
+                    handleContinueTap()
                 } label: {
                     Text(currentStep.buttonText ?? "Continue")
                         .font(.system(size: 17, weight: .semibold))
@@ -398,6 +401,19 @@ struct OnboardingView: View {
 
     // MARK: - Navigation
 
+    private func handleContinueTap() {
+        if currentStep.id == "walking_earns_coins"
+            && !walkingPermissionRequested
+            && healthKitService.authStatus == .notDetermined {
+            walkingPermissionRequested = true
+            Task { @MainActor in
+                await healthKitService.requestAuthorization()
+            }
+            return
+        }
+        advance()
+    }
+
     private func goBack() {
         guard currentIndex > 0 else {
             onBack()
@@ -412,6 +428,8 @@ struct OnboardingView: View {
                 selectedTime = Calendar.current.date(from: DateComponents(hour: goalWakeUpHour, minute: goalWakeUpMinute)) ?? selectedTime
             } else if steps[currentIndex].isCommitment {
                 hasSignature = false
+            } else if steps[currentIndex].id == "walking_earns_coins" {
+                walkingPermissionRequested = false
             }
         }
     }

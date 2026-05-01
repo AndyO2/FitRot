@@ -18,7 +18,6 @@ extension DeviceActivityReport.Context {
 /// inside the FitRotReport extension to avoid the multi-report stability bug.
 /// Screen time is always today; top apps and categories are always this week.
 struct HomeSummaryCard: View {
-    private let goalSeconds: TimeInterval = AppGroupConstants.defaultDailyGoalSeconds
     /// Generous fixed height covering all three sections. The framework
     /// renders the report cross-process, so we can't read its intrinsic size;
     /// any extension→host writeback for size measurement (PreferenceKey-style)
@@ -56,7 +55,6 @@ struct HomeSummaryCard: View {
             }
         }
         .onAppear {
-            writeGoal()
             appearTime = Date()
             hasRendered = isAlreadyRendered()
         }
@@ -80,13 +78,6 @@ struct HomeSummaryCard: View {
         // `end: max(now, start)` makes the DateInterval drift forward as time
         // passes, so the framework reliably picks up new data.
         return DeviceActivityFilter(segment: .hourly(during: DateInterval(start: start, end: max(now, start))))
-    }
-
-    private func writeGoal() {
-        let defaults = AppGroupConstants.sharedDefaults
-        if defaults.double(forKey: AppGroupConstants.screenTimeStatsGoalSecondsKey) <= 0 {
-            defaults.set(goalSeconds, forKey: AppGroupConstants.screenTimeStatsGoalSecondsKey)
-        }
     }
 
     /// Skip the skeleton on warm foreground re-entries: if the extension wrote
