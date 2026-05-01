@@ -57,6 +57,21 @@ private enum ShieldStateStore {
 
 class ShieldActionExtension: ShieldActionDelegate {
     override func handle(action: ShieldAction, for application: ApplicationToken, completionHandler: @escaping (ShieldActionResponse) -> Void) {
+        processAction(action, completionHandler: completionHandler)
+    }
+
+    override func handle(action: ShieldAction, for webDomain: WebDomainToken, completionHandler: @escaping (ShieldActionResponse) -> Void) {
+        completionHandler(.close)
+    }
+
+    // iOS routes button taps to this overload when an app is shielded via category
+    // (store.shield.applicationCategories), not via store.shield.applications. Run the
+    // same state machine so "Open temporarily" works for category-shielded apps too.
+    override func handle(action: ShieldAction, for category: ActivityCategoryToken, completionHandler: @escaping (ShieldActionResponse) -> Void) {
+        processAction(action, completionHandler: completionHandler)
+    }
+
+    private func processAction(_ action: ShieldAction, completionHandler: @escaping (ShieldActionResponse) -> Void) {
         let state = ShieldStateStore.read()
 
         switch (state, action) {
@@ -81,14 +96,6 @@ class ShieldActionExtension: ShieldActionDelegate {
         default:
             completionHandler(.defer)
         }
-    }
-
-    override func handle(action: ShieldAction, for webDomain: WebDomainToken, completionHandler: @escaping (ShieldActionResponse) -> Void) {
-        completionHandler(.close)
-    }
-
-    override func handle(action: ShieldAction, for category: ActivityCategoryToken, completionHandler: @escaping (ShieldActionResponse) -> Void) {
-        completionHandler(.close)
     }
 
     private func markUnlockRequestPending() {
