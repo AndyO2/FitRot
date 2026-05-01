@@ -32,7 +32,7 @@ struct BlockingInterventionView: View {
             VStack(spacing: 0) {
                 LottieView(animationName: "WalkingOrange", loopMode: .loop)
                     .frame(maxWidth: .infinity)
-                    .frame(height: 480)
+                    .frame(height: 240)
                     .padding(.top, 32)
 
                 VStack(spacing: 12) {
@@ -49,7 +49,7 @@ struct BlockingInterventionView: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 .padding(.horizontal, 24)
-                .padding(.top, -80)
+                .padding(.top, -40)
 
                 countdownRing
                     .padding(.top, 24)
