@@ -26,6 +26,7 @@ struct SettingsView: View {
     @State private var showDevStreakCommitment = false
     @State private var showStreakCalendar = false
     @State private var isPickerPresented = false
+    @State private var showBlockingIntervention = false
     @State private var cameraAuthStatus: AVAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
 
     @AppStorage(AppGroupConstants.hasCompletedOnboardingKey, store: AppGroupConstants.sharedDefaults)
@@ -45,7 +46,14 @@ struct SettingsView: View {
 
                 List {
                     Button {
-                        isPickerPresented = true
+                        let hasSelection = !lockService.selection.applicationTokens.isEmpty
+                            || !lockService.selection.categoryTokens.isEmpty
+                        if hasSelection {
+                            AnalyticsService.shared.track("blocking_intervention_shown")
+                            showBlockingIntervention = true
+                        } else {
+                            isPickerPresented = true
+                        }
                     } label: {
                         BlockingStatusCard()
                     }
@@ -322,6 +330,14 @@ struct SettingsView: View {
             .familyActivityPicker(isPresented: $isPickerPresented, selection: $lockService.selection)
             .onChange(of: lockService.selection) {
                 lockService.commitSelection()
+            }
+            .fullScreenCover(isPresented: $showBlockingIntervention) {
+                BlockingInterventionView(onContinue: {
+                    AnalyticsService.shared.track("blocking_intervention_continued")
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                        isPickerPresented = true
+                    }
+                })
             }
             .overlay {
                 if showStreakCalendar {
