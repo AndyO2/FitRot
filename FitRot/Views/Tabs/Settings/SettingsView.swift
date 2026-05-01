@@ -289,6 +289,12 @@ struct SettingsView: View {
                     }
                     .listRowBackground(Color.white)
 
+                    Button("Show Rank Up Modal") {
+                        nav.rankUpPayload = RankUp(previousLevel: 4, newLevel: 5)
+                        nav.showRankUp = true
+                    }
+                    .listRowBackground(Color.white)
+
                     Button("Restart Onboarding") {
                         hasCompletedOnboarding = false
                     }

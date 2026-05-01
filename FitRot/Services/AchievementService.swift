@@ -153,28 +153,45 @@ final class AchievementService {
 
     // MARK: - XP
 
-    func awardXP(_ amount: Int, source: String) {
-        guard amount > 0 else { return }
+    @discardableResult
+    func awardXP(_ amount: Int, source: String) -> RankUp? {
+        guard amount > 0 else { return nil }
         let previousLevel = currentLevel
         totalXP += amount
         let newLevel = currentLevel
+        let leveledUp = newLevel > previousLevel
         #if os(iOS)
         AnalyticsService.shared.track("xp_awarded", properties: [
             "amount": amount,
             "source": source,
             "new_level": newLevel,
-            "leveled_up": newLevel > previousLevel,
+            "leveled_up": leveledUp,
         ])
+        if leveledUp {
+            AnalyticsService.shared.track("rank_up", properties: [
+                "previous_level": previousLevel,
+                "new_level": newLevel,
+                "source": source,
+            ])
+        }
         #endif
+        return leveledUp ? RankUp(previousLevel: previousLevel, newLevel: newLevel) : nil
     }
 
     // MARK: - Evaluate / Unlock
 
+    struct EvaluationResult {
+        let unlocked: [Achievement]
+        let rankUp: RankUp?
+    }
+
     /// Re-checks every catalog entry against current counters + streak data
-    /// and unlocks any newly-satisfied ones. Returns the new unlocks so the
-    /// caller can route them to the celebration overlay.
+    /// and unlocks any newly-satisfied ones. Returns the new unlocks plus a
+    /// coalesced rank-up (if cascading XP rewards crossed any level boundaries)
+    /// so the caller can route both to celebration overlays.
     @discardableResult
-    func evaluateAll(streak: StreakManager?, coins: CoinManager?) -> [Achievement] {
+    func evaluateAll(streak: StreakManager?, coins: CoinManager?) -> EvaluationResult {
+        let levelBefore = currentLevel
         var newlyUnlocked: [Achievement] = []
         for achievement in AchievementCatalog.all where !isUnlocked(achievement.id) {
             if isCriteriaMet(achievement.criteria, streak: streak) {
@@ -193,7 +210,11 @@ final class AchievementService {
                 newlyUnlocked.append(achievement)
             }
         }
-        return newlyUnlocked
+        let levelAfter = currentLevel
+        let rankUp = levelAfter > levelBefore
+            ? RankUp(previousLevel: levelBefore, newLevel: levelAfter)
+            : nil
+        return EvaluationResult(unlocked: newlyUnlocked, rankUp: rankUp)
     }
 }
 

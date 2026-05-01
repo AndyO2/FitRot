@@ -81,29 +81,42 @@ struct MainTabView: View {
                 .transition(.opacity)
                 .zIndex(2)
             }
+
+            if nav.showRankUp, let rankUp = nav.rankUpPayload {
+                RankUpView(rankUp: rankUp) {
+                    nav.dismissRankUp()
+                }
+                .transition(.opacity)
+                .zIndex(2)
+            }
         }
         .animation(.easeInOut(duration: 0.25), value: nav.showStepMilestone)
         .animation(.easeInOut(duration: 0.25), value: nav.showUnlockSuccess)
         .animation(.easeInOut(duration: 0.25), value: nav.showCoinsEarned)
         .animation(.easeInOut(duration: 0.25), value: nav.showAchievementUnlock)
+        .animation(.easeInOut(duration: 0.25), value: nav.showRankUp)
+        .sensoryFeedback(.success, trigger: nav.showRankUp) { _, isShowing in isShowing }
         .onChange(of: nav.showWorkout) { _, isShowing in
             // Workout sheet just closed — evaluate achievements (workout count, streak,
             // movement reps, workout-unlock counter may have all changed) before
             // showing the coins-earned overlay so a workout can also surface a trophy.
             if !isShowing {
-                let unlocked = achievementService.evaluateAll(streak: streakManager, coins: coinManager)
-                if !unlocked.isEmpty {
-                    nav.enqueueAchievementUnlocks(unlocked)
+                let result = achievementService.evaluateAll(streak: streakManager, coins: coinManager)
+                if !result.unlocked.isEmpty {
+                    nav.enqueueAchievementUnlocks(result.unlocked)
+                }
+                if let rankUp = result.rankUp {
+                    nav.enqueueRankUp(rankUp)
                 }
             }
-            // Defer the coins-earned modal if an achievement is taking the screen —
-            // .onChange(of: nav.showAchievementUnlock) below will surface it after
-            // the queue drains.
+            // Defer the coins-earned modal if an achievement or rank-up is taking the
+            // screen — onChange handlers below surface it after they drain.
             guard !isShowing,
                   nav.coinsEarnedPayload != nil,
                   !nav.showCoinsEarned,
                   !nav.showAchievementUnlock,
-                  !nav.hasPendingAchievementUnlocks else { return }
+                  !nav.hasPendingAchievementUnlocks,
+                  !nav.hasPendingRankUp else { return }
             nav.showCoinsEarned = true
         }
         .onChange(of: health.todayStepCount) { _, newValue in
@@ -112,11 +125,16 @@ struct MainTabView: View {
             achievementService.recordPeakStepsInDay(count)
             if !awarded.isEmpty {
                 achievementService.incrementStepMilestoneHits(by: awarded.count)
-                achievementService.awardXP(awarded.count * 10, source: "step_milestone")
+                if let rankUp = achievementService.awardXP(awarded.count * 10, source: "step_milestone") {
+                    nav.enqueueRankUp(rankUp)
+                }
             }
-            let unlocked = achievementService.evaluateAll(streak: streakManager, coins: coinManager)
-            if !unlocked.isEmpty {
-                nav.enqueueAchievementUnlocks(unlocked)
+            let result = achievementService.evaluateAll(streak: streakManager, coins: coinManager)
+            if !result.unlocked.isEmpty {
+                nav.enqueueAchievementUnlocks(result.unlocked)
+            }
+            if let rankUp = result.rankUp {
+                nav.enqueueRankUp(rankUp)
             }
             guard !awarded.isEmpty else { return }
             let total = awarded.reduce(0) { $0 + $1.coins }
@@ -124,14 +142,24 @@ struct MainTabView: View {
                 milestones: awarded,
                 totalCoins: total
             )
-            // Defer the step milestone modal while an achievement is showing/queued.
-            if !nav.showAchievementUnlock, !nav.hasPendingAchievementUnlocks {
+            // Defer the step milestone modal while an achievement or rank-up is showing/queued.
+            if !nav.showAchievementUnlock, !nav.hasPendingAchievementUnlocks, !nav.hasPendingRankUp {
                 nav.showStepMilestone = true
             }
         }
         .onChange(of: nav.showAchievementUnlock) { _, isShowing in
-            // After the achievement queue drains, surface any deferred celebration.
-            guard !isShowing, !nav.hasPendingAchievementUnlocks else { return }
+            // After the achievement queue drains, surface any deferred celebration —
+            // but yield to a pending rank-up first; its dismissal will trigger
+            // onChange(of: nav.showRankUp) below to surface the rest.
+            guard !isShowing, !nav.hasPendingAchievementUnlocks, !nav.hasPendingRankUp else { return }
+            if nav.coinsEarnedPayload != nil, !nav.showCoinsEarned {
+                nav.showCoinsEarned = true
+            } else if nav.stepMilestoneCelebration != nil, !nav.showStepMilestone {
+                nav.showStepMilestone = true
+            }
+        }
+        .onChange(of: nav.showRankUp) { _, isShowing in
+            guard !isShowing else { return }
             if nav.coinsEarnedPayload != nil, !nav.showCoinsEarned {
                 nav.showCoinsEarned = true
             } else if nav.stepMilestoneCelebration != nil, !nav.showStepMilestone {

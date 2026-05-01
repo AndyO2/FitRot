@@ -195,9 +195,13 @@ struct WorkoutView: View {
 
         // Achievement counters / XP for the workout itself.
         achievements.incrementMovementReps(movementType, by: currentCount)
-        achievements.awardXP(5, source: "workout_completed")
+        if let rankUp = achievements.awardXP(5, source: "workout_completed") {
+            nav.enqueueRankUp(rankUp)
+        }
         if isFirstWorkoutToday {
-            achievements.awardXP(2, source: "streak_day")
+            if let rankUp = achievements.awardXP(2, source: "streak_day") {
+                nav.enqueueRankUp(rankUp)
+            }
         }
 
         switch mode {

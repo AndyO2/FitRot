@@ -61,6 +61,16 @@ final class NavigationCoordinator {
         !achievementUnlockQueue.isEmpty
     }
 
+    var showRankUp = false
+    var rankUpPayload: RankUp?
+    private var pendingRankUp: RankUp?
+
+    /// True while a rank-up is waiting behind the achievement queue or
+    /// currently presented. Used to defer lower-priority modals.
+    var hasPendingRankUp: Bool {
+        pendingRankUp != nil || showRankUp
+    }
+
     private let defaults = AppGroupConstants.sharedDefaults
 
     func handleDeepLink(_ url: URL) {
@@ -118,7 +128,10 @@ final class NavigationCoordinator {
         achievementUnlockPayload = nil
         // Allow the dismissal animation to play before showing the next one.
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
-            self?.popNextAchievementUnlock()
+            guard let self else { return }
+            self.popNextAchievementUnlock()
+            // If the queue just drained, surface any deferred rank-up.
+            self.presentRankUpIfReady()
         }
     }
 
@@ -127,6 +140,29 @@ final class NavigationCoordinator {
         let next = achievementUnlockQueue.removeFirst()
         achievementUnlockPayload = next
         showAchievementUnlock = true
+    }
+
+    /// Coalesce: keep the highest newLevel if a rank-up is already pending.
+    /// If nothing higher-priority is on screen, present immediately.
+    func enqueueRankUp(_ rankUp: RankUp) {
+        if let existing = pendingRankUp, existing.newLevel >= rankUp.newLevel { return }
+        pendingRankUp = rankUp
+        presentRankUpIfReady()
+    }
+
+    func dismissRankUp() {
+        showRankUp = false
+        rankUpPayload = nil
+    }
+
+    private func presentRankUpIfReady() {
+        guard !showAchievementUnlock,
+              achievementUnlockQueue.isEmpty,
+              !showRankUp,
+              let next = pendingRankUp else { return }
+        pendingRankUp = nil
+        rankUpPayload = next
+        showRankUp = true
     }
 
     private func clearPendingRequest() {
