@@ -120,7 +120,10 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
                 text: "⬆ Tap the notification ⬆",
                 color: .label
             ),
-            subtitle: nil,
+            subtitle: ShieldConfiguration.Label(
+                text: " ",
+                color: .label
+            ),
             primaryButtonLabel: nil,
             primaryButtonBackgroundColor: nil,
             secondaryButtonLabel: ShieldConfiguration.Label(
