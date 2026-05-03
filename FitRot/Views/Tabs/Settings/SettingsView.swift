@@ -189,13 +189,13 @@ struct SettingsView: View {
                     .foregroundStyle(.primaryText)
                     .listRowBackground(Color.white)
 
-                    Link(destination: URL(string: "https://emerald-farmer-d10.notion.site/FitRot-Privacy-Policy-33ea2a1fd302808da603f71808127d16")!) {
+                    Link(destination: URL(string: "https://www.fitrot.app/privacy")!) {
                         Label("Privacy Policy", systemImage: "lock")
                     }
                     .foregroundStyle(.primaryText)
                     .listRowBackground(Color.white)
 
-                    Link(destination: URL(string: "https://emerald-farmer-d10.notion.site/FitRot-Terms-of-Service-33ea2a1fd30280c68a4cd620132e15d8")!) {
+                    Link(destination: URL(string: "https://www.fitrot.app/terms")!) {
                         Label("Terms of Service", systemImage: "doc.text")
                     }
                     .foregroundStyle(.primaryText)
