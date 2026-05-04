@@ -13,7 +13,7 @@ struct GoalsSocialProofView: View {
                         .font(.system(size: 64, weight: .light))
                         .foregroundStyle(.orange)
 
-                    Text("Over 300,000 People\nstarted with the same goals!")
+                    Text("Over 10,000 People\nstarted with the same goals!")
                         .font(.system(size: 20, weight: .bold))
                         .multilineTextAlignment(.center)
                         .fixedSize(horizontal: false, vertical: true)
@@ -36,20 +36,20 @@ struct GoalsSocialProofView: View {
                 // MARK: - Review testimonials
                 VStack(spacing: 16) {
                     GoalTestimonialCard(
-                        name: "Tymofii S.",
-                        handle: "@whostymo",
+                        name: "Bryce W.",
+                        imageName: "profile1",
                         reviewText: "This app is fricking amazing!! I'm down to 40 minutes or less TikTok per day from 5 hours per day 🙏!!"
                     )
 
                     GoalTestimonialCard(
-                        name: "Jasmine R.",
-                        handle: "@jazzruns",
+                        name: "Sam M.",
+                        imageName: "profile2",
                         reviewText: "I used to pick up my phone every 5 minutes without even thinking. Two weeks in and the urge is just… gone. Honestly didn't think I had this kind of self-control in me 🤯"
                     )
 
                     GoalTestimonialCard(
-                        name: "Marcus D.",
-                        handle: "@marcus.codes",
+                        name: "Andy O.",
+                        imageName: "profile3",
                         reviewText: "Finally an app that actually makes me put the phone down. My focus during work blocks has gone way up and I'm sleeping better too. Worth every penny."
                     )
                 }
@@ -90,7 +90,7 @@ private struct GoalPill: View {
         HStack(spacing: 8) {
             Image(systemName: icon)
                 .font(.system(size: 15, weight: .semibold))
-                .foregroundStyle(.blue)
+                .foregroundStyle(title == "Self Control" ? Color.streakOrange : .blue)
             Text(title)
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(.primary)
@@ -106,26 +106,19 @@ private struct GoalPill: View {
 
 private struct GoalTestimonialCard: View {
     let name: String
-    let handle: String
+    let imageName: String
     let reviewText: String
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 12) {
-                Circle()
-                    .fill(Color(.systemGray4))
+                Image(imageName)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
                     .frame(width: 40, height: 40)
-                    .overlay(
-                        Image(systemName: "person.fill")
-                            .foregroundStyle(.secondary)
-                    )
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(name)
-                        .font(.system(size: 15, weight: .bold))
-                    Text(handle)
-                        .font(.system(size: 13))
-                        .foregroundStyle(.secondary)
-                }
+                    .clipShape(Circle())
+                Text(name)
+                    .font(.system(size: 15, weight: .bold))
                 Spacer()
                 HStack(spacing: 2) {
                     ForEach(0..<5) { _ in

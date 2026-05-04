@@ -177,7 +177,7 @@ enum OnboardingData {
         ),
         .info(
             id: "goals_social_proof",
-            text: String(localized: "Over 300,000 People\nstarted with the same goals!"),
+            text: String(localized: "Over 10,000 People\nstarted with the same goals!"),
             buttonText: String(localized: "I'm next")
         ),
         .question(
