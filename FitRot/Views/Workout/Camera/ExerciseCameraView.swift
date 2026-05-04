@@ -11,6 +11,7 @@ struct ExerciseCameraView: View {
     @StateObject private var poseDetector = PoseDetector()
     @State private var exerciseCounter: ExerciseCounter
     @State private var countingStartTime: Date?
+    @State private var bumpScale: CGFloat = 1.0
 
     init(movementType: MovementType, target: Int? = nil, onCountChanged: ((Int) -> Void)? = nil, onComplete: ((Int) -> Void)? = nil) {
         self.movementType = movementType
@@ -24,6 +25,13 @@ struct ExerciseCameraView: View {
         cameraContent
     }
 
+    private var counterText: String {
+        if let target {
+            return "\(exerciseCounter.count)/\(target)"
+        }
+        return "\(exerciseCounter.count)"
+    }
+
     private var cameraContent: some View {
         ZStack(alignment: .bottom) {
             CameraPreviewView(session: cameraManager.captureSession)
@@ -32,6 +40,16 @@ struct ExerciseCameraView: View {
 
             // Guidance overlays on the camera
             VStack {
+                if exerciseCounter.count > 0 && !exerciseCounter.isComplete {
+                    Text(counterText)
+                        .font(.system(size: 90, weight: .heavy, design: .rounded))
+                        .foregroundStyle(.white)
+                        .contentTransition(.numericText())
+                        .shadow(color: .black.opacity(0.45), radius: 8, x: 0, y: 2)
+                        .scaleEffect(bumpScale)
+                        .padding(.top, 24)
+                }
+
                 if poseDetector.currentPose != nil && !exerciseCounter.isComplete {
                     Text(movementType.trackingHint)
                         .font(.caption)
@@ -105,6 +123,16 @@ struct ExerciseCameraView: View {
         .onChange(of: exerciseCounter.count) { oldCount, newCount in
             if oldCount == 0 && newCount > 0 {
                 countingStartTime = Date()
+            }
+            if newCount > oldCount {
+                withAnimation(.spring(response: 0.25, dampingFraction: 0.5)) {
+                    bumpScale = 1.15
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                        bumpScale = 1.0
+                    }
+                }
             }
             onCountChanged?(newCount)
         }
