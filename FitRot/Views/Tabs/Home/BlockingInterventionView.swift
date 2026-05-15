@@ -138,6 +138,9 @@ struct BlockingInterventionView: View {
                 .font(.system(size: 56, weight: .bold, design: .rounded))
                 .foregroundStyle(.primaryText)
                 .monospacedDigit()
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
+                .allowsTightening(true)
                 .contentTransition(.numericText(countsDown: true))
                 .animation(.snappy, value: secondsRemaining)
         }

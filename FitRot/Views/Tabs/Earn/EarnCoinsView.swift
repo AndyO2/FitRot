@@ -59,6 +59,9 @@ struct EarnCoinsView: View {
             Text("Earn Coins")
                 .font(.system(size: 32, weight: .heavy))
                 .foregroundStyle(Color("PrimaryText"))
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
+                .allowsTightening(true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }

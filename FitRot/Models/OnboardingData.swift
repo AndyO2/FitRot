@@ -188,7 +188,7 @@ enum OnboardingData {
                 "TikTok",
                 "Instagram",
                 "YouTube",
-                "Mobile Games", 
+                "Mobile Games",
                 "Twitter (X)",
                 "Reddit",
                 "Discord",

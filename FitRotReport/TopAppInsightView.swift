@@ -79,6 +79,7 @@ private struct AppNameLabelStyle: LabelStyle {
                 .font(.system(size: 17, weight: .semibold))
                 .foregroundStyle(.primary)
                 .lineLimit(1)
+                .minimumScaleFactor(0.7)
         }
     }
 }

@@ -461,7 +461,10 @@ struct OnboardingView: View {
         } else {
             AnalyticsService.shared.track("onboarding_completed")
             let code = referralCode.uppercased()
-            if code != "FOUNDER" && code != "CREATOR1" {
+            if code == "FOUNDER" || code == "CREATOR1" {
+                AppGroupConstants.sharedDefaults.set(true, forKey: AppGroupConstants.promoCodeUnlockedKey)
+                AnalyticsService.shared.track("promo_code_redeemed", properties: ["code": code])
+            } else {
                 Superwall.shared.register(placement: "campaign_trigger")
             }
             onComplete()

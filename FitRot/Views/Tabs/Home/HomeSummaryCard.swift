@@ -31,6 +31,7 @@ struct HomeSummaryCard: View {
     var body: some View {
         ZStack {
             DeviceActivityReport(.homeSummary, filter: filter)
+                .frame(maxWidth: .infinity)
                 .frame(height: reportHeight)
                 .overlay {
                     // The DeviceActivityReport hosts cross-process content via
@@ -43,7 +44,6 @@ struct HomeSummaryCard: View {
                     // of hit-testing, hence the 0.001 opacity.
                     Color.white.opacity(0.001)
                 }
-                .padding(20)
                 .background(Color.white, in: RoundedRectangle(cornerRadius: 20))
                 .overlay(
                     RoundedRectangle(cornerRadius: 20).stroke(Color.cardBorder, lineWidth: 1)

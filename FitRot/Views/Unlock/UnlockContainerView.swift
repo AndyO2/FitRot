@@ -14,7 +14,8 @@ struct UnlockContainerView: View {
 
     var body: some View {
         UnlockView(
-            onWorkoutSelected: { minutes in
+            onWorkoutSelected: { minutes, movement in
+                nav.selectedMovement = movement
                 nav.selectedUnlockMinutes = minutes
                 nav.workoutMode = .unlockScreenTime
                 nav.showUnlock = false

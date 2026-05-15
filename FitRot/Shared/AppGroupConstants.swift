@@ -71,6 +71,7 @@ enum AppGroupConstants {
     // Onboarding
     static let hasCompletedOnboardingKey = "hasCompletedOnboarding"
     static let seenWorkoutTutorialMovementsKey = "seenWorkoutTutorialMovements" // [String] of MovementType raw values
+    static let promoCodeUnlockedKey = "promoCodeUnlocked" // Bool: bypasses subscription gate (e.g. FOUNDER, CREATOR1)
 
     // Home summary card (HomeSummaryCard ↔ FitRotReport extension)
     static let homeSummaryLastUpdatedKey = "homeSummaryLastUpdated"         // Double, timeIntervalSinceReferenceDate

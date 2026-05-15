@@ -35,6 +35,9 @@ struct RankUpView: View {
                         .font(.system(size: 30, weight: .heavy))
                         .foregroundStyle(.white)
                         .multilineTextAlignment(.center)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                        .allowsTightening(true)
 
                     Text(subtitle)
                         .font(.system(size: 14, weight: .medium))
@@ -105,6 +108,9 @@ struct RankUpView: View {
                 Text("\(rankUp.newLevel)")
                     .font(.system(size: 72, weight: .heavy))
                     .foregroundStyle(.white)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                    .allowsTightening(true)
                     .shadow(color: .black.opacity(0.22), radius: 10, y: 6)
             }
         }

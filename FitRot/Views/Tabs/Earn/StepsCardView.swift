@@ -108,9 +108,14 @@ struct StepsCardView: View {
                 Text(Self.format(stepCount))
                     .font(.system(size: 38, weight: .bold))
                     .foregroundStyle(.black)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                    .allowsTightening(true)
                 Text("/ \(Self.format(Self.dailyGoal))")
                     .font(.system(size: 16, weight: .medium))
                     .foregroundStyle(.gray)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
             }
 
             milestoneTrack(stepCount: stepCount)

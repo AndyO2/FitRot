@@ -24,6 +24,7 @@ struct HomeSummaryView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .fontDesign(.rounded)
+        .padding(20)
     }
 
     private var divider: some View {
@@ -80,6 +81,9 @@ struct HomeSummaryView: View {
             }
         }
         .foregroundStyle(.primary)
+        .lineLimit(1)
+        .minimumScaleFactor(0.65)
+        .allowsTightening(true)
     }
 
     @ViewBuilder
@@ -159,7 +163,7 @@ struct HomeSummaryView: View {
                                 .foregroundStyle(isToday ? Color.primary : Color.secondary)
                                 .fixedSize()
                                 .position(
-                                    x: plotFrame.minX + x,
+                                    x: x,
                                     y: plotFrame.maxY + 14
                                 )
                         }
@@ -257,6 +261,8 @@ struct HomeSummaryView: View {
             .font(.caption.weight(.semibold))
             .tracking(0.8)
             .foregroundStyle(.secondary)
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
     }
 }
 
@@ -277,10 +283,13 @@ private struct TopOffenderRow: View {
                     .font(.title3.weight(.bold))
                     .foregroundStyle(.primary)
                     .monospacedDigit()
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
                 if let change = app.percentChange {
                     PercentChangeBadge(percent: change)
                 }
             }
+            .layoutPriority(1)
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 12)
@@ -342,6 +351,7 @@ private struct TopOffenderLabelStyle: LabelStyle {
                     .font(.title3.weight(.bold))
                     .foregroundStyle(.primary)
                     .lineLimit(1)
+                    .minimumScaleFactor(0.7)
             }
         }
     }

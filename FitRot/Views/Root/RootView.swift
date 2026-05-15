@@ -17,6 +17,9 @@ struct RootView: View {
     @AppStorage(AppGroupConstants.hasCompletedOnboardingKey, store: AppGroupConstants.sharedDefaults)
     private var hasCompletedOnboarding = false
 
+    @AppStorage(AppGroupConstants.promoCodeUnlockedKey, store: AppGroupConstants.sharedDefaults)
+    private var promoCodeUnlocked = false
+
     @State private var showingOnboarding = false
     @State private var showSplash = true
     @State private var subscriptionStatus: SubscriptionStatus = .unknown
@@ -36,7 +39,7 @@ struct RootView: View {
                             onSkip: { hasCompletedOnboarding = true }
                         )
                     }
-                } else if !subscriptionStatus.isActive {
+                } else if !subscriptionStatus.isActive && !promoCodeUnlocked {
                     SubscriptionGateView()
                 } else {
                     switch authManager.status {

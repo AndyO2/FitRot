@@ -30,6 +30,9 @@ struct AchievementUnlockedView: View {
                         .font(.system(size: 30, weight: .heavy))
                         .foregroundStyle(.white)
                         .multilineTextAlignment(.center)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                        .allowsTightening(true)
 
                     Text(achievement.description)
                         .font(.system(size: 14, weight: .medium))
@@ -81,6 +84,7 @@ struct AchievementUnlockedView: View {
 
             Text(achievement.emoji)
                 .font(.system(size: 92))
+                .minimumScaleFactor(0.7)
                 .shadow(color: .black.opacity(0.22), radius: 10, y: 6)
         }
         .frame(height: 160)

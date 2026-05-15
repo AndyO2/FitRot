@@ -9,8 +9,8 @@ import SwiftUI
 
 #if canImport(FamilyControls)
 
-private enum UnlockMethod {
-    case workout
+private enum UnlockMethod: Equatable {
+    case workout(MovementType)
     case coins
 }
 
@@ -19,14 +19,17 @@ struct UnlockView: View {
     @Environment(AppLockService.self) private var lockService
     @Environment(NavigationCoordinator.self) private var nav
 
-    var onWorkoutSelected: (_ minutes: Int) -> Void
+    var onWorkoutSelected: (_ minutes: Int, _ movement: MovementType) -> Void
     var onCoinUnlockCompleted: (_ minutes: Int, _ previousBalance: Int) -> Void
 
-    @State private var selectedMethod: UnlockMethod = .workout
+    @State private var selectedMethod: UnlockMethod = .workout(.pushups)
     @State private var selectedMinutes: Double = 15
     @State private var errorMessage: String?
 
-    private var pushUpCount: Int { Int(selectedMinutes) }
+    private var reps: Int { Int(selectedMinutes) }
+    private var activeMovements: [MovementType] {
+        MovementType.allCases.filter(\.isImplemented)
+    }
     private var canAffordCoins: Bool { coinManager.balance >= Int(selectedMinutes) }
 
     var body: some View {
@@ -89,24 +92,27 @@ struct UnlockView: View {
 
                 // MARK: - Option cards
                 VStack(spacing: 12) {
-                    UnlockOptionCard(
-                        icon: "figure.strengthtraining.traditional",
-                        title: "Do Push-Ups Now",
-                        subtitle: "\(pushUpCount) push-up\(pushUpCount == 1 ? "" : "s") = \(Int(selectedMinutes)) min",
-                        isSelected: selectedMethod == .workout,
-                        isDisabled: false
-                    ) {
-                        withAnimation(.easeInOut(duration: 0.2)) {
-                            selectedMethod = .workout
-                            errorMessage = nil
+                    ForEach(activeMovements) { movement in
+                        UnlockOptionCard(
+                            icon: movement.iconAsset,
+                            isCustomImage: true,
+                            title: movement.displayName,
+                            subtitle: "\(reps) \(movement.repLabel(for: reps)) = \(reps) min",
+                            isSelected: selectedMethod == .workout(movement),
+                            isDisabled: false
+                        ) {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                selectedMethod = .workout(movement)
+                                errorMessage = nil
+                            }
                         }
                     }
 
                     UnlockOptionCard(
                         icon: "FitScroll-Coin",
                         isCustomImage: true,
-                        title: "Use \(Int(selectedMinutes)) Minutes",
-                        subtitle: "Spend \(Int(selectedMinutes)) coin\(Int(selectedMinutes) == 1 ? "" : "s") from balance",
+                        title: "Use \(reps) Minutes",
+                        subtitle: "Spend \(reps) coin\(reps == 1 ? "" : "s") from balance",
                         isSelected: selectedMethod == .coins,
                         isDisabled: !canAffordCoins
                     ) {
@@ -155,10 +161,10 @@ struct UnlockView: View {
 
     private var ctaLabel: String {
         switch selectedMethod {
-        case .workout:
-            "Do \(pushUpCount) Push-Up\(pushUpCount == 1 ? "" : "s")"
+        case .workout(let movement):
+            "Do \(reps) \(movement.repLabel(for: reps).capitalized)"
         case .coins:
-            "Use \(Int(selectedMinutes)) Minutes"
+            "Use \(reps) Minutes"
         }
     }
 
@@ -169,10 +175,10 @@ struct UnlockView: View {
     private func handleCTA() {
         errorMessage = nil
         switch selectedMethod {
-        case .workout:
-            onWorkoutSelected(Int(selectedMinutes))
+        case .workout(let movement):
+            onWorkoutSelected(reps, movement)
         case .coins:
-            let minutes = Int(selectedMinutes)
+            let minutes = reps
             let previousBalance = coinManager.balance
             do {
                 try lockService.unlock(minutes: minutes, coinManager: coinManager)
@@ -242,7 +248,7 @@ private struct UnlockOptionCard: View {
 
 #Preview {
     UnlockView(
-        onWorkoutSelected: { _ in },
+        onWorkoutSelected: { _, _ in },
         onCoinUnlockCompleted: { _, _ in }
     )
     .environment(CoinManager())

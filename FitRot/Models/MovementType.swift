@@ -92,7 +92,7 @@ enum MovementType: String, CaseIterable, Identifiable, Codable {
 
     func repLabel(for count: Int) -> String {
         switch self {
-        case .pushups: count == 1 ? "pushup" : "pushups"
+        case .pushups: count == 1 ? "push-up" : "push-ups"
         case .squats: count == 1 ? "squat" : "squats"
         case .lunges: count == 1 ? "lunge" : "lunges"
         case .situps: count == 1 ? "situp" : "situps"
